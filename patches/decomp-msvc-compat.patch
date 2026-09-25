@@ -1,0 +1,35 @@
+diff --git a/src/main/lightmap_draw.c b/src/main/lightmap_draw.c
+index baed55cc00..aedee15776 100644
+--- a/src/main/lightmap_draw.c
++++ b/src/main/lightmap_draw.c
+@@ -53,7 +53,7 @@ void sceneDrawTransparentPolys(void);
+ 
+ 
+ 
+-volatile PPCWGPipe GXWGFifo : (0xCC008000);
++extern volatile PPCWGPipe GXWGFifo AT_ADDRESS(0xCC008000);
+ 
+ void renderShadowType3(GameObject* obj, u32 b, s32 offset);
+ static inline void GXPosition3s16(const s16 x, const s16 y, const s16 z)
+@@ -232,7 +232,7 @@ void setPendingMapLoad(int v)
+ 
+ void lightmapDrawTriangleList(const void* vertexBase, u8* triList, int triCount)
+ {
+-    const LightmapVertex* vertices = vertexBase;
++    const LightmapVertex* vertices = (const LightmapVertex*)vertexBase;
+     const LightmapVertex* vertex;
+     int tri, vtx;
+ 
+diff --git a/src/main/pi_videoinit.c b/src/main/pi_videoinit.c
+index 6a39c30cf1..495675226e 100644
+--- a/src/main/pi_videoinit.c
++++ b/src/main/pi_videoinit.c
+@@ -236,7 +236,7 @@ void setDisplayCopyFilter(void)
+ 
+ 
+ #include "main/dll/ppcwgpipe_struct.h"
+-extern volatile PPCWGPipe GXWGFifo : (0xCC008000);
++extern volatile PPCWGPipe GXWGFifo AT_ADDRESS(0xCC008000);
+ 
+ int GXFlush_(u8 visible, int unused)
+ {

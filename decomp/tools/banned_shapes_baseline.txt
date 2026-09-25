@@ -1,0 +1,3 @@
+# tools/banned_shapes_check.py baseline -- accepted existing instances.
+# Anything NOT listed here is regrowth and fails the gate.
+# Shrink this file; never grow it.

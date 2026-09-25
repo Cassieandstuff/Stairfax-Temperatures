@@ -1,0 +1,5 @@
+{
+  "dolphin/si/SIBios.c": {
+    "fn_80253128": "AlarmHandler"
+  }
+}

@@ -1,0 +1,256 @@
+# NOTE: All paths in this file can utilize decomp-toolkit's VFS (virtual file system).
+# This allows you to directly reference files inside of containers (disc images, .arc, etc.).
+# Files compressed with Yaz0 (SZS), Yay0 (SZP) are automatically decompressed.
+# Files compressed with NLZSS (Nintendo LZSS) can use a `:nlzss` suffix to decompress.
+# See https://github.com/encounter/decomp-toolkit#vfs-ls for more information on the VFS.
+
+game_name: Star Fox Adventures (USA)
+
+# (optional) Main module name. Defaults to "main".
+name: main
+
+# Retain the priority-sort table even though code addresses it through the
+# containing vidListNodes storage rather than by this symbol directly.
+force_active:
+  - voicePrioritySortLinks
+  # dlls/engine/24/24.c: the retail link retained these two unreferenced .data
+  # tables that follow gBoneParticleInitData; dropping them would shorten .data
+  # and shift every later .data address.
+  - lbl_80310128
+  - lbl_80310410
+  # dlls/objects/599_DR_EarthWar/DR_EarthWar.c: the retail link retained these
+  # two unreferenced .data tables that follow gDREarthWarriorRowIndices;
+  # dropping them would shorten .data and shift every later .data address.
+  - lbl_803352D0
+  - lbl_80335310
+  # dlls/engine/21/21.c: the retail link retained this unreferenced .sdata2
+  # zero atom at the tail of the pool; dropping it would shorten the pool and
+  # shift every later SDA2 reference.
+  - lbl_803E06C4
+  # dlls/engine/66/66.c: the retail link retained this unreferenced .sbss tail
+  # word; dropping it would shorten the section and shift every later .sbss
+  # address.
+  - lbl_803DD534
+  # dlls/engine/69/69.c: same unreferenced .sbss tail word.
+  - lbl_803DD544
+  # dlls/engine/78/78.c: same unreferenced .sbss tail word.
+  - lbl_803DD58C
+  # SB_Galleon.c: the retail link retained this unreferenced .sbss tail word.
+  - sSbGalleonUnused0
+  # DBstealerwo.c: the retail link retained the worm command-name table even
+  # though nothing references it by name; dropping it would shorten .data and
+  # shift every later .data address.
+  - gDbStealerwormCommandNames
+  # BossDrakor.c: the retail link retained this unreferenced .sdata tail atom.
+  - lbl_803DC19C
+  # DIMSnowHorn.c: the retail link retained this unreferenced .sdata2 zero atom
+  # at the tail of the pool.
+  - gDIMSnowHorn1ZeroOffset
+  # maketex.c: the retail link retained the memory-card banner asset name
+  # table and the .sdata tail atom even though nothing references them by
+  # name; dropping them would shorten .data and shift every later address.
+  - gMemoryCardBannerAssetNames
+  - lbl_803DB70C
+  # dll_012B_fxemit.c: the retail link retained this unreferenced .sdata2 zero
+  # atom; dropping it would shorten the pool and shift later SDA2 references.
+  - lbl_803E3E44
+  # gcrobotpatrol.c: the retail link retained this unreferenced .sdata2 zero
+  # atom; dropping it would shorten the pool and shift the mikaladon SDA2
+  # references that follow it.
+  - gGcRobotPatrolZero
+  # objlib.c: the retail link retained this unreferenced .sdata2 zero atom
+  # between the nearest-object search and the hit-cooldown pool run; dropping
+  # it would shorten the pool and shift every later SDA2 reference.
+  - gObjLibZero
+  # WispBaddie.c: the seq-driver TUs reach these per-family scalar tables
+  # only through the gBaddieMoveProgressTable base (+0x152C/+0x1538), so no
+  # relocation references them by name; dropping them would shorten .data and
+  # shift every later .data address.
+  - gBaddieEventDelayRanges
+  - gBaddieFamilySpeedScales
+  # aram_data.c: the retail link retained this unreferenced .bss block;
+  # dropping it would shorten the section and shift every later .bss address.
+  - lbl_803D4868
+  # picmenu.c: the retail link retained the thread message buffers and the
+  # video-decode stack even though live code reaches them only through the
+  # surrounding thread-area base pointers; dropping them would shorten .bss
+  # and shift every later .bss/.sdata address.
+  - gPicMenuReadedBuffer2Messages
+  - gPicMenuReadedBufferMessages
+  - gPicMenuFreeReadBufferMessages
+  - gPicMenuVideoDecodeThreadStack
+  # gameloop.c: the retail link retained this uncalled function (its jumptable
+  # and the .sbss word only it reads come along via its own references);
+  # dropping it would shorten .text and shift every later section.
+  - cardShowMessage
+  # audio_stream.c: the looped-object-sound table is reached through the
+  # gSfxLoopedObjectSoundFlags base, so no relocation names the id or object
+  # halves; dropping them would shorten .bss and shift every later address.
+  - gSfxLoopedObjectSoundIds
+  - gSfxLoopedObjectSoundObjects
+  # intersect_surfacesfx.c: the retail link retained this uncalled function
+  # (its own switch jumptable is the only thing that names it); dropping it
+  # would shorten .text and shift every later section.
+  - surfaceSfxGetRecord
+  # intersect.c: the retail link retained this unreferenced .sbss word;
+  # dropping it would shorten the section and shift every later .sbss address.
+  - sIntersectUnused0
+  # audio.c: the retail link retained the unreferenced .sdata atom and the two
+  # .sbss words that no relocation names; dropping them would shorten those
+  # sections and shift every later .sdata/.sbss address.
+  - lbl_803DB1EC
+  - sAudioUnused0
+  - sAudioUnused1
+  # Placeholders for retail objects the carve leaves unnamed, in units that are
+  # still NonMatching. Nothing references them, so mwld would dead-strip them
+  # the moment their unit is linked from our object, shortening .sbss/.sdata and
+  # moving _SDA_BASE_ for every TU. Arming them now keeps that flip cheap.
+  # dlls/engine/71/71.c
+  - lbl_803DD564
+  # dlls/engine/68/68.c
+  - lbl_803DD54C
+  # dlls/engine/2/2.c
+  - lbl_803DB74C
+  # dlls/engine/5/5.c
+  - sSkyUnusedD
+  # main/voxmaps.c
+  - lbl_803DC8E4
+  # main/pi_dolphin.c
+  - sPiUnused0
+  - sPiUnused2
+  - sPiUnused3
+  # dlls/objects/609_DR_LaserCan/DR_LaserCan.c
+  - lbl_803DDD6C
+  # dlls/objects/195_Player/player.c
+  - lbl_803DE4BC
+  # dlls/objects/454_DIMCannon/DIMCannon.c
+  - lbl_803DDB54
+  # dlls/objects/213_Kaldachom/Kaldachom.c
+  - lbl_803DDA9C
+  # main/shader_dolphin.c
+  - sWarpedRingRotAxes
+  - sWarpedRingIndMtx
+
+# Path to the main.dol file.
+object: sys/main.dol
+
+# (optional) SHA-1 hash of the main.dol file for verification.
+hash: e750e8e894707a52446118a4b84f1b58b677b269
+
+# (optional) If set, all object paths will be relative to this directory.
+# If not set, all object paths will be relative to the root of the project.
+# decomp-toolkit will search the root of this directory for any disc images. (ISO, RVZ, WBFS, etc.)
+# If a disc image is found, decomp-toolkit will fetch all objects from the disc image instead of the filesystem.
+# For example, if `game.iso` exists in the `object_base`, the object path would become the VFS path
+# `orig/GAMEID/game.iso:sys/main.dol`. See information on the VFS above.
+object_base: orig/GSAE01
+
+# (optional) If true, objects will be extracted from a disc image into `object_base`.
+# This allows users to delete the disc image after the initial build to save space.
+# Enabled by default if `object_base` is set.
+extract_objects: true
+
+# (optional) Path to the symbols.txt file.
+# This file will be created if it does not exist.
+# See docs/symbols.md for more information.
+symbols: config/GSAE01/symbols.txt
+
+# (optional) Path to the splits.txt file.
+# This file will be created if it does not exist.
+# See docs/splits.md for more information.
+splits: config/GSAE01/splits.txt
+
+# (optional) Version used to generate `.comment` sections in the split objects.
+# If not specified, no `.comment` sections will be generated.
+# See docs/comment_section.md for more information.
+# Known versions:
+# 8 - CodeWarrior for GameCube 1.0+
+# 10 - CodeWarrior for GameCube 1.3.2+
+# 11 - CodeWarrior for GameCube 2.7+
+# 14 - CodeWarrior for GameCube 3.0a3+
+mw_comment_version: 11
+
+# (optional) When enabled, function boundary analysis will be skipped.
+# Only valid _after_ initial analysis has been performed and
+# the symbols and splits files have been generated. 
+quick_analysis: false
+
+# (optional) When enabled, the analyzer will attempt to detect sizes
+# and data types of objects based on code usage and alignment.
+detect_objects: true
+
+# (optional) When enabled, the analyzer will attempt to detect strings,
+# wide strings, and string tables.
+detect_strings: true
+
+# (optional) Whether to write disassembly to the split output directory.
+# While not used in the build process, the disassembly is useful
+# for reading and usage with other tools, like decomp.me.
+write_asm: true
+
+# (optional) If symbols are _fully_ known (e.g. from a complete map file),
+# this can be set to true to skip most analysis steps, and ensure new
+# symbols are not created by the analyzer.
+# If you're not sure, leave this false.
+symbols_known: false
+
+# (optional) Whether to create `gap_` symbols to prevent the linker from
+# adjusting the alignment / address of symbols.
+# When alignments are fully known (e.g. from a complete map file),
+# this can be set to false.
+fill_gaps: true
+
+# (optional) By default, emitted objects will "export" all symbols (force active).
+# This is useful to prevent the linker from removing any symbols.
+# Individual symbols can be excluded using `noexport` in the symbols file.
+export_all: true
+
+# (optional) Scrub uninitialized data from the extab section.
+# Certain extab acctions contain uninitialized data from the compiler.
+# Affected games can use `dtk extab clean in.dol out.dol` to get a DOL with
+# the uninitialized data zeroed out. When targeting a cleaned DOL hash,
+# this option can be set to true to scrub the uninitialized data from 
+# the extab section in the split objects.
+#
+# Alternatively, you can set extab_padding on any affected objects in
+# configure.py, in order to exactly match the original DOL.
+clean_extab: false
+
+# Suppress dtk's false relocations into the middle of functions, including TrickyWarp_isPlayerReachable
+# (0x8017FFD0..0x80180218). The partfx Effect*_func04 family stores literal FLAG constants
+# (0x80100100, 0x80180100, 0x80180104, 0x80180200, ...) into PartFxSpawn.f44; these
+# coincide with in-range code addresses, and dtk misinterprets the lis/addi pairs as
+# address materializations. The original
+# compiler emitted plain immediates (MWCC never folds extern+const into reloc addends).
+block_relocations:
+- target: 0x80018000
+  end: 0x80018004
+- target: 0x80380209
+  end: 0x8038020A
+- target: 0x80100100
+  end: 0x80100104
+- target: 0x80180100
+  end: 0x80180218
+- target: 0x80080108
+  end: 0x80080120
+- target: 0x80080200
+  end: 0x80080204
+- target: 0x80080208
+  end: 0x80080214
+- target: 0x80080610
+  end: 0x80080614
+- target: 0x80080404
+  end: 0x80080408
+- target: 0x800C0100
+  end: 0x800C0104
+- target: 0x80008000
+  end: 0x80008004
+
+# Embedded copyrighted asset: the boot / loading-screen texture set (0x40000). dtk
+# extracts its bytes from the user's own disc into gitignored build/ at split time and
+# generates a C byte-array include; src/main/boot_logo.c #includes it. Nothing
+# copyrighted is committed. See docs/orig/embedded_assets.md.
+extract:
+- symbol: gLoadingScreenTextures
+  binary: gLoadingScreenTextures.bin
+  header: gLoadingScreenTextures.inc

@@ -1,0 +1,25 @@
+# --- build output ---
+/build/
+/decomp/build/            # decomp asset-extraction + object output (regenerated)
+
+# --- copyrighted / user-supplied (never commit) ---
+# Extracted assets derive from the user's retail DOL; regenerate via
+# `cd decomp && python3 configure.py && ninja`, or copy your own .inc in.
+*.inc
+orig/
+*.dol
+*.iso
+
+# --- dev scratch (captures, logs) ---
+*.bmp
+*.png
+*.err
+*.out
+*.log
+
+# --- editor / OS ---
+.vs/
+.vscode/
+*.pdb
+*.ilk
+Thumbs.db
