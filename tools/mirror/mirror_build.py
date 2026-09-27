@@ -79,6 +79,34 @@ def cmd_worklist(tu: Path, out: Path | None) -> int:
     return 0
 
 
+def cmd_scan_tree(root: Path, out: Path | None) -> int:
+    if not root.exists():
+        print(f"error: no such dir: {root}", file=sys.stderr)
+        return 2
+    rev = decomp_rev()
+    tus = sorted(root.rglob("*.c"))
+    per_file: list[tuple[str, list]] = []
+    agg = {"decomp_rev": rev, "root": root.as_posix(), "tus": {}}
+    jdir = MIRROR / "worklists"
+    jdir.mkdir(parents=True, exist_ok=True)
+    for tu in tus:
+        findings = passes.scan_pointer_width(tu)
+        rel = tu.relative_to(root).as_posix()
+        per_file.append((rel, findings))
+        agg["tus"][rel] = passes.findings_as_dicts(findings)
+    (jdir / "tree.pointers.json").write_text(json.dumps(agg, indent=2))
+
+    md = passes.render_tree_report_md(root.as_posix(), per_file, rev)
+    if out:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(md)
+        tot = sum(len(fs) for _, fs in per_file)
+        print(f"wrote {out}  ({len(tus)} TUs, {tot} findings)  + {jdir/'tree.pointers.json'}")
+    else:
+        print(md)
+    return 0
+
+
 def cmd_emit(tu: Path) -> int:
     """P0..P6 identity pass-through (skeleton): copy the TU into mirror/src."""
     if not tu.exists():
@@ -104,12 +132,15 @@ def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="Stairfax decomp->mirror pipeline (skeleton)")
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--worklist", metavar="TU", help="emit P2 pointer-width worklist for TU")
+    g.add_argument("--scan-tree", metavar="DIR", help="aggregate P2 scan across all *.c under DIR")
     g.add_argument("--emit", metavar="TU", help="run P0..P6 identity emit for TU")
-    ap.add_argument("--out", metavar="PATH", help="write worklist markdown here instead of stdout")
+    ap.add_argument("--out", metavar="PATH", help="write markdown here instead of stdout")
     args = ap.parse_args(argv)
 
     if args.worklist:
         return cmd_worklist(Path(args.worklist), Path(args.out) if args.out else None)
+    if args.scan_tree:
+        return cmd_scan_tree(Path(args.scan_tree), Path(args.out) if args.out else None)
     return cmd_emit(Path(args.emit))
 
 

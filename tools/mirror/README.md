@@ -38,6 +38,10 @@ python3 tools/mirror/mirror_build.py --worklist decomp/src/main/track_dolphin.c
 python3 tools/mirror/mirror_build.py --worklist decomp/src/main/track_dolphin.c \
         --out docs/mirror/worklist-track_dolphin.md
 
+# aggregate P2 scan across a whole tree (per-TU ranking + category totals):
+python3 tools/mirror/mirror_build.py --scan-tree decomp/src/main \
+        --out docs/mirror/scan-decomp-main.md
+
 # identity emit through P0..P6 (skeleton):
 python3 tools/mirror/mirror_build.py --emit decomp/src/main/track_dolphin.c
 ```
