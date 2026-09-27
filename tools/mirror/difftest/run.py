@@ -43,8 +43,10 @@ def _run(cmd: list[str], **kw):
     return subprocess.run(cmd, capture_output=True, text=True, **kw)
 
 
-def _compile(src: Path, out: Path, extra: list[str]) -> tuple[bool, str]:
-    r = _run([CC, *CFLAGS, *extra, str(src), "-o", str(out)])
+def _compile(src: Path, out: Path, extra: list[str],
+             extra_srcs: list[str] | None = None) -> tuple[bool, str]:
+    srcs = [str(src)] + [str(s) for s in (extra_srcs or [])]
+    r = _run([CC, *CFLAGS, *extra, *srcs, "-o", str(out)])
     return r.returncode == 0, r.stderr
 
 
@@ -153,6 +155,15 @@ def run_case(case: Path, workdir: Path) -> bool:
             print(f"    - {u}")
         return False
 
+    # optional case.toml: extra link sources / include dirs / oracle-only defines
+    cfg = {}
+    cfg_path = case / "case.toml"
+    if cfg_path.exists():
+        cfg = tomllib.loads(cfg_path.read_text())
+    links = [REPO / p for p in cfg.get("link", [])]
+    incs = [f"-I{REPO / i}" for i in cfg.get("include", [])]
+    oracle_defs = [f"-D{d}" for d in cfg.get("oracle_defs", [])]
+
     wd = workdir / name
     wd.mkdir(parents=True, exist_ok=True)
     oracle_src = wd / "oracle.c"
@@ -161,11 +172,12 @@ def run_case(case: Path, workdir: Path) -> bool:
     mirror_src.write_text(mirror_text)
 
     # --- build ---
-    ok, err = _compile(oracle_src, wd / "oracle", ["-DDIFFTEST_ORACLE_LOWMEM"])
+    ok, err = _compile(oracle_src, wd / "oracle",
+                       ["-DDIFFTEST_ORACLE_LOWMEM", *oracle_defs, *incs], links)
     if not ok:
         print(f"[{name}] FAIL — oracle did not compile:\n{err}")
         return False
-    ok, err = _compile(mirror_src, wd / "mirror", [])
+    ok, err = _compile(mirror_src, wd / "mirror", incs, links)
     if not ok:
         print(f"[{name}] FAIL — mirror did not compile:\n{err}")
         return False
@@ -175,15 +187,15 @@ def run_case(case: Path, workdir: Path) -> bool:
     mrc, mout = _exec(wd / "mirror")
     passed = (orc == mrc == 0) and (oout == mout)
 
-    # --- negative control: oracle without the low-mem crutch ---
+    # --- negative control: oracle without the low-mem / MEM1-map crutch ---
     ctrl_note = ""
-    ok, _ = _compile(oracle_src, wd / "oracle_hi", [])
+    ok, _ = _compile(oracle_src, wd / "oracle_hi", incs, links)
     if ok:
         crc, cout = _exec(wd / "oracle_hi")
         if crc != 0 or cout != oout:
-            ctrl_note = "  (hazard confirmed: untransformed code breaks on a high heap)"
+            ctrl_note = "  (hazard confirmed: untransformed code breaks without the guest map)"
         else:
-            ctrl_note = "  (control inconclusive: OS gave a low address anyway)"
+            ctrl_note = "  (control inconclusive: ran without the crutch anyway)"
 
     tag = "PASS" if passed else "FAIL"
     print(f"[{name}] {tag}  rules_applied={len(applied)}  "

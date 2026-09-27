@@ -1,0 +1,6 @@
+# Extra build inputs for this case (synthetic-case config).
+# The mirror calls os_globals_read_u32 -> link the real runtime and add its header.
+link = ["mirror/runtime/stairfax_os.c"]
+include = ["mirror/runtime"]
+# The oracle reads the absolute address -> map MEM1 at 0x80000000 and populate it.
+oracle_defs = ["DIFFTEST_MAP_MEM1"]

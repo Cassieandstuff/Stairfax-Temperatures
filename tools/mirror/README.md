@@ -28,6 +28,12 @@ mirror/
 | P5 | rewrite `0xCC008000` FIFO stores → submit call | TODO |
 | P6 | emit formatted C + provenance header | identity write-through |
 
+Absolute OS-globals reads (`*(u32*)0x800000F8`, the bus clock, etc.) are handled
+by an `[[osglobals.read]]` rule that rewrites the read into a call to the portable
+runtime accessor `os_globals_read_u32` (`mirror/runtime/stairfax_os.*`) and injects
+its header — no fixed guest memory map required. This is the mirror's first
+OS-globals seam (ADR 0001); keep the values in sync with `src/hal/os_shim.c`.
+
 ## Usage
 
 ```sh

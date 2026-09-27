@@ -49,6 +49,19 @@ Line numbers into a frozen vendored decomp are stable; if a re-vendor moves them
 update the ranges (the harness fails loudly if the extracted mirror equals the
 oracle, i.e. the rules stopped touching the extracted code).
 
+## Optional per-case build config (`case.toml`)
+
+A synthetic case may add `case.toml` with:
+- `link`    — extra `.c` sources to compile in (e.g. the mirror runtime).
+- `include` — extra `-I` dirs.
+- `oracle_defs` — extra `-D` macros for the oracle build only.
+
+The `os_globals` case uses this: the oracle defines `DIFFTEST_MAP_MEM1` (maps a
+page at `0x80000000` and populates the OS globals, like the 32-bit port) and reads
+the absolute address; the mirror links `mirror/runtime/stairfax_os.c` and calls the
+accessor. Both yield `tpms=40500`; the negative control (no map) faults. This is a
+true differential test of an absolute-address → accessor rewrite.
+
 ## Adding a synthetic case
 
 Create `cases/<name>/` with:

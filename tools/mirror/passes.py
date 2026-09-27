@@ -336,7 +336,7 @@ _NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
 
 def load_pointer_rules(rules_dir: Path) -> dict:
     """Merge the [pointer.*] tables from every *.toml under rules_dir."""
-    promote, widen, audit, ret = [], [], [], []
+    promote, widen, audit, ret, osglob = [], [], [], [], []
     for toml in sorted(rules_dir.glob("*.toml")):
         try:
             data = tomllib.loads(toml.read_text())
@@ -347,7 +347,18 @@ def load_pointer_rules(rules_dir: Path) -> dict:
         widen += p.get("widen", [])
         audit += p.get("audit", [])
         ret += p.get("ret", [])
-    return {"promote": promote, "widen": widen, "audit": audit, "ret": ret}
+        osglob += data.get("osglobals", {}).get("read", [])
+    return {"promote": promote, "widen": widen, "audit": audit,
+            "ret": ret, "osglobals": osglob}
+
+
+# Absolute OS-globals read: *(T*)0xADDR -> os_globals_read_u32(0xADDRu).
+_RE_OSGLOB_READ = re.compile(r"\*\s*\(\s*[A-Za-z_]\w*\s*\*\s*\)\s*0x([0-9A-Fa-f]+)")
+
+
+def _rewrite_osglobals(line: str) -> str | None:
+    new = _RE_OSGLOB_READ.sub(r"os_globals_read_u32(0x\1u)", line)
+    return new if new != line else None
 
 
 def _promote_return(line: str, func: str, to: str) -> str | None:
@@ -445,7 +456,28 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         else:
             unmatched.append(f"widen {rel}:{n}: no narrowing pointer cast to widen")
 
-    return "".join(lines), applied, unmatched
+    # OS-globals reads: (file,line)-targeted; rewrite to the runtime accessor and
+    # ensure the runtime header is included.
+    need_os_header = False
+    for r in rules.get("osglobals", []):
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n = r.get("line")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)):
+            unmatched.append(f"osglobals {rel}:{r.get('line')}: line out of range")
+            continue
+        nl = _rewrite_osglobals(lines[n - 1])
+        if nl:
+            lines[n - 1] = nl
+            need_os_header = True
+            applied.append(f"osglobals read -> accessor at line {n}")
+        else:
+            unmatched.append(f"osglobals {rel}:{n}: no *(T*)0xADDR read to rewrite")
+
+    text = "".join(lines)
+    if need_os_header and "stairfax_os.h" not in text:
+        text = '#include "stairfax_os.h"\n' + text
+    return text, applied, unmatched
 
 
 def _norm(p: str) -> str:

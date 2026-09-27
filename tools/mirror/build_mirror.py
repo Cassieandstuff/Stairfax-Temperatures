@@ -30,7 +30,7 @@ DECOMP = REPO / "decomp"
 MIRROR = REPO / "mirror"
 MANIFEST = HERE / "build_manifest.txt"
 CC = "clang"
-INCLUDES = ["-Idecomp/include", "-Idecomp", "-Idecomp/src"]
+INCLUDES = ["-Idecomp/include", "-Idecomp", "-Idecomp/src", "-Imirror/runtime"]
 CFLAGS = ["-m64", "-c", "-w", "-O1"]
 
 

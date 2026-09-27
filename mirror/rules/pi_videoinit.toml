@@ -1,0 +1,9 @@
+# pi_videoinit.c OS-globals resolution.
+#
+# *(u32*)0x800000f8 reads the GameCube bus clock from the OS-globals area. There is
+# no fixed guest map on the 64-bit host, so rewrite the absolute read into the
+# portable runtime accessor (mirror/runtime/stairfax_os.c).
+
+[[osglobals.read]]
+file = "decomp/src/main/pi_videoinit.c"
+line = 383   # (*(u32*)0x800000f8 >> 2) / 1000  -- bus clock -> timebase ticks/ms
