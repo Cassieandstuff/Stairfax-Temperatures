@@ -62,7 +62,19 @@ does not name). Rule kinds and their known limits are documented in
 A "0 critical" emit clears every *line-visible* hazard; it is not a proof of
 correctness. Prototype pointer-params typed `int` and cross-call pointer flow are
 not line-visible — closing those is type-aware (libclang) work, and the ultimate
-gate is the oracle-vs-mirror behavioral diff (ADR 0001).
+gate is the oracle-vs-mirror behavioral diff.
+
+## Behavioral diff harness
+
+`difftest/` proves the rewriter is behavior-preserving by compiling a case two
+ways (oracle vs. rewriter output) and diffing their output:
+
+```sh
+python3 tools/mirror/difftest/run.py
+```
+
+See `difftest/README.md`. This is the correctness gate the worklist counts cannot
+provide on their own.
 
 Requires only Python 3.11+ (stdlib). If the `clang.cindex` bindings are present,
 P1 uses libclang; otherwise it falls back to the heuristic line scanner, which is

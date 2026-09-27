@@ -1,0 +1,38 @@
+# P2 pointer-width rules for the tri_cursor diff case.
+# `file` is the path the harness passes as the rewrite target: the case source.
+
+# file-scope end-of-buffer pointer stored in int
+[[pointer.promote]]
+symbol = "gTriBufEnd"
+to = "uintptr_t"
+
+# K&R param `cur` (the cursor) — line-pinned so it can't hit an unrelated local
+[[pointer.promote]]
+symbol = "cur"
+to = "uintptr_t"
+line = 19
+
+# locals that hold pointers
+[[pointer.promote]]
+symbol = "buf"
+to = "uintptr_t"
+line = 34
+
+[[pointer.promote]]
+symbol = "end"
+to = "uintptr_t"
+line = 35
+
+# triBuild returns the cursor pointer through an int return type
+[[pointer.ret]]
+func = "triBuild"
+to = "uintptr_t"
+
+# cast sites
+[[pointer.widen]]
+file = "tools/mirror/difftest/cases/tri_cursor/case.c"
+line = 34   # (int)mmAlloc(64, 0, 0)
+
+[[pointer.widen]]
+file = "tools/mirror/difftest/cases/tri_cursor/case.c"
+line = 43   # (unsigned *)(int)buf
