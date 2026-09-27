@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -52,7 +53,85 @@ def _exec(bin_: Path) -> tuple[int, str]:
     return r.returncode, r.stdout
 
 
+def _extract_ranges(text: str, ranges: list) -> str:
+    lines = text.splitlines(keepends=True)
+    out = []
+    for r in ranges:
+        a, b = int(r[0]), int(r[1])
+        out.append("".join(lines[a - 1:b]))
+    return "\n".join(out)
+
+
+def run_extract_case(case: Path, workdir: Path) -> bool:
+    """Real-TU case: extract line ranges from an actual decomp source and from the
+    rewriter's transform of that same source, compile each against the case shim +
+    driver, and diff."""
+    name = case.name
+    spec = tomllib.loads((case / "extract.toml").read_text())
+    source = REPO / spec["source"]
+    ranges = spec["ranges"]
+    rules_dir = REPO / spec.get("rules", "mirror/rules")
+    shim = case / "shim.h"
+    driver = case / "driver.c"
+    if not source.exists():
+        print(f"[{name}] FAIL — source not found: {spec['source']}")
+        return False
+
+    original = source.read_text(errors="replace")
+    rel = spec["source"]
+    rules = passes.load_pointer_rules(rules_dir)
+    mirror_full, applied, unmatched = passes.apply_pointer_rules(original, rules, rel)
+
+    oracle_snip = _extract_ranges(original, ranges)
+    mirror_snip = _extract_ranges(mirror_full, ranges)
+    if oracle_snip == mirror_snip:
+        print(f"[{name}] FAIL — extracted mirror == oracle; rules did not touch "
+              "the extracted ranges (nothing to validate)")
+        return False
+
+    wd = workdir / name
+    for build, snip, extra in (("oracle", oracle_snip, ["-DDIFFTEST_ORACLE_LOWMEM"]),
+                               ("mirror", mirror_snip, [])):
+        bd = wd / build
+        bd.mkdir(parents=True, exist_ok=True)
+        (bd / "snippet.c").write_text(snip + "\n")
+        (bd / "shim.h").write_text(shim.read_text())
+        (bd / "driver.c").write_text(driver.read_text())
+
+    ok, err = _compile(wd / "oracle" / "driver.c", wd / "oracle_bin",
+                       ["-DDIFFTEST_ORACLE_LOWMEM", f"-I{wd/'oracle'}"])
+    if not ok:
+        print(f"[{name}] FAIL — oracle did not compile:\n{err}")
+        return False
+    ok, err = _compile(wd / "mirror" / "driver.c", wd / "mirror_bin", [f"-I{wd/'mirror'}"])
+    if not ok:
+        print(f"[{name}] FAIL — mirror did not compile:\n{err}")
+        return False
+
+    orc, oout = _exec(wd / "oracle_bin")
+    mrc, mout = _exec(wd / "mirror_bin")
+    passed = (orc == mrc == 0) and (oout == mout)
+
+    # negative control: oracle snippet built without the low-mem crutch
+    ctrl_note = ""
+    ok, _ = _compile(wd / "oracle" / "driver.c", wd / "oracle_hi_bin", [f"-I{wd/'oracle'}"])
+    if ok:
+        crc, cout = _exec(wd / "oracle_hi_bin")
+        ctrl_note = ("  (hazard confirmed: untransformed code breaks on a high heap)"
+                     if (crc != 0 or cout != oout)
+                     else "  (control inconclusive: OS gave a low address anyway)")
+
+    tag = "PASS" if passed else "FAIL"
+    print(f"[{name}] {tag}  real TU {spec['source']}  rules_applied={len(applied)}  "
+          f"oracle={oout.strip()!r}  mirror={mout.strip()!r}{ctrl_note}")
+    if not passed:
+        print(f"    oracle rc={orc} mirror rc={mrc}")
+    return passed
+
+
 def run_case(case: Path, workdir: Path) -> bool:
+    if (case / "extract.toml").exists():
+        return run_extract_case(case, workdir)
     name = case.name
     src = case / "case.c"
     rules_path = case / "rules.toml"

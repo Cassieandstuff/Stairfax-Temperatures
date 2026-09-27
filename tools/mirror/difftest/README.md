@@ -28,7 +28,28 @@ diverges or crashes, the hazard the rewriter fixes is real, so the PASS is
 meaningful. (If the OS happens to hand out a low address, the control is reported
 inconclusive rather than failed.)
 
-## Adding a case
+## Two case kinds
+
+**Synthetic** (`case.c` + `rules.toml`): a self-contained unit written to exercise
+specific hazards. Good for pinning down one transform in isolation. Example:
+`tri_cursor`.
+
+**Real-TU extraction** (`extract.toml` + `shim.h` + `driver.c`): pulls verbatim
+line ranges out of an actual `decomp/` source for the oracle, and the same ranges
+out of the P2 rewriter's transform of that file for the mirror. Rules come from the
+real manifest (`mirror/rules/`), so it validates the shipping rules against real
+decomp bytes. The `shim.h` supplies only the handful of types/macros the extracted
+function needs — not the TU's whole header web — and `driver.c` calls it and prints
+a canonical (address-free) result. Example: `track_init` extracts
+`trackInitCollisionBuffers` from `track_dolphin.c`.
+
+`extract.toml` fields: `source` (repo-relative TU), `rules` (rules dir, default
+`mirror/rules`), and `ranges` (list of inclusive `[start, end]` line ranges).
+Line numbers into a frozen vendored decomp are stable; if a re-vendor moves them,
+update the ranges (the harness fails loudly if the extracted mirror equals the
+oracle, i.e. the rules stopped touching the extracted code).
+
+## Adding a synthetic case
 
 Create `cases/<name>/` with:
 - `case.c` — decomp-style code with the hazards, a `run_case()` that prints a
@@ -40,7 +61,9 @@ Build output lands in `mirror/difftest-build/` (gitignored).
 
 ## Scope
 
-This validates pointer-width transforms on compilable, self-contained units. It
-is not yet wired to real engine TUs (they need the full header/HAL surface to
-compile). Extending it to a real TU is the same step as standing up a compilable
-mirror build target — see `docs/adr/0001-native-64bit-portable-mirror.md`.
+Validates pointer-width transforms on compilable units — synthetic cases and
+real-TU function extractions (via `shim.h`). Whole-TU compilation of an engine
+source still needs the full header/HAL surface; that is the same milestone as a
+compilable mirror build target (see `docs/adr/0001-native-64bit-portable-mirror.md`).
+Extraction lets us diff real decomp behavior one function at a time until that
+target exists.
