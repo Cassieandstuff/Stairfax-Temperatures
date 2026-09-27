@@ -1,0 +1,6 @@
+# pi_pathsearch.c pointer-width resolutions.
+
+# `search` is already a PathSearch*; the (int) cast truncates it needlessly.
+[[pointer.widen]]
+file = "decomp/src/main/pi_pathsearch.c"
+line = 342   # PathSearch* q = (PathSearch*)(int)search;

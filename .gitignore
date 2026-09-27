@@ -3,9 +3,11 @@
 /decomp/build/            # decomp asset-extraction + object output (regenerated)
 
 # --- generated portable mirror (tools/mirror pipeline) ---
-# mirror/ is generated from decomp/; only the hand-authored rules manifest is tracked.
+# mirror/ is generated from decomp/; only the hand-authored rules manifest and the
+# mirror build target's CMakeLists are tracked.
 /mirror/*
 !/mirror/rules/
+!/mirror/CMakeLists.txt
 
 # --- copyrighted / user-supplied (never commit) ---
 # Extracted assets derive from the user's retail DOL; regenerate via

@@ -64,6 +64,29 @@ correctness. Prototype pointer-params typed `int` and cross-call pointer flow ar
 not line-visible — closing those is type-aware (libclang) work, and the ultimate
 gate is the oracle-vs-mirror behavioral diff.
 
+## Mirror build target
+
+The native 64-bit target from ADR 0001. `build_manifest.txt` lists the decomp TUs
+that compile 64-bit today; `build_mirror.py` generates their mirror (P2 rewrite)
+into `mirror/src/` and compiles each with clang:
+
+```sh
+python3 tools/mirror/build_mirror.py            # generate + compile all listed TUs
+python3 tools/mirror/build_mirror.py --gen-only # just (re)generate mirror/src
+tools/mirror/probe_compilable.sh                # refresh the compilable candidate set
+```
+
+A listed TU that fails to compile fails the build. The generator owns `mirror/src`
+exclusively (it cleans before regenerating), so the tree always equals the
+manifest. `mirror/CMakeLists.txt` compiles the generated sources as an ordinary
+out-of-tree CMake project (run `--gen-only` first) — separate from the repo-root
+Windows 32-bit `game_engine` build.
+
+The build prints `crit N -> M` per TU: **compiling is not the same as correct.** A
+member can compile with unresolved pointer-width criticals (silent truncation, not
+a compile error) until rules are authored and a diff case proves it. Grow the
+manifest and drive the criticals to zero one TU at a time.
+
 ## Behavioral diff harness
 
 `difftest/` proves the rewriter is behavior-preserving by compiling a case two

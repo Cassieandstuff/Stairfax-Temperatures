@@ -1,0 +1,29 @@
+# Mirror build target membership: decomp TUs that compile 64-bit today.
+# Paths are relative to the decomp root. Grow this as more TUs become
+# mirror-compilable (a new entry that fails to compile fails the build).
+# Regenerate the candidate set with: tools/mirror/probe_compilable.sh
+src/main/acosf.c
+src/main/audio_sfx.c
+src/main/curves.c
+src/main/dll_80136a40.c
+src/main/gameloop_buttonobj.c
+src/main/gametext_measurebyid.c
+src/main/gametext_tail.c
+src/main/math_8029312c.c
+src/main/modellight.c
+src/main/obj_movelib.c
+src/main/pad.c
+src/main/pi_pathsearch.c
+src/main/pi_videoinit.c
+src/main/rcp_dolphin.c
+src/main/render.c
+src/main/shader_dolphin.c
+src/main/textrender.c
+src/main/textrender_boxtex.c
+src/main/textrender_drawbox.c
+src/main/textrender_gettext.c
+src/main/vecmath.c
+src/main/vecmath_vec3.c
+src/main/voxmaps.c
+src/main/zlb.c
+src/main/thp/attractmovie.c
