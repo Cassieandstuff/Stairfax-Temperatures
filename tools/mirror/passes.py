@@ -125,9 +125,11 @@ def _mmalloc_returning_narrow(line: str) -> bool:
 
 
 def scan_pointer_width(path: Path) -> list[Finding]:
-    text = path.read_text(errors="replace")
+    return scan_text_pointer_width(path.read_text(errors="replace"), path.as_posix())
+
+
+def scan_text_pointer_width(text: str, rel: str) -> list[Finding]:
     lines = text.splitlines()
-    rel = path.as_posix()
     findings: list[Finding] = []
 
     # Pass A: collect narrow-typed file-scope names, then decide if they ever
@@ -190,18 +192,18 @@ def scan_pointer_width(path: Path) -> list[Finding]:
             findings.append(Finding(
                 "ptr_int_roundtrip", "critical", rel, i, s,
                 "pointer round-tripped through a 32-bit int; loses the high dword.",
-                "[[pointer.roundtrip]] file=\"%s\" line=%d action=\"widen-or-handle\"" % (rel, i)))
+                "[[pointer.widen]] file=\"%s\" line=%d  # (T*)(int)x -> (T*)(uintptr_t)x" % (rel, i)))
         if _mmalloc_returning_narrow(ln):
             findings.append(Finding(
                 "alloc_stored_narrow", "critical", rel, i, s,
                 "mmAlloc() result stored into a narrow int; the allocation "
                 "pointer is truncated.",
-                "[[pointer.alloc]] file=\"%s\" line=%d action=\"return/accept pointer\"" % (rel, i)))
+                "[[pointer.widen]] file=\"%s\" line=%d  # (int)mmAlloc -> (uintptr_t)mmAlloc" % (rel, i)))
         if _RE_NARROW_TO_PTR.search(ln):
             findings.append(Finding(
                 "narrow_to_ptr", "critical", rel, i, s,
                 "pointer reconstructed from a narrow int value.",
-                "[[pointer.reconstruct]] file=\"%s\" line=%d" % (rel, i)))
+                "[[pointer.widen]] file=\"%s\" line=%d" % (rel, i)))
         for m in _RE_PTR_TO_NARROW.finditer(ln):
             rhs = m.group("rhs")
             # skip obvious numeric/scalar casts (e.g. (int)floorf(...))
@@ -304,6 +306,166 @@ def _table(fs: list[Finding]) -> list[str]:
 
 def findings_as_dicts(findings: list[Finding]) -> list[dict]:
     return [asdict(f) for f in findings]
+
+
+# --- P2: rewriter ------------------------------------------------------------
+#
+# Applies the resolutions in mirror/rules/pointers.toml to a TU's text. Two rule
+# kinds today, both deterministic and idempotent:
+#
+#   [[pointer.promote]] symbol="gFoo" to="uintptr_t"
+#       Widen the declaration of a narrow-int global / K&R param / array element
+#       that actually holds a pointer. uintptr_t keeps integer semantics but is
+#       wide enough to carry a 64-bit host pointer.
+#
+#   [[pointer.widen]]   file="decomp/src/main/foo.c" line=NN
+#       At that line, widen a narrowing cast that touches a pointer:
+#         (T*)(int)x     -> (T*)(uintptr_t)x     (round-trip / reconstruct)
+#         (int)mmAlloc.. -> (uintptr_t)mmAlloc.. (allocation store)
+#
+#   [[pointer.audit]]   file="..." line=NN  ok=true
+#       Reviewed and judged benign; no rewrite, just records intent.
+#
+# Line numbers are stable under these rules (they never add or remove lines), so
+# every rule is applied against the original line index.
+
+import tomllib
+
+_NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
+
+
+def load_pointer_rules(rules_dir: Path) -> dict:
+    """Merge the [pointer.*] tables from every *.toml under rules_dir."""
+    promote, widen, audit, ret = [], [], [], []
+    for toml in sorted(rules_dir.glob("*.toml")):
+        try:
+            data = tomllib.loads(toml.read_text())
+        except Exception as e:  # a malformed manifest should fail loudly
+            raise SystemExit(f"error: {toml}: {e}")
+        p = data.get("pointer", {})
+        promote += p.get("promote", [])
+        widen += p.get("widen", [])
+        audit += p.get("audit", [])
+        ret += p.get("ret", [])
+    return {"promote": promote, "widen": widen, "audit": audit, "ret": ret}
+
+
+def _promote_return(line: str, func: str, to: str) -> str | None:
+    """Widen the return type in a prototype or definition of `func`."""
+    pat = re.compile(rf"^(\s*(?:static\s+)?){_NARROW_TYPE_RE}(\s+{re.escape(func)}\s*\()")
+    new = pat.sub(rf"\1{to}\2", line, count=1)
+    return new if new != line else None
+
+
+def _promote_decl(line: str, symbol: str, to: str) -> str | None:
+    """Replace the narrow type in a declaration of `symbol` with `to`."""
+    pat = re.compile(rf"^(\s*(?:static\s+)?){_NARROW_TYPE_RE}(\s+{re.escape(symbol)}\s*(?:=|;|\[))")
+    new = pat.sub(rf"\1{to}\2", line, count=1)
+    return new if new != line else None
+
+
+def _widen_casts(line: str) -> str | None:
+    """Widen pointer-touching narrowing casts on a single line."""
+    new = re.sub(rf"(\([A-Za-z_]\w*\s*\*\)\s*)\(\s*{_NARROW_TYPE_RE}\s*\)",
+                 r"\1(uintptr_t)", line)                       # (T*)(int)x
+    new = re.sub(rf"\(\s*{_NARROW_TYPE_RE}\s*\)(\s*mmAlloc)",
+                 r"(uintptr_t)\1", new)                        # (int)mmAlloc
+    return new if new != line else None
+
+
+def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str], list[str]]:
+    """Return (new_text, applied_notes, unmatched_notes)."""
+    lines = text.splitlines(keepends=True)
+    applied, unmatched = [], []
+
+    # depth-0 map so symbol-only promotions target file-scope decls and K&R
+    # params (both at brace-depth 0), never an unrelated local of the same name.
+    depth0 = _depth0_lines("".join(lines))
+
+    # promotions: symbol-targeted, optionally pinned to a specific line.
+    for r in rules["promote"]:
+        sym, to = r.get("symbol"), r.get("to", "uintptr_t")
+        pin = r.get("line")
+        if not sym:
+            continue
+        if isinstance(pin, int):
+            if not (1 <= pin <= len(lines)):
+                unmatched.append(f"promote {sym}: line {pin} out of range")
+                continue
+            nl = _promote_decl(lines[pin - 1], sym, to)
+            if nl:
+                lines[pin - 1] = nl
+                applied.append(f"promote {sym} -> {to}  (line {pin})")
+            else:
+                unmatched.append(f"promote {sym}: no narrow decl of '{sym}' at line {pin}")
+            continue
+        hit = False
+        for i, ln in enumerate(lines):
+            if (i + 1) not in depth0:
+                continue
+            nl = _promote_decl(ln, sym, to)
+            if nl:
+                lines[i] = nl
+                applied.append(f"promote {sym} -> {to}  (line {i+1})")
+                hit = True
+                break
+        if not hit:
+            unmatched.append(
+                f"promote {sym}: no file-scope narrow declaration found "
+                "(add line=NN to target a K&R param or local)")
+
+    # return-type widening: function-name-targeted (proto + definition).
+    for r in rules["ret"]:
+        func, to = r.get("func"), r.get("to", "uintptr_t")
+        if not func:
+            continue
+        hits = 0
+        for i, ln in enumerate(lines):
+            nl = _promote_return(ln, func, to)
+            if nl:
+                lines[i] = nl
+                hits += 1
+        if hits:
+            applied.append(f"return {func} -> {to}  ({hits} site(s))")
+        else:
+            unmatched.append(f"return {func}: no narrow return type found")
+
+    # widen: (file,line)-targeted; only for rules naming this TU
+    for r in rules["widen"]:
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n = r.get("line")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)):
+            unmatched.append(f"widen {rel}:{r.get('line')}: line out of range")
+            continue
+        nl = _widen_casts(lines[n - 1])
+        if nl:
+            lines[n - 1] = nl
+            applied.append(f"widen cast at line {n}")
+        else:
+            unmatched.append(f"widen {rel}:{n}: no narrowing pointer cast to widen")
+
+    return "".join(lines), applied, unmatched
+
+
+def _norm(p: str) -> str:
+    return p.replace("\\", "/").lstrip("./")
+
+
+def _depth0_lines(text: str) -> set[int]:
+    """1-based line numbers that sit at brace-depth 0 (file scope or K&R param
+    block), computed on comment/string-stripped code."""
+    out: set[int] = set()
+    depth = 0
+    in_block = False
+    for i, ln in enumerate(text.splitlines(), 1):
+        code, in_block = _strip_noncode(ln, in_block)
+        if depth == 0 and "{" not in code:
+            out.add(i)
+        depth += code.count("{") - code.count("}")
+        if depth < 0:
+            depth = 0
+    return out
 
 
 def render_tree_report_md(root: str, per_file: list[tuple[str, list["Finding"]]],

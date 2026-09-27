@@ -22,7 +22,7 @@ mirror/
 |------|------|--------|
 | P0 | vendor + apply the msvc-compat baseline patch | identity copy (patch hook TODO) |
 | P1 | parse (libclang if importable, else heuristic) | fallback active |
-| P2 | pointer-width worklist (find 32-bit ↔ pointer hazards) | **implemented** |
+| P2 | pointer-width: worklist (find) **and** rewriter (fix, rule-driven) | **implemented** |
 | P3 | endian: annotate on-disc structs for `beFix*` | TODO |
 | P4 | arch intrinsics → portable / HAL | TODO |
 | P5 | rewrite `0xCC008000` FIFO stores → submit call | TODO |
@@ -42,9 +42,27 @@ python3 tools/mirror/mirror_build.py --worklist decomp/src/main/track_dolphin.c 
 python3 tools/mirror/mirror_build.py --scan-tree decomp/src/main \
         --out docs/mirror/scan-decomp-main.md
 
-# identity emit through P0..P6 (skeleton):
+# emit the portable mirror TU: applies the mirror/rules/ pointer rules (P2 rewrite)
+# and reports critical findings before -> after:
 python3 tools/mirror/mirror_build.py --emit decomp/src/main/track_dolphin.c
 ```
+
+## The P2 rewriter
+
+`--emit` reads `mirror/rules/pointers.toml`, applies the pointer-width rules, and
+writes the transformed TU to `mirror/src/`. It is **idempotent** (re-emitting
+yields byte-identical output) and **rule-driven** (it changes nothing the manifest
+does not name). Rule kinds and their known limits are documented in
+`mirror/rules/pointers.toml`. The loop:
+
+1. `--worklist <tu>` → read the criticals.
+2. Add a `promote` / `ret` / `widen` / `audit` rule per critical to `pointers.toml`.
+3. `--emit <tu>` → see `critical … N -> M`; iterate until 0.
+
+A "0 critical" emit clears every *line-visible* hazard; it is not a proof of
+correctness. Prototype pointer-params typed `int` and cross-call pointer flow are
+not line-visible — closing those is type-aware (libclang) work, and the ultimate
+gate is the oracle-vs-mirror behavioral diff (ADR 0001).
 
 Requires only Python 3.11+ (stdlib). If the `clang.cindex` bindings are present,
 P1 uses libclang; otherwise it falls back to the heuristic line scanner, which is

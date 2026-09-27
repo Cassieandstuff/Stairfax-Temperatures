@@ -1,35 +1,86 @@
 # P2 pointer-width resolutions.
 #
-# Consumed by tools/mirror/mirror_build.py (pass P2). Each entry resolves one or
-# more findings from a worklist. Rule shapes (enforcement lands with the P2
-# rewriter; for now they document intent and clear findings by (file,line)).
+# Consumed and APPLIED by tools/mirror/mirror_build.py --emit (pass P2). Four rule
+# kinds, all deterministic and idempotent:
 #
-#   [[pointer.promote]]    symbol="gFoo" to="uintptr_t"
-#       Widen a file-scope narrow-int variable that actually stores a pointer.
+#   [[pointer.promote]]  symbol="gFoo" to="uintptr_t"  [line=NN]
+#       Widen the declaration of a narrow-int variable that holds a pointer.
+#       Symbol-only targets file-scope decls and K&R params (brace-depth 0), so a
+#       common local name is never hit by accident. Add line=NN to pin a specific
+#       declaration (needed for a local, or an ambiguous name).
 #
-#   [[pointer.alloc]]      file="..." line=NN
-#       An allocator result stored into a narrow int; storage becomes pointer/uintptr_t.
+#   [[pointer.ret]]      func="fn" to="uintptr_t"
+#       Widen a function's return type (prototype + definition) when it returns a
+#       pointer through a narrow int. The line scanner cannot see this; name it.
 #
-#   [[pointer.roundtrip]]  file="..." line=NN action="widen"
-#       A pointer round-tripped through a 32-bit int; carry full width.
+#   [[pointer.widen]]    file="decomp/src/main/foo.c" line=NN
+#       Widen a narrowing cast that touches a pointer at that line:
+#         (T*)(int)x     -> (T*)(uintptr_t)x
+#         (int)mmAlloc.. -> (uintptr_t)mmAlloc..
 #
-#   [[pointer.reconstruct]] file="..." line=NN
-#       A pointer rebuilt from a narrow value; source must already be full-width.
+#   [[pointer.audit]]    file="..." line=NN ok=true note="compare-only"
+#       A ptr->narrow cast reviewed and judged benign (records intent; no rewrite).
 #
-#   [[pointer.audit]]      file="..." line=NN ok=true note="compare-only"
-#       A ptr->narrow cast reviewed and judged benign (no rewrite).
+# KNOWN LIMITATION of the heuristic scanner: it does not detect pointer-typed
+# prototype parameters declared `int`, nor pointer values propagated across a call
+# boundary. Those need type-aware analysis (libclang, P1) and, ultimately, the
+# oracle-vs-mirror behavioral diff harness to *prove* a TU is correct. A "0
+# critical" worklist means "no line-visible hazard left", not "proven sound".
 
 # --- track_dolphin.c (pilot) -------------------------------------------------
-# Stubs seeded from the first P2 run. Uncomment/confirm as each is resolved; the
-# two collision scratch pools are the clearest criticals (declared `int`, filled
-# from mmAlloc, later dereferenced as addresses).
+# Resolutions for the 12 criticals in the first P2 run over the collision pilot.
+# The three collision buffers are declared narrow but hold pointers; the cast
+# sites feed/consume those same pointers.
 
-# [[pointer.promote]]
-# symbol = "gIntersectLinePool"
-# to = "uintptr_t"
-# note = "scratch line pool; (int)mmAlloc @ trackInitCollisionBuffers, deref'd as (u8*)"
+[[pointer.promote]]
+symbol = "gIntersectLinePool"
+to = "uintptr_t"
+note = "scratch line pool; (int)mmAlloc @ trackInitCollisionBuffers, deref'd as (u8*)"
 
-# [[pointer.promote]]
-# symbol = "gIntersectLineIndexTable"
-# to = "uintptr_t"
-# note = "line index table; same pattern as gIntersectLinePool"
+[[pointer.promote]]
+symbol = "gIntersectLineIndexTable"
+to = "uintptr_t"
+note = "line index table; same pattern as gIntersectLinePool"
+
+[[pointer.promote]]
+symbol = "gTrackTriangleBufferEnd"
+to = "uintptr_t"
+note = "end-of-buffer pointer compared against (u32)cur"
+
+[[pointer.promote]]
+symbol = "cur"
+to = "uintptr_t"
+note = "K&R int param in trackBuildBlockTriangles; the triangle-buffer cursor"
+
+# cast sites: (T*)(int)x and (int)mmAlloc
+[[pointer.widen]]
+file = "decomp/src/main/track_dolphin.c"
+line = 1055
+note = "(GameObject*)(int)target"
+
+[[pointer.widen]]
+file = "decomp/src/main/track_dolphin.c"
+line = 1059
+note = "(GameObject*)(int)target"
+
+[[pointer.widen]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3187
+note = "(f32*)(u32)verts"
+
+[[pointer.widen]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3539
+note = "gIntersectLinePool = (int)mmAlloc(...)"
+
+[[pointer.widen]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3541
+note = "gIntersectLineIndexTable = (int)mmAlloc(...)"
+
+# trackBuildBlockTriangles returns the triangle-buffer cursor (a pointer) through
+# an int return type — not visible to the line scanner. Widen proto + definition.
+[[pointer.ret]]
+func = "trackBuildBlockTriangles"
+to = "uintptr_t"
+note = "returns `cur` (buffer pointer); int return type truncates on 64-bit"
