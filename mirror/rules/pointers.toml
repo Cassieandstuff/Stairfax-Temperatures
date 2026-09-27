@@ -1,0 +1,35 @@
+# P2 pointer-width resolutions.
+#
+# Consumed by tools/mirror/mirror_build.py (pass P2). Each entry resolves one or
+# more findings from a worklist. Rule shapes (enforcement lands with the P2
+# rewriter; for now they document intent and clear findings by (file,line)).
+#
+#   [[pointer.promote]]    symbol="gFoo" to="uintptr_t"
+#       Widen a file-scope narrow-int variable that actually stores a pointer.
+#
+#   [[pointer.alloc]]      file="..." line=NN
+#       An allocator result stored into a narrow int; storage becomes pointer/uintptr_t.
+#
+#   [[pointer.roundtrip]]  file="..." line=NN action="widen"
+#       A pointer round-tripped through a 32-bit int; carry full width.
+#
+#   [[pointer.reconstruct]] file="..." line=NN
+#       A pointer rebuilt from a narrow value; source must already be full-width.
+#
+#   [[pointer.audit]]      file="..." line=NN ok=true note="compare-only"
+#       A ptr->narrow cast reviewed and judged benign (no rewrite).
+
+# --- track_dolphin.c (pilot) -------------------------------------------------
+# Stubs seeded from the first P2 run. Uncomment/confirm as each is resolved; the
+# two collision scratch pools are the clearest criticals (declared `int`, filled
+# from mmAlloc, later dereferenced as addresses).
+
+# [[pointer.promote]]
+# symbol = "gIntersectLinePool"
+# to = "uintptr_t"
+# note = "scratch line pool; (int)mmAlloc @ trackInitCollisionBuffers, deref'd as (u8*)"
+
+# [[pointer.promote]]
+# symbol = "gIntersectLineIndexTable"
+# to = "uintptr_t"
+# note = "line index table; same pattern as gIntersectLinePool"

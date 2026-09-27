@@ -2,6 +2,11 @@
 /build/
 /decomp/build/            # decomp asset-extraction + object output (regenerated)
 
+# --- generated portable mirror (tools/mirror pipeline) ---
+# mirror/ is generated from decomp/; only the hand-authored rules manifest is tracked.
+/mirror/*
+!/mirror/rules/
+
 # --- copyrighted / user-supplied (never commit) ---
 # Extracted assets derive from the user's retail DOL; regenerate via
 # `cd decomp && python3 configure.py && ninja`, or copy your own .inc in.
@@ -23,3 +28,7 @@ orig/
 *.pdb
 *.ilk
 Thumbs.db
+
+# --- python caches ---
+__pycache__/
+*.pyc

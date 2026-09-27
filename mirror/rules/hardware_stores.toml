@@ -1,0 +1,17 @@
+# P5 hardware-store rewrites.
+#
+# The non-C++-clean render TUs submit geometry via direct stores to GXWGFifo
+# (0xCC008000). On the 32-bit Win32 build a vectored exception handler
+# (src/hal/wgpipe_trap.c) traps those stores. VEH does not exist on Linux/Android,
+# and since we are allowed to transform the mirror, P5 rewrites the stores into a
+# direct FIFO-submit call instead — deleting the trap entirely.
+#
+# Rule shape (enforcement lands with the P5 pass):
+#
+#   [[fifo.store]]  address="0xCC008000" submit="gx_fifo_submit_u32"
+#       Any store to `address` becomes a call to `submit` with the stored value.
+
+[[fifo.store]]
+address = "0xCC008000"
+submit = "gx_fifo_submit_u32"
+note = "WGPIPE MMIO; replaces the Win32 VEH trap for portability"

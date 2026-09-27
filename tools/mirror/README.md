@@ -1,0 +1,47 @@
+# tools/mirror — decomp → portable-mirror transform pipeline
+
+Turns the frozen `decomp/` (byte-matching oracle) into a portable, native-64-bit
+`mirror/` (the ship build target). Architecture and rationale live in
+[`docs/adr/0001-native-64bit-portable-mirror.md`](../../docs/adr/0001-native-64bit-portable-mirror.md).
+
+## Layout
+
+```
+tools/mirror/
+  mirror_build.py   orchestrator + CLI
+  passes.py         the passes (P0..P6); P2 pointer-width is implemented
+mirror/
+  rules/            hand-authored transform manifest (TRACKED)
+  src/              generated portable C           (gitignored)
+  worklists/        generated P2 sidecar JSON       (gitignored)
+```
+
+## Passes
+
+| Pass | Does | Status |
+|------|------|--------|
+| P0 | vendor + apply the msvc-compat baseline patch | identity copy (patch hook TODO) |
+| P1 | parse (libclang if importable, else heuristic) | fallback active |
+| P2 | pointer-width worklist (find 32-bit ↔ pointer hazards) | **implemented** |
+| P3 | endian: annotate on-disc structs for `beFix*` | TODO |
+| P4 | arch intrinsics → portable / HAL | TODO |
+| P5 | rewrite `0xCC008000` FIFO stores → submit call | TODO |
+| P6 | emit formatted C + provenance header | identity write-through |
+
+## Usage
+
+```sh
+# P2 worklist for the collision pilot TU (stdout):
+python3 tools/mirror/mirror_build.py --worklist decomp/src/main/track_dolphin.c
+
+# ...written to a tracked snapshot:
+python3 tools/mirror/mirror_build.py --worklist decomp/src/main/track_dolphin.c \
+        --out docs/mirror/worklist-track_dolphin.md
+
+# identity emit through P0..P6 (skeleton):
+python3 tools/mirror/mirror_build.py --emit decomp/src/main/track_dolphin.c
+```
+
+Requires only Python 3.11+ (stdlib). If the `clang.cindex` bindings are present,
+P1 uses libclang; otherwise it falls back to the heuristic line scanner, which is
+what the skeleton P2 uses today. No third-party packages.
