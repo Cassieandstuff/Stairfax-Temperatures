@@ -637,6 +637,20 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         if not isinstance(n, int) or not (1 <= n <= len(lines)):
             unmatched.append(f"widen_cast {rel}:{n}: line out of range")
             continue
+        if r.get("all"):
+            # explicit opt-in: every `(from)` cast on lines line..line_end
+            end = r.get("line_end", n)
+            pat = re.compile(rf"\(\s*{_type_pat(frm)}\s*\)")
+            total = 0
+            for ln in range(n, min(end, len(lines)) + 1):
+                new_ln, c = pat.subn(f"({to})", lines[ln - 1])
+                lines[ln - 1] = new_ln
+                total += c
+            if total:
+                applied.append(f"widen_cast ({frm})->({to}) x{total} on lines {n}-{end}")
+            else:
+                unmatched.append(f"widen_cast {rel}:{n}-{end} all ({frm}): no such cast")
+            continue
         nl, cnt = _widen_cast(lines[n - 1], frm, to, r.get("occurrence"))
         if nl:
             lines[n - 1] = nl

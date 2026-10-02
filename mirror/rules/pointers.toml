@@ -25,6 +25,7 @@
 #         (int)mmAlloc.. -> (uintptr_t)mmAlloc..
 #
 #   [[pointer.widen_cast]] file="..." line=NN from="u32" to="uintptr_t" [occurrence=N]
+#       ... or opt-in range form: line_end=MM all=true (every such cast on lines NN..MM).
 #       Widen one bare `(from)` cast at a line, including inside a #define body
 #       (e.g. a pointer-packing conversion macro). Refuses if the line has more
 #       than one such cast unless occurrence= picks one.

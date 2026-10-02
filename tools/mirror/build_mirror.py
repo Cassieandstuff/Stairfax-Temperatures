@@ -69,7 +69,7 @@ def gen_one(rel: str, rules: dict) -> tuple[Path, int, int]:
     before = sum(1 for f in passes.scan_text_pointer_width(text, tu_rel)
                  if f.severity == "critical")
     new_text, applied, _ = passes.apply_pointer_rules(text, rules, tu_rel)
-    if applied and "uintptr_t" in new_text and "stdint.h" not in new_text:
+    if applied and "uintptr_t" in new_text:      # see gen_headers: always prepend
         new_text = "#include <stdint.h>\n" + new_text
     after = sum(1 for f in passes.scan_text_pointer_width(new_text, tu_rel)
                 if f.severity == "critical")
@@ -98,7 +98,10 @@ def gen_headers(rules: dict) -> list[str]:
         new_text, applied, unmatched = passes.apply_pointer_rules(text, rules, f)
         if unmatched:
             raise SystemExit(f"error: header rules for {f} did not match: {unmatched}")
-        if "uintptr_t" in new_text and "stdint.h" not in new_text:
+        # Always prepend when we introduce these types: an existing #include <stdint.h>
+        # may sit in a disabled branch (types.h's TARGET_PC block). Duplicates are
+        # harmless (include-guarded).
+        if applied and any(t in new_text for t in ("uintptr_t", "int32_t")):
             new_text = "#include <stdint.h>\n" + new_text
         rel = f[len("decomp/include/"):]
         dst = MIRROR / "include" / rel
