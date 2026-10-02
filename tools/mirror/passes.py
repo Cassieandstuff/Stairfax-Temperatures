@@ -624,6 +624,11 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
     return text, applied, unmatched
 
 
+def rule_files(rules: dict) -> set[str]:
+    """Every file any rule names (normalized). Used to find headers to emit."""
+    return {_norm(r["file"]) for rs in rules.values() for r in rs if r.get("file")}
+
+
 def _rule_targets(r: dict, rel: str) -> bool:
     """A rule applies to `rel` when it names that file. Rules without `file` are
     rejected: an unscoped symbol rule could silently rewrite a same-named variable

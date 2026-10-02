@@ -1,0 +1,65 @@
+# gameTextDrawBox's id-or-pointer `boxId` parameter.
+#
+# gameTextDrawBox(def, boxId, box) is overloaded: with def == NULL, boxId is not
+# an id but the subtitle STRING itself (gametext.c gameTextRenderStrs passes
+# `(int)str`). The style-3 (subtitle) path then null-tests `(u32)boxId != 0` and
+# rebuilds `(char*)boxId` for gameTextMeasureStringBounds. On a 64-bit host every
+# link truncates, so all of them widen together:
+#   caller cast (gametext.c) -> public prototype (textrender_api.h) -> definition
+#   -> both null tests -> the static gameTextDrawBoxEdges it forwards boxId to.
+# The header rule is emitted to mirror/include/ by build_mirror.py, which shadows
+# the decomp original; without it the retyped definition would conflict with the
+# untransformed prototype.
+
+# --- public prototype -----------------------------------------------------------
+[[pointer.retype]]
+file = "decomp/include/main/textrender_api.h"
+line = 72    # void gameTextDrawBox(struct GameTextDef* def, int box, struct GameTextBox* slot);
+symbol = "box"
+from = "int"
+to = "uintptr_t"
+
+# --- definition + forwarded static helper ---------------------------------------
+[[pointer.retype]]
+file = "decomp/src/main/textrender_drawbox.c"
+line = 217   # void gameTextDrawBox(struct GameTextDef* strPtr, int boxId, GameTextBox* box) {
+symbol = "boxId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/textrender_drawbox.c"
+line = 95    # static void gameTextDrawBoxEdges(u16* strPtr, int boxId, u8* box);  (prototype)
+symbol = "boxId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/textrender_drawbox.c"
+line = 364   # static void gameTextDrawBoxEdges(u16* strPtr, int boxId, u8* box) {  (unused in body)
+symbol = "boxId"
+from = "int"
+to = "uintptr_t"
+
+# --- null tests: (u32) would only test the low half of a 64-bit pointer --------
+[[pointer.widen_cast]]
+file = "decomp/src/main/textrender_drawbox.c"
+line = 289   # case 6: } else if ((u32)boxId != 0) {   (unreachable: case 6 returns on NULL def)
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/textrender_drawbox.c"
+line = 318   # case 3 (subtitle): } else if ((u32)boxId != 0) {   -- the live path
+from = "u32"
+to = "uintptr_t"
+
+# --- the caller that packs the string into the int ------------------------------
+# gametext.c is not in the 64-bit build set yet (it doesn't compile standalone);
+# this rule is ready for when it joins. The scanner does not see this site: it
+# doesn't follow values across calls.
+[[pointer.widen_cast]]
+file = "decomp/src/main/gametext.c"
+line = 172   # gameTextDrawBox(NULL, (int)str, slot);   str is char*
+from = "int"
+to = "uintptr_t"

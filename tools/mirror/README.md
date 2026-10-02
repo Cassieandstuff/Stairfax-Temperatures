@@ -13,6 +13,7 @@ tools/mirror/
 mirror/
   rules/            hand-authored transform manifest (TRACKED)
   src/              generated portable C           (gitignored)
+  include/          generated transformed headers  (gitignored)
   worklists/        generated P2 sidecar JSON       (gitignored)
 ```
 
@@ -84,9 +85,14 @@ python3 tools/mirror/build_mirror.py --gen-only # just (re)generate mirror/src
 tools/mirror/probe_compilable.sh                # refresh the compilable candidate set
 ```
 
+Headers are transformed too: any `decomp/include/...` header a rule names is
+rewritten into `mirror/include/`, which is first on the include path so it shadows
+the decomp original for every TU (a widened prototype must match its widened
+definition, or the build fails with conflicting types).
+
 A listed TU that fails to compile fails the build. The generator owns `mirror/src`
-exclusively (it cleans before regenerating), so the tree always equals the
-manifest. `mirror/CMakeLists.txt` compiles the generated sources as an ordinary
+and `mirror/include` exclusively (it cleans both before regenerating), so they
+always equal the manifest and the rules. `mirror/CMakeLists.txt` compiles the generated sources as an ordinary
 out-of-tree CMake project (run `--gen-only` first) — separate from the repo-root
 Windows 32-bit `game_engine` build.
 

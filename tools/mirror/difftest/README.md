@@ -44,7 +44,8 @@ a canonical (address-free) result. Examples: `track_init` extracts
 `trackInitCollisionBuffers` from `track_dolphin.c`; `render_packed` extracts
 `modelRenderInterpolateRootTransform` and its packed-address helpers from
 `render.c` and drives two synthetic animations that together exercise both
-bitstream refill paths.
+bitstream refill paths; `drawbox_str` extracts `gameTextDrawBox` and passes a
+subtitle string through its id-or-pointer `boxId` parameter.
 
 `extract.toml` fields: `source` (repo-relative TU), `rules` (rules dir, default
 `mirror/rules`), and `ranges` (list of inclusive `[start, end]` line ranges).
