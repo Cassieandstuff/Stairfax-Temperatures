@@ -22,6 +22,7 @@ the engine becomes mirror-compilable.
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -37,9 +38,18 @@ MIRROR = REPO / "mirror"
 MANIFEST = HERE / "build_manifest.txt"
 CC = "clang"
 # mirror/include first: transformed headers must shadow their decomp originals.
-INCLUDES = ["-Imirror/include", "-Idecomp/include", "-Idecomp", "-Idecomp/src",
-            "-Imirror/runtime"]
-CFLAGS = ["-m64", "-c", "-w", "-O1"]
+# Include order: transformed headers, then the port's SDK shadow headers (repo-root
+# include/: host replacements for PPC-asm SDK headers such as OSFastCast.h, the same
+# shadows the 32-bit build puts first), then the decomp tree. TARGET_PC is NOT
+# defined: the decomp's TARGET_PC path is MSVC-specific (it breaks bool off Windows).
+INCLUDES = ["-Imirror/include", "-Iinclude", "-Idecomp/include", "-Idecomp",
+            "-Idecomp/src", "-Imirror/runtime"]
+# -fdeclspec: accept MWCC __declspec(weak) / __declspec(section ...).
+# Implicit function declarations are allowed (MWCC accepted them) but every one is
+# checked by implicit_decl_hazards(): an implicitly declared callee returns int, so
+# one that really returns a pointer would truncate on 64-bit and fails the build.
+CFLAGS = ["-m64", "-c", "-O1", "-fdeclspec", "-Wno-everything",
+          "-Wimplicit-function-declaration", "-Wno-error=implicit-function-declaration"]
 
 
 def read_manifest() -> list[str]:
@@ -99,10 +109,40 @@ def gen_headers(rules: dict) -> list[str]:
     return out
 
 
+_RE_IMPLICIT = re.compile(r"call to undeclared (?:library )?function '(\w+)'")
+_PTR_RET_CACHE: dict[str, list[str]] = {}
+
+
+def _pointer_returning_decls(name: str) -> list[str]:
+    """Declarations anywhere in the decomp/port headers+sources that give `name` a
+    pointer return type, e.g. `void* name(` / `GameObject *name(`."""
+    if name not in _PTR_RET_CACHE:
+        r = subprocess.run(["grep", "-rnE", "--include=*.h", "--include=*.c",
+                            rf"^[A-Za-z_][\w ]*\*+\s*{name}\s*\(",
+                            "decomp/include", "decomp/src", "include"],
+                           capture_output=True, text=True, cwd=REPO)
+        _PTR_RET_CACHE[name] = [l for l in r.stdout.splitlines() if l][:3]
+    return _PTR_RET_CACHE[name]
+
+
+def implicit_decl_hazards(stderr: str) -> tuple[list[str], list[str]]:
+    """Split implicitly-declared callees into (pointer-returning hazards, benign)."""
+    hazards, benign = [], []
+    for name in sorted(set(_RE_IMPLICIT.findall(stderr))):
+        decls = _pointer_returning_decls(name)
+        (hazards if decls else benign).append(
+            f"{name}  <- {decls[0]}" if decls else name)
+    return hazards, benign
+
+
 def compile_one(mirror_path: Path) -> tuple[bool, str]:
     r = subprocess.run([CC, *CFLAGS, *INCLUDES, str(mirror_path),
                         "-o", str(mirror_path.with_suffix(".o"))],
                        capture_output=True, text=True, cwd=REPO)
+    hazards, _ = implicit_decl_hazards(r.stderr)
+    if r.returncode == 0 and hazards:
+        return False, ("implicitly declared function(s) that return a pointer "
+                       "(would truncate to int on 64-bit):\n  " + "\n  ".join(hazards))
     return r.returncode == 0, r.stderr
 
 

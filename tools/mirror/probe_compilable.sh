@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
-# Probe which decomp TUs compile 64-bit standalone with the decomp include tree.
-# Prints the passing set (as build_manifest.txt entries) and a summary to stderr.
-# Use it to refresh tools/mirror/build_manifest.txt as headers evolve.
+# Probe which decomp TUs compile 64-bit with the mirror's include order + flags
+# (see build_mirror.py), including the implicit-declaration pointer-return gate.
+# Prints passing TUs as build_manifest.txt entries; summary to stderr.
 set -u
 cd "$(dirname "$0")/../.." || exit 1
-INC=(-Idecomp/include -Idecomp -Idecomp/src)
-tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
-ok=0; fail=0
-while IFS= read -r f; do
-  rel="${f#decomp/}"
-  if clang -m64 -c -w "${INC[@]}" "$f" -o "$tmp/probe.o" 2>/dev/null; then
-    echo "$rel"; ok=$((ok+1))
-  else
-    fail=$((fail+1))
-  fi
-done < <(find decomp/src/main -name '*.c' | sort)
-echo "probe: $ok compile, $fail fail" >&2
+python3 - <<'EOF'
+import sys, subprocess, tempfile
+from pathlib import Path
+sys.path.insert(0, "tools/mirror")
+import build_mirror as bm
+ok = fail = 0
+with tempfile.TemporaryDirectory() as td:
+    for f in sorted(Path("decomp/src/main").rglob("*.c")):
+        r = subprocess.run([bm.CC, *bm.CFLAGS, *[i for i in bm.INCLUDES if i != "-Imirror/include"],
+                            str(f), "-o", f"{td}/p.o"], capture_output=True, text=True)
+        hz, _ = bm.implicit_decl_hazards(r.stderr)
+        if r.returncode == 0 and not hz:
+            print(f.relative_to("decomp")); ok += 1
+        else:
+            fail += 1
+print(f"probe: {ok} compile, {fail} fail", file=sys.stderr)
+EOF

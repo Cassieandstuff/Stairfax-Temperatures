@@ -107,3 +107,12 @@ file = "decomp/src/main/track_dolphin.c"
 func = "trackBuildBlockTriangles"
 to = "uintptr_t"
 note = "returns `cur` (buffer pointer); int return type truncates on 64-bit"
+
+# header extern for the promoted pool (found once track_dolphin.c joined the build
+# set: the widened definition conflicted with this `extern int`).
+[[pointer.retype]]
+file = "decomp/include/main/track_dolphin_api.h"
+line = 82    # extern int gIntersectLinePool;
+symbol = "gIntersectLinePool"
+from = "int"
+to = "uintptr_t"
