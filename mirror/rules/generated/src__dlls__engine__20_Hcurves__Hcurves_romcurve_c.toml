@@ -9,6 +9,34 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 362
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 392
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 524
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 553
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 809
 symbol = "curveType"
 from = "int"
@@ -26,6 +54,13 @@ file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1030
 symbol = "queueIndices"
 from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1242
+symbol = "candidateIds"
+from = "u32"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -51,8 +86,22 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1429
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1483
 symbol = "adjacentWindow"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1484
+symbol = "candidates"
 from = "int"
 to = "uintptr_t"
 
