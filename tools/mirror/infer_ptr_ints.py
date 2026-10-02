@@ -60,6 +60,13 @@ def canon(t):
     return t.get_canonical()
 
 
+# Rounding helpers used on both pointers and sizes (mm.h). Treated
+# context-sensitively: one pointer caller (model.c `roundUpTo32((int)out + 0x64)`)
+# must not mark every size rounded through them -- that flooded mm.c's allocator
+# sizes (HeapItem.size, bestSize, largest...) as pointer-carrying.
+POLYMORPHIC = {"alignUp2", "roundUpTo4", "roundUpTo8", "roundUpTo16", "roundUpTo32"}
+
+
 def is_narrow_int(t) -> bool:
     c = canon(t)
     if c.kind in (T.CONSTANTARRAY, T.INCOMPLETEARRAY):     # u32 tbl[N]: element slot
@@ -176,6 +183,12 @@ class Analyzer:
             return set()
         if k == K.CALL_EXPR:
             d = e.referenced
+            if d is not None and d.kind == K.FUNCTION_DECL and d.spelling in POLYMORPHIC:
+                # value-polymorphic helper: this call's result carries a pointer
+                # iff this call's argument does (the helper itself still widens
+                # through its param/ret slots, but its ret doesn't flow back out)
+                args = list(e.get_arguments())
+                return self.sources(args[0]) if args else set()
             if d is not None and d.kind == K.FUNCTION_DECL and is_narrow_int(d.result_type):
                 return {f"ret:{d.get_usr()}"}
             return set()
