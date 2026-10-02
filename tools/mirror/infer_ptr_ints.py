@@ -50,7 +50,9 @@ import passes  # noqa: E402
 NARROW_INT = {T.INT, T.UINT, T.LONG, T.ULONG}          # 32-bit on the GameCube
 PTRISH = {T.POINTER, T.INCOMPLETEARRAY, T.CONSTANTARRAY, T.FUNCTIONPROTO,
           T.FUNCTIONNOPROTO}
-INC = [i for i in bm.INCLUDES if i != "-Imirror/include"]
+# Parse exactly as the mirror compiles: transformed headers first (u32/s32 pinned
+# to 32 bits by mirror/rules/types.toml; run build_mirror.py --gen-only first).
+INC = list(bm.INCLUDES)
 ARGS = ["-m64", "-fdeclspec", "-Wno-everything", "-x", "c"] + INC
 
 
@@ -60,6 +62,8 @@ def canon(t):
 
 def is_narrow_int(t) -> bool:
     c = canon(t)
+    if c.kind in (T.CONSTANTARRAY, T.INCOMPLETEARRAY):     # u32 tbl[N]: element slot
+        c = c.element_type.get_canonical()
     return c.kind in NARROW_INT and c.get_size() == 4
 
 
@@ -118,6 +122,7 @@ class Analyzer:
     def __init__(self):
         self.g = Graph()
         self.index = ci.Index.create()
+        self.subs = {}                    # id -> `a - b` BinaryOperator cursor
 
     # --- expression value sources -------------------------------------------
     def sources(self, e) -> set[str]:
@@ -168,7 +173,10 @@ class Analyzer:
             if op == "-":
                 # p - n stays a pointer; p - q is a difference. Decided at solve
                 # time: record as a guarded flow.
-                return {f"SUB:{id(e)}"} if (a and b) else (a | b if not b else a)
+                if a and b:
+                    self.subs[id(e)] = kids[0]    # p - n: pointer-ness from the left
+                    return {f"SUB:{id(e)}"}
+                return a
             if op == ",":
                 return b
             return set()
@@ -204,13 +212,14 @@ class Analyzer:
             if s == "SEED":
                 self.g.seeds.add(dst_slot)
             elif s.startswith("SUB:"):
-                # conservative: treat p - n as pointer-preserving only from its
-                # left operand
-                kids = list(expr.get_children()) if expr.kind == K.BINARY_OPERATOR else []
-                for s2 in (self.sources(kids[0]) if kids else set()):
+                # `p - n` stays a pointer, `p - q` is a difference. We can't decide
+                # which before solving, so take pointer-ness from the left operand
+                # only (an offset subtracted from a pointer never gets widened).
+                left = self.subs.get(int(s[4:]))
+                for s2 in (self.sources(left) if left is not None else set()):
                     if s2 == "SEED":
                         self.g.seeds.add(dst_slot)
-                    else:
+                    elif not s2.startswith("SUB:"):
                         self.g.flow(s2, dst_slot)
             else:
                 self.g.flow(s, dst_slot)
@@ -236,7 +245,12 @@ class Analyzer:
                 self.g.decls[s].add((f, c.location.line, c.spelling, c.type.spelling, "var"))
             kids = [ch for ch in c.get_children() if ch.kind not in (K.TYPE_REF,)]
             if kids:
-                self.sink(s, kids[-1])
+                init = kids[-1]
+                if init.kind == K.INIT_LIST_EXPR:      # u32 tbl[] = {(u32)p, ...}
+                    for el in init.get_children():
+                        self.sink(s, el)
+                else:
+                    self.sink(s, init)
         elif k == K.FIELD_DECL and is_narrow_int(c.type):
             par = c.semantic_parent
             self.g.fields[f"field:{c.get_usr()}"] = (

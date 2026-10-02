@@ -8,11 +8,12 @@ python3 - <<'EOF'
 import sys, subprocess, tempfile
 from pathlib import Path
 sys.path.insert(0, "tools/mirror")
-import build_mirror as bm
+import build_mirror as bm, passes
+bm.gen_headers(passes.load_pointer_rules(bm.MIRROR / "rules"))   # complete mirror/include
 ok = fail = 0
 with tempfile.TemporaryDirectory() as td:
     for f in sorted(Path("decomp/src/main").rglob("*.c")):
-        r = subprocess.run([bm.CC, *bm.CFLAGS, *[i for i in bm.INCLUDES if i != "-Imirror/include"],
+        r = subprocess.run([bm.CC, *bm.CFLAGS, *bm.INCLUDES,
                             str(f), "-o", f"{td}/p.o"], capture_output=True, text=True)
         hz, _ = bm.implicit_decl_hazards(r.stderr)
         if r.returncode == 0 and not hz:
