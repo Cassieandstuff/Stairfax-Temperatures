@@ -34,6 +34,36 @@ today, and the build set is at 0 criticals.
   check, a low tag bit, or a separate handle table). That's a design call for the
   texture system, not a mechanical widen.
 
+### `pi_dolphin.c` — the MLDF resource table (`gResourceFileBuffers` & co.)
+Investigated as its own pass; **not resolvable with pointer-width rules**, and the
+port's architecture already says why.
+- **Two views of one block.** On the console, `gResourceFileBuffers` /
+  `gResourceFileSizes` / `gMapRomListBuffers` / `gResourcePendingMapIds` are the
+  `ptrs` / `sizes` / `romList` / `ids` arrays *inside* `struct MldfTables`, one
+  0x20000-byte block at 0x80345E10. The loader reaches it both through those
+  symbols (52 uses of the buffer table) and through
+  `struct MldfTables* tbl = (struct MldfTables*)gResourceFileTable` (94 `tbl->`
+  uses, 225 `MLDF_*` macro uses, 6 functions).
+- **The second view is already broken on any host.** The decomp defines
+  `u8 gResourceFileTable[0x160]` and the arrays as separate globals, so `tbl->ptrs`
+  reads past a 0x160-byte array and never sees `gResourceFileBuffers`.
+- **The struct view is addressed with GameCube layout literals.** 29 MWCC-shaped
+  biased slot addresses (`(slot << 2) + ((u32)&tbl->ptrs[0] + 0x6A28)`, `+0x6D68`,
+  `+0x6C08`), 5 `himem - 27176`-style computations, `+ 0x80000000` displacements,
+  and 4-byte slot strides. On 64-bit, `DVDFileInfo* fileInfo[0x58]` alone grows
+  0x160 bytes and moves every later array, so every literal goes stale.
+- **The port replaces this loader rather than compiling it.**
+  `bridge/game_assetfile.c` is the MLDF resident-file table and
+  `bridge/game_model_support.c` serves `loadAndDecompressDataFile` (see
+  `docs/PORT_ARCHITECTURE.md`). `pi_dolphin.c` isn't compiled by the 32-bit build
+  (`scaffold/game_boot_externs.c` stands in for its globals) or the mirror build set.
+- **Recommended direction:** the mirror follows the same architecture. A portable
+  bridge owns the table with `void*` entries, the decomp's MLDF loader functions are
+  excluded from the mirror, and readers like `tex1GetFrame` / the `tab0`/`t25`-style
+  lookups (`pi_dolphin.c:4687-5131`) are served by the bridge or brought in only
+  after it exists. A rules pass here would be ~300 rewrites of layout-specific
+  address math to reach code the port doesn't run.
+
 ## Needs a memory-layout pass (P3)
 
 ### `modelEngine.c` — intrusive list with `int` links in object memory (`objListAdd`, 697-720)
@@ -74,10 +104,8 @@ on-disc word counts, not pointer strides).
   inside `GameObject` at the hardcoded byte offset `OBJLINK_CHILD_LIST_OFFSET`
   with a 4-byte stride and `int` copies. Fixed GameCube layout (P3).
 - **`pi_dolphin.c:4730` `tex1GetFrame`, `e`:** the cursors are
-  `base + offset` with `u32 base = gResourceFileBuffers[idx]`, the global
-  resource-buffer table (`gResourceFileBuffers[id] = (u32)mmAlloc(...)`, see
-  `worklist-pi_dolphin.md`). Belongs to a resource-table pass that widens the table
-  and every reader at once.
+  `base + offset` with `u32 base = gResourceFileBuffers[idx]`. See the MLDF
+  resource-table entry above: it belongs to the bridge-owned table, not a rule.
 - **`shader.c:3001` `rl`:** see above (int table at a fixed struct offset).
 
 ## Scanner blind spots found while doing this
