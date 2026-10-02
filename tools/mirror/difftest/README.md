@@ -50,6 +50,23 @@ extracts `objRender`'s staff-child walk (pointer-size stride).
 
 `extract.toml` fields: `source` (repo-relative TU), `rules` (rules dir, default
 `mirror/rules`), and `ranges` (list of inclusive `[start, end]` line ranges).
+A case spanning several TUs uses `[[part]]` tables instead (each with its own
+`source` + `ranges`), concatenated in order — callee before caller. Every part must
+be touched by the rules.
+
+`player_render` is the cross-TU case: `objRender` (objprint.c, hand rules) calls
+`playerRender((int)obj, ...)` (player.c, the player DLL, generated whole-program
+rules). It drives three frames through the player's carried object (raw-offset
+pokes via `(char*)(int)heldObj` and its `VEHICLE_INTERFACE` render), the
+Krazoa-spirit shader latched into and cleared through the `int` global
+`gPlayerHeldObject`, the FX paths, a staff child, and a DLL object's interface
+render. It caught a rewriter bug on its first run: two `occurrence=` rules on one
+line were applied lowest-first, so the second never matched and a `(int)heldObj`
+cast stayed narrow (fixed in `passes._by_occurrence`; unmatched TU rules are now a
+build error).
+
+Mirror builds define `DIFFTEST_MIRROR`, for shims that must mirror a rule applied
+outside the extracted ranges (e.g. a widened global's declaration).
 Line numbers into a frozen vendored decomp are stable; if a re-vendor moves them,
 update the ranges (the harness fails loudly if the extracted mirror equals the
 oracle, i.e. the rules stopped touching the extracted code).

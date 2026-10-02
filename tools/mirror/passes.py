@@ -522,6 +522,14 @@ def _retype_param(line: str, func: str, index: int, frm: str, to: str):
     return line[:a] + new_seg + line[b:]
 
 
+def _by_occurrence(rules: list) -> list:
+    """Order same-line rules highest `occurrence` first. Occurrence indices count
+    matches on the ORIGINAL line; rewriting the N-th match removes it from the
+    pattern's matches, so applying occurrence 1 first would renumber the rest
+    (occurrence 2 would then hit nothing, silently leaving a narrow cast)."""
+    return sorted(rules, key=lambda r: (r.get("line") or 0, -(r.get("occurrence") or 0)))
+
+
 def _replace_one(pat, line, repl, occurrence):
     ms = list(pat.finditer(line))
     if not ms:
@@ -646,7 +654,7 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
             unmatched.append(f"widen {rel}:{n}: no narrowing pointer cast to widen")
 
     # retype: change the declared type of one symbol at a line (params included).
-    for r in rules.get("retype", []):
+    for r in _by_occurrence(rules.get("retype", [])):
         if _norm(r.get("file", "")) != _norm(rel):
             continue
         n, sym = r.get("line"), r.get("symbol")
@@ -680,7 +688,7 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
             unmatched.append(f"retype_param {rel}:{n} {r['func']}#{r['index']}: no match")
 
     # widen_cast: widen one bare narrowing cast at a line (macro bodies included).
-    for r in rules.get("widen_cast", []):
+    for r in _by_occurrence(rules.get("widen_cast", [])):
         if _norm(r.get("file", "")) != _norm(rel):
             continue
         n = r.get("line")
@@ -711,7 +719,7 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
             unmatched.append(f"widen_cast {rel}:{n} ({frm}): {why}")
 
     # stride: a pointer-array walk stepping by a 32-bit pointer size literal.
-    for r in rules.get("stride", []):
+    for r in _by_occurrence(rules.get("stride", [])):
         if _norm(r.get("file", "")) != _norm(rel):
             continue
         n, sym = r.get("line"), r.get("symbol")

@@ -74,7 +74,10 @@ def gen_one(rel: str, rules: dict) -> tuple[Path, int, int]:
     tu_rel = f"decomp/{rel}"
     before = sum(1 for f in passes.scan_text_pointer_width(text, tu_rel)
                  if f.severity == "critical")
-    new_text, applied, _ = passes.apply_pointer_rules(text, rules, tu_rel)
+    new_text, applied, unmatched = passes.apply_pointer_rules(text, rules, tu_rel)
+    if unmatched:
+        # a rule that names this TU but matches nothing leaves its site narrow
+        raise SystemExit(f"error: rules for {tu_rel} did not match: {unmatched}")
 
     after = sum(1 for f in passes.scan_text_pointer_width(new_text, tu_rel)
                 if f.severity == "critical")

@@ -9,7 +9,10 @@ import sys, subprocess, tempfile
 from pathlib import Path
 sys.path.insert(0, "tools/mirror")
 import build_mirror as bm, passes
-bm.gen_headers(passes.load_pointer_rules(bm.MIRROR / "rules"))   # complete mirror/include
+# Membership is decided against HAND-rule headers only. With generated headers, a
+# TU whose definitions the generator would convert (once it is in the set) fails
+# against its own already-widened prototypes and is wrongly excluded (player.c).
+bm.gen_headers(passes.load_pointer_rules(bm.MIRROR / "rules", generated=False))
 ok = fail = 0
 with tempfile.TemporaryDirectory() as td:
     for f in sorted(Path("decomp/src/main").rglob("*.c")) + sorted(Path("decomp/src/dlls").rglob("*.c")):

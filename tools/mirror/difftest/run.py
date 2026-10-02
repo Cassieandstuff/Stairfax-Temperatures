@@ -41,7 +41,7 @@ CFLAGS = ["-m64", "-O1", "-w", "-fno-strict-aliasing", "-DDIFFTEST_MAIN", f"-I{H
 LDFLAGS = ["-lm"]
 # Mirror builds get the same force-included prelude as the real mirror build
 # (stdint + runtime accessor decls); the oracle is untransformed decomp code.
-MIRROR_PRELUDE = ["-include", "mirror_prelude.h", f"-I{REPO / 'mirror' / 'runtime'}"]
+MIRROR_PRELUDE = ["-DDIFFTEST_MIRROR", "-include", "mirror_prelude.h", f"-I{REPO / 'mirror' / 'runtime'}"]
 CASES = HERE / "cases"
 
 
@@ -76,26 +76,29 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
     driver, and diff."""
     name = case.name
     spec = tomllib.loads((case / "extract.toml").read_text())
-    source = REPO / spec["source"]
-    ranges = spec["ranges"]
     rules_dir = REPO / spec.get("rules", "mirror/rules")
     shim = case / "shim.h"
     driver = case / "driver.c"
-    if not source.exists():
-        print(f"[{name}] FAIL — source not found: {spec['source']}")
-        return False
-
-    original = source.read_text(errors="replace")
-    rel = spec["source"]
+    # one source (`source` + `ranges`) or several (`[[part]]` tables, concatenated
+    # in order — e.g. a callee from one TU followed by its caller from another)
+    parts = spec.get("part") or [{"source": spec["source"], "ranges": spec["ranges"]}]
     rules = passes.load_pointer_rules(rules_dir)
-    mirror_full, applied, unmatched = passes.apply_pointer_rules(original, rules, rel)
-
-    oracle_snip = _extract_ranges(original, ranges)
-    mirror_snip = _extract_ranges(mirror_full, ranges)
-    if oracle_snip == mirror_snip:
-        print(f"[{name}] FAIL — extracted mirror == oracle; rules did not touch "
-              "the extracted ranges (nothing to validate)")
-        return False
+    oracle_snips, mirror_snips, applied = [], [], []
+    for part in parts:
+        source = REPO / part["source"]
+        if not source.exists():
+            print(f"[{name}] FAIL — source not found: {part['source']}")
+            return False
+        original = source.read_text(errors="replace")
+        mirror_full, app, _ = passes.apply_pointer_rules(original, rules, part["source"])
+        o, m = _extract_ranges(original, part["ranges"]), _extract_ranges(mirror_full, part["ranges"])
+        if o == m:
+            print(f"[{name}] FAIL — extracted mirror == oracle for {part['source']}; rules "
+                  "did not touch the extracted ranges (nothing to validate)")
+            return False
+        oracle_snips.append(o); mirror_snips.append(m); applied += app
+    oracle_snip, mirror_snip = "\n".join(oracle_snips), "\n".join(mirror_snips)
+    src_label = " + ".join(p["source"] for p in parts)
 
     wd = workdir / name
     for build, snip, extra in (("oracle", oracle_snip, ["-DDIFFTEST_ORACLE_LOWMEM"]),
@@ -131,7 +134,7 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
                      else "  (control inconclusive: OS gave a low address anyway)")
 
     tag = "PASS" if passed else "FAIL"
-    print(f"[{name}] {tag}  real TU {spec['source']}  rules_applied={len(applied)}  "
+    print(f"[{name}] {tag}  real TU {src_label}  rules_applied={len(applied)}  "
           f"oracle={oout.strip()!r}  mirror={mout.strip()!r}{ctrl_note}")
     if not passed:
         print(f"    oracle rc={orc} mirror rc={mrc}")
