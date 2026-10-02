@@ -40,6 +40,17 @@ decomp/src/dlls/objects/614_KytesMum/KytesMum.c:questBits
 decomp/src/dlls/objects/626/626.c:prevCount
 decomp/src/main/gameloop_main.c:gameBit
 decomp/src/main/gameloop_main.c:val
+decomp/src/main/mm.c:bestSize
+decomp/src/main/mm.c:handle
+decomp/src/main/mm.c:largest
+decomp/src/main/mm.c:largestFree0
+decomp/src/main/mm.c:largestFree1
+decomp/src/main/mm.c:requestedSize
+decomp/src/main/mm.c:size
+decomp/src/main/object.c:1870
+decomp/src/main/object.c:1929
+decomp/src/main/object.c:fn
+decomp/src/main/object.c:obj
 decomp/src/main/objlib.c:pointIndex
 decomp/src/main/objprint.c:v
 decomp/src/main/pi_pathsearch.c:63

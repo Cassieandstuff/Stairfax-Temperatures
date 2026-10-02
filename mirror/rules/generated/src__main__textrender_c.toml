@@ -16,6 +16,20 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/textrender.c"
+line = 761
+symbol = "ox"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/textrender.c"
+line = 762
+symbol = "oy"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/textrender.c"
 line = 929
 symbol = "params"
 from = "int"

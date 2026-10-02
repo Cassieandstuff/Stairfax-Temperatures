@@ -6,3 +6,8 @@ line = 20
 symbol = "type"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/sys/objects/lifecycle.h"
+func = "objGetTotalDataSize"
+to = "uintptr_t"

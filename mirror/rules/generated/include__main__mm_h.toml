@@ -35,7 +35,39 @@ symbol = "value"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/include/main/mm.h"
+line = 12
+symbol = "flag"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/mm.h"
+func = "alignUp2"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/mm.h"
+func = "mmCreateMemoryStore"
+to = "uintptr_t"
+
 [[pointer.ret]]
 file = "decomp/include/main/mm.h"
 func = "roundUpTo16"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/mm.h"
+func = "roundUpTo32"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/mm.h"
+func = "roundUpTo4"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/mm.h"
+func = "roundUpTo8"
 to = "uintptr_t"
