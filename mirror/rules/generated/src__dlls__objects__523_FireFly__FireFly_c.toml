@@ -7,6 +7,32 @@ symbol = "player"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/523_FireFly/FireFly.c"
+line = 288
+symbol = "msg"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/523_FireFly/FireFly.c"
+line = 96
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/523_FireFly/FireFly.c"
+line = 101
+from = "s32"
+to = "uintptr_t"
+occurrence = 1
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/523_FireFly/FireFly.c"
+line = 127
+from = "s32"
+to = "uintptr_t"
+
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/523_FireFly/FireFly.c"
 line = 162

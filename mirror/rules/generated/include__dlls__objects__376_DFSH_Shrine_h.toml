@@ -6,3 +6,10 @@ line = 89
 symbol = "objArg"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/dlls/objects/376_DFSH_Shrine.h"
+line = 94
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"

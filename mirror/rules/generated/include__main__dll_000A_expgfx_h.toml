@@ -24,6 +24,13 @@ to = "uintptr_t"
 [[pointer.retype]]
 file = "decomp/include/main/dll_000A_expgfx.h"
 line = 38
+symbol = "attachedTableKey"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/dll_000A_expgfx.h"
+line = 38
 symbol = "resourceHandle"
 from = "u32"
 to = "uintptr_t"
@@ -32,5 +39,19 @@ to = "uintptr_t"
 file = "decomp/include/main/dll_000A_expgfx.h"
 line = 38
 symbol = "sourceId"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/dll_000A_expgfx.h"
+line = 44
+symbol = "sourceId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/dll_000A_expgfx.h"
+line = 45
+symbol = "slotPoolBase"
 from = "u32"
 to = "uintptr_t"

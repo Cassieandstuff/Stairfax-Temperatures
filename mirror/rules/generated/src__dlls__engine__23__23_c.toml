@@ -7,6 +7,41 @@ symbol = "pRestartPoint"
 from = "u32"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/23/23.c"
+line = 33
+symbol = "gSaveGameObjGroupCacheIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/23/23.c"
+line = 158
+symbol = "gMapObjGroupStatuses"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/23/23.c"
+line = 712
+symbol = "newStatus"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/23/23.c"
+line = 713
+symbol = "oldStatus"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/23/23.c"
+line = 882
+symbol = "act"
+from = "int"
+to = "uintptr_t"
+
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/engine/23/23.c"
 line = 287

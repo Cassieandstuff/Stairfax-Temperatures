@@ -30,6 +30,13 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/spittingeba.c"
+line = 185
+symbol = "eventKind"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/spittingeba.c"
 line = 223
 symbol = "state"
 from = "int"
@@ -59,6 +66,12 @@ to = "uintptr_t"
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/202/spittingeba.c"
 line = 112
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/202/spittingeba.c"
+line = 116
 from = "int"
 to = "uintptr_t"
 

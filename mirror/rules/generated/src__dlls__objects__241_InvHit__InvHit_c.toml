@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/241_InvHit/InvHit.c"
+line = 72
+symbol = "fwdArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/241_InvHit/InvHit.c"
 line = 135
 symbol = "targetAddress"
 from = "u32"

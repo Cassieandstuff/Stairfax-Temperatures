@@ -6,3 +6,10 @@ line = 27
 symbol = "ident"
 from = "s32"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/469_DIM2Conveyo/DIM2Conveyo.c"
+line = 76
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"

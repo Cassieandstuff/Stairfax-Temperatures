@@ -9,8 +9,43 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/202.c"
+line = 173
+symbol = "gIceBaddieHitReactionMoves"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/202.c"
+line = 588
+symbol = "moveChoice"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/202.c"
+line = 627
+symbol = "moveChoice"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/202.c"
 line = 1011
 symbol = "stateAddress"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/202.c"
+line = 1014
+symbol = "hitInfo"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/202.c"
+line = 1094
+symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
 

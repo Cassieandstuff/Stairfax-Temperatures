@@ -2,6 +2,27 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/325_CloudPrison/CloudPrison.c"
+line = 52
+symbol = "gCloudPrisonDeferredMessageStorage"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/325_CloudPrison/CloudPrison.c"
+line = 65
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/325_CloudPrison/CloudPrison.c"
+line = 80
+symbol = "message"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/325_CloudPrison/CloudPrison.c"
 line = 89
 symbol = "targetAddress"
 from = "u32"

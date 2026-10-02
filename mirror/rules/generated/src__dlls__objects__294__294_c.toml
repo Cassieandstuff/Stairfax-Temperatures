@@ -16,6 +16,27 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/294/294.c"
+line = 442
+symbol = "v"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/294/294.c"
+line = 443
+symbol = "bit"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/294/294.c"
+line = 449
+symbol = "id"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/294/294.c"
 line = 943
 symbol = "inside"
 from = "int"
@@ -114,5 +135,11 @@ to = "uintptr_t"
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/294/294.c"
 line = 953
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/294/294.c"
+line = 1163
 from = "int"
 to = "uintptr_t"

@@ -2,6 +2,12 @@
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
+line = 853
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
 line = 1317
 from = "int"
 to = "uintptr_t"

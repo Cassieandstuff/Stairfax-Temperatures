@@ -2,6 +2,27 @@
 
 [[pointer.retype]]
 file = "decomp/src/main/gameloop.c"
+line = 72
+symbol = "gGameLoopPendingMapId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/gameloop.c"
+line = 73
+symbol = "gGameLoopPendingMapDataFileId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/gameloop.c"
+line = 212
+symbol = "size"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/gameloop.c"
 line = 331
 symbol = "alignOffset"
 from = "u32"

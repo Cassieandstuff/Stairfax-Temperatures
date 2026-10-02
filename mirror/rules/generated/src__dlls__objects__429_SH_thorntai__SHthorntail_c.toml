@@ -7,6 +7,158 @@ symbol = "value"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 283
+symbol = "nextState"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 450
+symbol = "nextState"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 451
+symbol = "randomValue"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 553
+symbol = "randomIdleWait"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 554
+symbol = "gameBitValue"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 621
+symbol = "objectTriggerIsSet"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 622
+symbol = "triggerIsSet"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 623
+symbol = "triggerEventId"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 624
+symbol = "randomTime"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 718
+symbol = "randomIdleWait"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 720
+symbol = "gameBit"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 721
+symbol = "triggerIsSet"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 804
+symbol = "gameBit"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 805
+symbol = "randomIdleWait"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 869
+symbol = "randomIdleWait"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 918
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 920
+symbol = "pointIndex"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 946
+symbol = "val"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 947
+symbol = "uval"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 948
+symbol = "ref"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 1111
+symbol = "randomTime"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+func = "SHthorntail_chooseNextState"
+to = "uintptr_t"
+
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
 line = 288
@@ -17,4 +169,22 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
 line = 1044
 from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 1122
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 1131
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 1136
+from = "s32"
 to = "uintptr_t"

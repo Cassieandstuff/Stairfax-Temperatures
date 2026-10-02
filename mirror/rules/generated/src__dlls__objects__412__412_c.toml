@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/412/412.c"
+line = 36
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/412/412.c"
 line = 94
 symbol = "objectAddress"
 from = "int"

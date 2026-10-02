@@ -19,3 +19,21 @@ file = "decomp/src/dlls/objects/306_WaterFallSp/WaterFallSp.c"
 line = 47
 from = "u32"
 to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/306_WaterFallSp/WaterFallSp.c"
+line = 91
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/306_WaterFallSp/WaterFallSp.c"
+line = 92
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/306_WaterFallSp/WaterFallSp.c"
+line = 93
+from = "s32"
+to = "uintptr_t"

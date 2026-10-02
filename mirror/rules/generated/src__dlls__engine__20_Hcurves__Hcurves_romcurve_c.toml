@@ -2,6 +2,230 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 27
+symbol = "pickIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 49
+symbol = "pickIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 50
+symbol = "pickIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 295
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 318
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 358
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 362
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 388
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 392
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 522
+symbol = "pickIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 524
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 526
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 551
+symbol = "pickIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 553
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 555
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 580
+symbol = "pickIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 928
+symbol = "bboxHit"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1021
+symbol = "sel"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1028
+symbol = "candidateIds"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1030
+symbol = "queueIndices"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1179
+symbol = "bestNeighborIds"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1242
+symbol = "candidateIds"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1295
+symbol = "cand1"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1296
+symbol = "cand2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1297
+symbol = "cand3"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1300
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1429
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1430
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1483
+symbol = "adjacentWindow"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1484
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1485
+symbol = "mask"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1486
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1776
 symbol = "candWalk"
 from = "u32"
@@ -16,6 +240,27 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1793
+symbol = "best"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1797
+symbol = "queueIds"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1799
+symbol = "resultIds"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1942
 symbol = "candWalk"
 from = "u32"
@@ -25,6 +270,117 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1943
 symbol = "cur"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1960
+symbol = "best"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1964
+symbol = "queueIds"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1966
+symbol = "results"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2101
+symbol = "candidateCount"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2104
+symbol = "candidates"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2359
+symbol = "idsB"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2363
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2366
+symbol = "idsA"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2453
+symbol = "linkCount"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2456
+symbol = "ids"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2593
+symbol = "bestLink"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2717
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2721
+symbol = "eligibleLinks"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2768
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2772
+symbol = "eligibleLinks"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 1219
 from = "u32"
 to = "uintptr_t"
 
@@ -49,5 +405,11 @@ to = "uintptr_t"
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 2026
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
+line = 2630
 from = "u32"
 to = "uintptr_t"

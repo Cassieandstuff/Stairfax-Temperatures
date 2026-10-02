@@ -2,7 +2,34 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/489_SB_Propelle/SB_Propelle.c"
+line = 50
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/489_SB_Propelle/SB_Propelle.c"
 line = 69
 symbol = "parentTimer"
 from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/489_SB_Propelle/SB_Propelle.c"
+line = 70
+symbol = "smokeCount"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/489_SB_Propelle/SB_Propelle.c"
+line = 154
+symbol = "randVal"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/489_SB_Propelle/SB_Propelle.c"
+line = 159
+from = "s32"
 to = "uintptr_t"

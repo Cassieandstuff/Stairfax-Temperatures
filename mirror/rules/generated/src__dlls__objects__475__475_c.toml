@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/475/475.c"
+line = 34
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/475/475.c"
 line = 52
 symbol = "hitboxStateAddress"
 from = "int"

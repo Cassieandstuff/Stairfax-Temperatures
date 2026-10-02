@@ -2,6 +2,20 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/expgfx_internal.h"
+line = 483
+symbol = "gExpgfxSlotActiveMasks"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/expgfx_internal.h"
+line = 484
+symbol = "gExpgfxSlotPoolBases"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/expgfx_internal.h"
 line = 490
 symbol = "gExpgfxLastAddedSlot"
 from = "int"

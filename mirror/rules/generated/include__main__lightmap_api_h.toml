@@ -6,3 +6,22 @@ line = 39
 symbol = "index"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/lightmap_api.h"
+line = 52
+symbol = "arg0"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/lightmap_api.h"
+line = 53
+symbol = "arg0"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/lightmap_api.h"
+func = "objPosToMapBlockIdx"
+to = "uintptr_t"

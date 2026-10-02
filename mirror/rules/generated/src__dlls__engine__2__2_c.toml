@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/2/2.c"
+line = 862
+symbol = "gObjSeqCurrentTrackId"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
 line = 971
 symbol = "v"
 from = "int"
@@ -9,8 +16,141 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/2/2.c"
+line = 1020
+symbol = "size"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1038
+symbol = "trackId"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1573
+symbol = "targetId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1951
+symbol = "lbl_8030EC00"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1952
+symbol = "lbl_8030EC10"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1953
+symbol = "lbl_8030EC1C"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1954
+symbol = "lbl_8030EC28"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1955
+symbol = "lbl_8030EC44"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1956
+symbol = "lbl_8030EC54"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1957
+symbol = "lbl_8030EC64"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1958
+symbol = "lbl_8030EC70"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1959
+symbol = "lbl_8030EC7C"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1960
+symbol = "lbl_8030EC98"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1973
+symbol = "gObjSeqScriptedButtonMasks"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 1975
+symbol = "gObjSeqMsgIds"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 2438
+symbol = "pair"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 2442
+symbol = "trackId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
 line = 3609
 symbol = "cmdObj"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 3610
+symbol = "cmdParam"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 4326
+symbol = "out"
 from = "int"
 to = "uintptr_t"
 

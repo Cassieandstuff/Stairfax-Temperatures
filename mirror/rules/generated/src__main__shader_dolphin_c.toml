@@ -2,14 +2,7 @@
 
 [[pointer.retype]]
 file = "decomp/src/main/shader_dolphin.c"
-line = 307
-symbol = "v2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader_dolphin.c"
-line = 308
-symbol = "v3"
+line = 1358
+symbol = "lbl_8030CEE0"
 from = "int"
 to = "uintptr_t"

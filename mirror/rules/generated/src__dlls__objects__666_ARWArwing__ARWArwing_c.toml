@@ -7,6 +7,13 @@ symbol = "v"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/666_ARWArwing/ARWArwing.c"
+line = 1628
+symbol = "p2"
+from = "int"
+to = "uintptr_t"
+
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/666_ARWArwing/ARWArwing.c"
 line = 1439

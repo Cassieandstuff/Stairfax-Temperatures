@@ -7,6 +7,13 @@ symbol = "state"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/include/main/dll/dll_00C9_enemy.h"
+line = 280
+symbol = "p2"
+from = "int"
+to = "uintptr_t"
+
 [[pointer.ret]]
 file = "decomp/include/main/dll/dll_00C9_enemy.h"
 func = "baddie_spawnRewardDrops"

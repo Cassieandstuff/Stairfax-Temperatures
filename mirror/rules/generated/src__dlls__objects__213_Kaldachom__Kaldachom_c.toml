@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/213_Kaldachom/Kaldachom.c"
+line = 632
+symbol = "fwdArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/213_Kaldachom/Kaldachom.c"
 line = 664
 symbol = "texture"
 from = "int"
@@ -12,6 +19,12 @@ file = "decomp/src/dlls/objects/213_Kaldachom/Kaldachom.c"
 line = 665
 symbol = "ref"
 from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/213_Kaldachom/Kaldachom.c"
+line = 438
+from = "s32"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

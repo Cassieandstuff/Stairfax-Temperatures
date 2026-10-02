@@ -6,3 +6,8 @@ line = 11
 symbol = "key"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/maketex_sequence_api.h"
+func = "seqPairTableLookup"
+to = "uintptr_t"

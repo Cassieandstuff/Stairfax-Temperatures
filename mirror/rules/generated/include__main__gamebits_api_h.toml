@@ -6,3 +6,22 @@ line = 6
 symbol = "gameBit"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/gamebits_api.h"
+line = 7
+symbol = "gameBit"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/gamebits_api.h"
+line = 7
+symbol = "value"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/gamebits_api.h"
+func = "mainGetBit"
+to = "uintptr_t"

@@ -6,3 +6,8 @@ line = 7
 symbol = "index"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/include/main/track_dolphin_map_api.h"
+func = "mapBlockGetPolygonGroupType"
+to = "uintptr_t"

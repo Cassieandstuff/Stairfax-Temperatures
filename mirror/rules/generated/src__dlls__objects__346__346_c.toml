@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/346/346.c"
+line = 26
+symbol = "fragmentObjectId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/346/346.c"
 line = 75
 symbol = "childSlotAddress"
 from = "int"
@@ -9,8 +16,36 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/346/346.c"
+line = 77
+symbol = "fragmentObjectId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/346/346.c"
+line = 143
+symbol = "secondaryRandomMaximum"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/346/346.c"
+line = 144
+symbol = "randomMaximum"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/346/346.c"
 line = 234
 symbol = "childSlotAddress"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/346/346.c"
+line = 235
+symbol = "placementAddress"
 from = "int"
 to = "uintptr_t"
 

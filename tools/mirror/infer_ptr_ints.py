@@ -101,11 +101,15 @@ class Graph:
         self.casts = []                   # (file, line, col, from_spelling, operand_slots, is_ptr_to_int)
         self.fields = {}                  # field slot -> (struct.field, file, line)
         self.subnodes = {}                # SUB node -> (right-operand slots, right is SEED)
+        self.copy_pred = defaultdict(set) # dst -> {src} for DIRECT value copies only
+        self.recon = set()                # slots cast straight back to a pointer
         self.macro_skips = 0
 
-    def flow(self, src, dst):
+    def flow(self, src, dst, copy=False):
         if src and dst and src != dst:
             self.edges[src].add(dst)
+            if copy:
+                self.copy_pred[dst].add(src)
 
 
 def slot_of_decl(c) -> str | None:
@@ -184,7 +188,7 @@ class Analyzer:
             op = self.binop(e)
             a, b = self.sources(kids[0]), self.sources(kids[1])
             if op in ("+", "&", "|", "^"):
-                return a | b
+                return {x if x.startswith(("SEED", "SUB:", "~")) else "~" + x for x in a | b}
             if op == "-":
                 # p - n stays a pointer; p - q is a difference. Decided at solve
                 # time: record as a guarded flow.
@@ -231,17 +235,35 @@ class Analyzer:
                 # the solver disables once its right operand is known to carry.
                 node = s
                 left, right = self.subs[int(s.rsplit(":", 1)[1])]
-                rsrc = self.sources(right)
+                rsrc = {r.lstrip("~") for r in self.sources(right)}
                 self.g.subnodes[node] = ({r for r in rsrc if not r.startswith(("SEED", "SUB:"))},
                                          "SEED" in rsrc)
                 for s2 in self.sources(left):
                     if s2 == "SEED":
                         self.g.seeds.add(node)
                     elif not s2.startswith("SUB:"):
-                        self.g.flow(s2, node)
+                        self.g.flow(s2.lstrip("~"), node)
                 self.g.flow(node, dst_slot)
+            elif s.startswith("~"):
+                self.g.flow(s[1:], dst_slot)              # arithmetic: forward only
             else:
-                self.g.flow(s, dst_slot)
+                self.g.flow(s, dst_slot, copy=True)       # direct copy: both ways
+
+    def direct_slot(self, e):
+        """The slot an expression reads *directly* (through parens / implicit
+        conversions / int->int casts), or None if it's arithmetic or a constant."""
+        while e is not None and e.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR, K.CSTYLE_CAST_EXPR):
+            kids = list(e.get_children())
+            if not kids:
+                return None
+            if e.kind == K.CSTYLE_CAST_EXPR and not is_narrow_int(kids[-1].type):
+                return None
+            e = kids[-1]
+        if e is None:
+            return None
+        srcs = self.sources(e)
+        return next(iter(srcs)) if len(srcs) == 1 and not next(iter(srcs)).startswith(
+            ("SEED", "SUB:", "~")) else None
 
     def visit(self, c, fn=None):
         f = rel(c.location.file.name if c.location.file else None)
@@ -293,6 +315,13 @@ class Analyzer:
             kids = list(c.get_children())
             if kids and is_narrow_int(fn.result_type):
                 self.sink(f"ret:{fn.get_usr()}", kids[0])
+        if k in (K.CSTYLE_CAST_EXPR, K.UNEXPOSED_EXPR) and is_ptrish(c.type) and \
+                c.type.get_canonical().kind == T.POINTER:
+            kids = list(c.get_children())
+            if kids and is_narrow_int(kids[-1].type):
+                d = self.direct_slot(kids[-1])
+                if d:
+                    self.g.recon.add(d)       # an int rebuilt as a pointer held one
         if k == K.CSTYLE_CAST_EXPR and f and is_narrow_int(c.type):
             kids = list(c.get_children())
             inner = kids[-1] if kids else None
@@ -324,16 +353,21 @@ class Analyzer:
 
     # --- solve -------------------------------------------------------------
     def solve(self) -> set[str]:
-        """Forward closure from the seeds; SUB nodes (`a - b`) whose right operand
-        carries a pointer are differences, so they're disabled and we re-solve.
-        Disabling only removes flow, so this terminates."""
+        """Carrying = closure of the seeds (pointer->int casts) and reconstruction
+        evidence (ints cast straight back to pointers), forward over all value
+        flow and BACKWARD over direct copies only (a variable passed straight into
+        a carrying param must carry too, or it truncates first; an offset added to
+        a pointer is never pulled in). SUB nodes (`a - b`) whose right operand
+        carries are differences, so they're disabled and we re-solve; disabling only
+        removes flow, so this terminates."""
         disabled: set[str] = set()
         while True:
-            carrying = {s for s in self.g.seeds if s not in disabled}
+            carrying = {s for s in (self.g.seeds | self.g.recon) if s not in disabled}
             work = list(carrying)
             while work:
                 s = work.pop()
-                for d in self.g.edges.get(s, ()):
+                nxt = set(self.g.edges.get(s, ())) | self.g.copy_pred.get(s, set())
+                for d in nxt:
                     if d not in carrying and d not in disabled:
                         carrying.add(d)
                         work.append(d)
@@ -353,7 +387,7 @@ def _parse_one(args):
     g = an.g
     return ({k: set(v) for k, v in g.edges.items()}, set(g.seeds),
             {k: set(v) for k, v in g.decls.items()}, list(g.casts), dict(g.fields),
-            dict(g.subnodes))
+            dict(g.subnodes), {k: set(v) for k, v in g.copy_pred.items()}, set(g.recon))
 
 
 def parse_all(tus, jobs: int) -> "Analyzer":
@@ -361,7 +395,7 @@ def parse_all(tus, jobs: int) -> "Analyzer":
     import multiprocessing as mp
     an = Analyzer()
     with mp.Pool(jobs) as pool:
-        for n, (edges, seeds, decls, casts, fields, subs) in enumerate(
+        for n, (edges, seeds, decls, casts, fields, subs, cpred, recon) in enumerate(
                 pool.imap_unordered(_parse_one, [(i, str(t)) for i, t in enumerate(tus)]), 1):
             for k, v in edges.items():
                 an.g.edges[k] |= v
@@ -371,6 +405,9 @@ def parse_all(tus, jobs: int) -> "Analyzer":
             an.g.casts += casts
             an.g.fields.update(fields)
             an.g.subnodes.update(subs)
+            for k, v in cpred.items():
+                an.g.copy_pred[k] |= v
+            an.g.recon |= recon
             if n % 100 == 0:
                 print(f"  parsed {n}/{len(tus)}", file=sys.stderr)
     return an
@@ -428,7 +465,8 @@ def main(argv):
             widen.append((f, line, col, frm))
 
     summary = {
-        "tus": len(tus), "seeds": len(an.g.seeds), "carrying_slots": len(carrying),
+        "tus": len(tus), "seeds": len(an.g.seeds), "recon_evidence": len(an.g.recon),
+        "carrying_slots": len(carrying),
         "retype_sites": len(set(retypes)), "ret_funcs": len(set(rets)),
         "widen_casts": len(set(widen)), "carrying_fields": len(set(fields)),
     }

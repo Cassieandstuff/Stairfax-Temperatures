@@ -2,7 +2,47 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c"
+line = 50
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c"
+line = 105
+symbol = "scanLimit"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c"
+line = 106
+symbol = "slotArg"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c"
+line = 107
+symbol = "duplicateCount"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c"
 line = 154
 symbol = "loadedAnimDataIndexPlusOne"
 from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c"
+line = 143
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c"
+line = 189
+from = "s32"
 to = "uintptr_t"

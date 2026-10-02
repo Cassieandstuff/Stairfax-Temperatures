@@ -2,8 +2,22 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/308_texscroll2/texscroll2.c"
+line = 40
+symbol = "shaderIndex"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/308_texscroll2/texscroll2.c"
 line = 66
 symbol = "ident"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/308_texscroll2/texscroll2.c"
+line = 102
+symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 

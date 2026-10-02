@@ -14,6 +14,13 @@ symbol = "unused1"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/226/226.c"
+line = 537
+symbol = "idx"
+from = "int"
+to = "uintptr_t"
+
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/226/226.c"
 line = 883

@@ -16,8 +16,29 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/437/437.c"
+line = 736
+symbol = "mode"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/437/437.c"
 line = 822
 symbol = "inner"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 840
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 859
+symbol = "workValue"
 from = "int"
 to = "uintptr_t"
 
@@ -38,4 +59,58 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/437/437.c"
 line = 996
 from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1031
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1038
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1045
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1053
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1060
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1066
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1098
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1099
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/437/437.c"
+line = 1114
+from = "s32"
 to = "uintptr_t"

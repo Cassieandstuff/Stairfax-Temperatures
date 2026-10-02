@@ -9,6 +9,13 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/include/main/dll/player_status.h"
+line = 19
+symbol = "playerObj"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/dll/player_status.h"
 line = 24
 symbol = "playerObj"
 from = "int"

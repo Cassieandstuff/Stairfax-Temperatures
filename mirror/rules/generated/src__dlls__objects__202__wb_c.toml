@@ -2,6 +2,20 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/wb.c"
+line = 92
+symbol = "eventKind"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/wb.c"
+line = 113
+symbol = "randVal"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/wb.c"
 line = 132
 symbol = "state"
 from = "int"
@@ -26,4 +40,29 @@ file = "decomp/src/dlls/objects/202/wb.c"
 line = 307
 symbol = "unused"
 from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/wb.c"
+line = 310
+symbol = "ua"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/202/wb.c"
+line = 121
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/202/wb.c"
+line = 126
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/202/wb.c"
+line = 325
+from = "int"
 to = "uintptr_t"

@@ -2,6 +2,24 @@
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/304_AreaFXEmit/AreaFXEmit.c"
+line = 85
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/304_AreaFXEmit/AreaFXEmit.c"
+line = 89
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/304_AreaFXEmit/AreaFXEmit.c"
+line = 93
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/304_AreaFXEmit/AreaFXEmit.c"
 line = 235
 from = "u32"
 to = "uintptr_t"

@@ -16,9 +16,30 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/objprint_dolphin.c"
+line = 1158
+symbol = "idx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint_dolphin.c"
 line = 1162
 symbol = "pAddr"
 from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint_dolphin.c"
+line = 1216
+symbol = "count"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint_dolphin.c"
+line = 1238
+symbol = "idx"
+from = "int"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -44,6 +65,13 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/objprint_dolphin.c"
+line = 2736
+symbol = "j"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint_dolphin.c"
 line = 2906
 symbol = "pAddr"
 from = "u32"
@@ -61,6 +89,20 @@ file = "decomp/src/main/objprint_dolphin.c"
 line = 2947
 symbol = "pAddr"
 from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint_dolphin.c"
+line = 2989
+symbol = "j"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint_dolphin.c"
+line = 3262
+symbol = "j"
+from = "int"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

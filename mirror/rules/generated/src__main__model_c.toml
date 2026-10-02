@@ -14,6 +14,165 @@ symbol = "mtxBuf"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 509
+symbol = "id"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 515
+symbol = "sz"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 516
+symbol = "hdrOff"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 521
+symbol = "padBytes"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 527
+symbol = "sz2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 811
+symbol = "szs"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 812
+symbol = "pos"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 813
+symbol = "end"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 1226
+symbol = "entry"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 1293
+symbol = "lastEntry"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 1562
+symbol = "boneByteOff"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 1931
+symbol = "off"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2131
+symbol = "size"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2135
+symbol = "stride"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2161
+symbol = "size"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2317
+symbol = "jointIndex"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2715
+symbol = "z"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2773
+symbol = "sizes"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2774
+symbol = "realId"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2776
+symbol = "i"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2778
+symbol = "off"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 2818
+symbol = "arg"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/src/main/model.c"
+func = "modelLoad_calcSizes"
+to = "uintptr_t"
+
 [[pointer.widen_cast]]
 file = "decomp/src/main/model.c"
 line = 245

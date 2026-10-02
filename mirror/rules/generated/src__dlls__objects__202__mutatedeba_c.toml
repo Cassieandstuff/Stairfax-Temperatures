@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/mutatedeba.c"
+line = 149
+symbol = "eventKind"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/202/mutatedeba.c"
 line = 239
 symbol = "state"
 from = "int"

@@ -2,25 +2,21 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/593_KT_RexFloor/KT_RexFloor.c"
+line = 60
+symbol = "p2"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/593_KT_RexFloor/KT_RexFloor.c"
+line = 79
+symbol = "level"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/593_KT_RexFloor/KT_RexFloor.c"
 line = 80
 symbol = "scroll"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/593_KT_RexFloor/KT_RexFloor.c"
-line = 337
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/593_KT_RexFloor/KT_RexFloor.c"
-line = 352
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/593_KT_RexFloor/KT_RexFloor.c"
-line = 374
 from = "int"
 to = "uintptr_t"
