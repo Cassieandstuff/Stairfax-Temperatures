@@ -30,20 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/object.c"
-line = 1663
-symbol = "size"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/object.c"
-line = 1664
-symbol = "r"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/object.c"
 line = 1740
 symbol = "prev"
 from = "int"
@@ -86,20 +72,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/object.c"
-line = 1839
-symbol = "base"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/object.c"
-line = 1840
-symbol = "allocSize"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/object.c"
 line = 1841
 symbol = "cursor"
 from = "int"
@@ -128,14 +100,16 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/object.c"
-line = 2432
-symbol = "obj3"
+line = 2431
+symbol = "obj"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.ret]]
+[[pointer.retype]]
 file = "decomp/src/main/object.c"
-func = "objGetTotalDataSize"
+line = 2432
+symbol = "obj3"
+from = "int"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

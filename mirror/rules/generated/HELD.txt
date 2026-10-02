@@ -51,6 +51,8 @@ decomp/src/main/gameloop_main.c:gameBit@165
 decomp/src/main/gameloop_main.c:gameBit@230
 decomp/src/main/gameloop_main.c:val@141
 decomp/src/main/gameloop_main.c:val@152
+decomp/src/main/mm.c:handle@191
+decomp/src/main/mm.c:requestedSize@193
 decomp/src/main/objlib.c:pointIndex@989
 decomp/src/main/objprint.c:v@1200
 decomp/src/main/pi_pathsearch.c:63
