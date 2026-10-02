@@ -1,0 +1,16 @@
+# objlib.c ObjTrigger_UpdateIdBlockFlag: disguised = (int)Obj_GetPlayerObject(), then
+# reused for playerIsDisguised(...)'s int result (unaffected by the widen).
+
+[[pointer.retype]]
+file = "decomp/src/main/objlib.c"
+line = 627
+symbol = "disguised"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objlib.c"
+line = 630   # disguised = (int)Obj_GetPlayerObject();
+from = "int"
+to = "uintptr_t"
+

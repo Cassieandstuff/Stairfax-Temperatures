@@ -1,0 +1,26 @@
+# pi_dolphin.c loadAndDecompressDataFile: DVD read buffers from mmAlloc parked in ints.
+# (tex1GetFrame's e cursors are NOT here: they derive from gResourceFileBuffers[], the
+# resource-table pass. See docs/mirror/pointer-width-deferred.md.)
+
+[[pointer.retype]]
+file = "decomp/src/main/pi_dolphin.c"
+line = 4552
+symbol = "srcBuf"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen]]
+file = "decomp/src/main/pi_dolphin.c"
+line = 4556   # srcBuf = (u32)mmAlloc(...)
+
+[[pointer.retype]]
+file = "decomp/src/main/pi_dolphin.c"
+line = 4579
+symbol = "bounceBuf"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen]]
+file = "decomp/src/main/pi_dolphin.c"
+line = 4582   # bounceBuf = (int)mmAlloc(...)
+

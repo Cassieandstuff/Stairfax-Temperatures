@@ -1,0 +1,6 @@
+# Real-TU diff case: mmInitRegion (mm.c). freePtr = (int)buf + slotsBytes, then
+# 32-byte aligned with (freePtr & ~0x1f) + 0x20. Mirror (mm.toml) widens freePtr;
+# ~0x1f must sign-extend to a full-width mask. Checks both alignment branches.
+source = "decomp/src/main/mm.c"
+rules = "mirror/rules"
+ranges = [[956, 992]]

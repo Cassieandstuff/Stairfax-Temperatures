@@ -53,14 +53,32 @@ today, and the build set is at 0 criticals.
   `local_int_holds_ptr`. The fix is the table's slot width and offsets, i.e.
   layout, not the local.
 
-## Newly visible, not yet triaged
-The `local_int_holds_ptr` detector (function-local ints that carry a pointer)
-surfaced hazards outside this pass's scope. Most look like straightforward
-retype + widen_cast fixes, the same pattern as `objprint.c`/`shader_dolphin.c`:
-`mm.c:963` (freePtr), `model.c:52`, `newshadows.c:1345`, `object.c:2430`,
-`objhits.c:1816, 1884`, `objlib.c:627, 701`, `pi_dolphin.c:4552, 4579, 4730`,
-`shader.c:827`. `objlib.c:701` writes links at `OBJLINK_CHILD_LIST_OFFSET`, so
-check it for the same layout problem as `modelEngine.c` before adding a rule.
+## `local_int_holds_ptr` triage (function-local ints carrying pointers)
+
+**Fixed with rules** (each pointer only ever lives in the local, the widen is
+complete): `mm.c:963` freePtr (`mm.toml`, proven by difftest `mm_region` incl. the
+`& ~0x1f` alignment branch), `model.c:52` v (inside the `LOADCOLOR_BLOCK` macro),
+`newshadows.c:1345` texelAddress, `objhits.c:1816/1850` ob and `1884`
+prevSpheres, `objlib.c:627` disguised, `pi_dolphin.c:4552/4579` srcBuf/bounceBuf,
+`shader.c:827` cur/end/objStart (the ObjPlacement walk; its `size*4` steps are
+on-disc word counts, not pointer strides).
+
+**Deferred:**
+- **`object.c` `Obj_UpdateAllObjects` (2424+), `child`:** the local is fixable, but
+  the same function walks its object lists with `obj = *(int*)(obj + off)` (int
+  links stored *inside* objects, 2452-2497), and the `void (*cb)(int)` hitDetect
+  callback is shared between the child and the list walk. Same intrusive-list
+  layout problem as `modelEngine.c` `objListAdd` (P3); widening `child` alone would
+  clear the finding while every link still truncates.
+- **`objlib.c:701` `ObjLink_DetachChild`, `dst`:** shifts the child-pointer array
+  inside `GameObject` at the hardcoded byte offset `OBJLINK_CHILD_LIST_OFFSET`
+  with a 4-byte stride and `int` copies. Fixed GameCube layout (P3).
+- **`pi_dolphin.c:4730` `tex1GetFrame`, `e`:** the cursors are
+  `base + offset` with `u32 base = gResourceFileBuffers[idx]`, the global
+  resource-buffer table (`gResourceFileBuffers[id] = (u32)mmAlloc(...)`, see
+  `worklist-pi_dolphin.md`). Belongs to a resource-table pass that widens the table
+  and every reader at once.
+- **`shader.c:3001` `rl`:** see above (int table at a fixed struct offset).
 
 ## Scanner blind spots found while doing this
 - **Pointer-size strides:** `walk += 4` stepping a pointer array (`objprint.c`
