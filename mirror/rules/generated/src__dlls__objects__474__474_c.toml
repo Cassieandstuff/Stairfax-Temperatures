@@ -13,10 +13,3 @@ line = 43
 symbol = "hitType"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/474/474.c"
-line = 63
-symbol = "hitCount"
-from = "int"
-to = "uintptr_t"

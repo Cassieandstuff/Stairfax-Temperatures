@@ -6,3 +6,10 @@ line = 55
 symbol = "p1"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/dll/WM/dll_020D_wmseqpoint.h"
+line = 55
+symbol = "p2"
+from = "int"
+to = "uintptr_t"

@@ -2,7 +2,7 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/557_DFP_seqpoin/DFP_seqpoin.c"
-line = 118
-symbol = "gameBit"
+line = 102
+symbol = "p2"
 from = "int"
 to = "uintptr_t"

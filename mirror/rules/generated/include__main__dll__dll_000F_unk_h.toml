@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/dll/dll_000F_unk.h"
-line = 32
-symbol = "a"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_000F_unk.h"
-line = 32
-symbol = "b"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_000F_unk.h"
 line = 48
 symbol = "x"
 from = "u32"

@@ -9,7 +9,7 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/224_SwarmBaddie/SwarmBaddie.c"
-line = 58
-symbol = "pathEnded"
+line = 136
+symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"

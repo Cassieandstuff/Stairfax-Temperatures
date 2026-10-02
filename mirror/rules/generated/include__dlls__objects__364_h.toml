@@ -2,6 +2,13 @@
 
 [[pointer.retype]]
 file = "decomp/include/dlls/objects/364.h"
+line = 83
+symbol = "renderArg2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/dlls/objects/364.h"
 line = 89
 symbol = "renderArg2"
 from = "int"

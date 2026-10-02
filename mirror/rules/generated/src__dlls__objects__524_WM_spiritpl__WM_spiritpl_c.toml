@@ -9,6 +9,13 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/524_WM_spiritpl/WM_spiritpl.c"
+line = 216
+symbol = "p2"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/524_WM_spiritpl/WM_spiritpl.c"
 line = 235
 symbol = "ident"
 from = "u32"

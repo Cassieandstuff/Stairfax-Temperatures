@@ -2,21 +2,7 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/644/644.c"
-line = 87
-symbol = "p2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/644/644.c"
 line = 92
-symbol = "p2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/644/644.c"
-line = 110
 symbol = "p2"
 from = "int"
 to = "uintptr_t"

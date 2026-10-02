@@ -6,10 +6,3 @@ line = 33
 symbol = "gDFropenodeTextureAssetIds"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/373_DFropenode/DFropenode.c"
-line = 270
-symbol = "allocSize"
-from = "s32"
-to = "uintptr_t"

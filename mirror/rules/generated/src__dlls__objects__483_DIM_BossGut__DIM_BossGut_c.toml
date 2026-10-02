@@ -28,13 +28,6 @@ symbol = "brightness"
 from = "u32"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
-line = 257
-symbol = "count"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
 line = 42

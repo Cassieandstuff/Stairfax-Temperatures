@@ -7,7 +7,9 @@ symbol = "value"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.ret]]
+[[pointer.retype]]
 file = "decomp/include/main/maketex_api.h"
-func = "arrayIndexOf"
+line = 26
+symbol = "key"
+from = "int"
 to = "uintptr_t"

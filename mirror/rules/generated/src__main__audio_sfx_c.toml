@@ -16,20 +16,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/audio_sfx.c"
-line = 670
-symbol = "vr"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio_sfx.c"
-line = 682
-symbol = "pr"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio_sfx.c"
 line = 685
 symbol = "hi"
 from = "int"
@@ -41,15 +27,3 @@ line = 359
 from = "u32"
 to = "uintptr_t"
 occurrence = 1
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/audio_sfx.c"
-line = 671
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/audio_sfx.c"
-line = 683
-from = "u32"
-to = "uintptr_t"

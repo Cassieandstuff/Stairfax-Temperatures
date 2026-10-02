@@ -7,23 +7,10 @@ symbol = "gGroundBaddieModelChainIds"
 from = "u32"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/sharpclaw.c"
-line = 653
-symbol = "msgId"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/202/sharpclaw.c"
 line = 537
 from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/202/sharpclaw.c"
-line = 687
-from = "u32"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

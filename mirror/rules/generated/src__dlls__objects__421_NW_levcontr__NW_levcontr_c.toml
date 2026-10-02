@@ -14,13 +14,6 @@ symbol = "rescueBit"
 from = "u32"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/421_NW_levcontr/NW_levcontr.c"
-line = 151
-symbol = "timerActive"
-from = "u32"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/421_NW_levcontr/NW_levcontr.c"
 line = 224

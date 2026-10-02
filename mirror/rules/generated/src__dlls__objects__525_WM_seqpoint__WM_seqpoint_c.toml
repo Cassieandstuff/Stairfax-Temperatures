@@ -6,3 +6,10 @@ line = 202
 symbol = "obj"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/525_WM_seqpoint/WM_seqpoint.c"
+line = 202
+symbol = "p2"
+from = "int"
+to = "uintptr_t"

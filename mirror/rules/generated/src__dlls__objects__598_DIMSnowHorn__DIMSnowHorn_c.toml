@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/598_DIMSnowHorn/DIMSnowHorn.c"
-line = 537
-symbol = "bit_a"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/598_DIMSnowHorn/DIMSnowHorn.c"
-line = 538
-symbol = "id_a"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/598_DIMSnowHorn/DIMSnowHorn.c"
 line = 651
 symbol = "idx"
 from = "int"
@@ -32,12 +18,5 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/598_DIMSnowHorn/DIMSnowHorn.c"
 line = 1127
 symbol = "p2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/598_DIMSnowHorn/DIMSnowHorn.c"
-line = 1397
-symbol = "bit2"
 from = "int"
 to = "uintptr_t"

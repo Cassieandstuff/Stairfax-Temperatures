@@ -2,22 +2,8 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
-line = 69
-symbol = "siblingSeqId"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
 line = 204
 symbol = "fwdArg2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
-line = 428
-symbol = "hitCount"
 from = "int"
 to = "uintptr_t"
 

@@ -2,7 +2,7 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/240_WarpPoint/WarpPoint.c"
-line = 58
-symbol = "warpId"
+line = 76
+symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"

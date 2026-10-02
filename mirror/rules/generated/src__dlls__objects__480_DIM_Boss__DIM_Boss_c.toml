@@ -51,13 +51,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
-line = 1309
-symbol = "mapDirIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
 line = 1310
 symbol = "statusFlags"
 from = "u32"
@@ -81,13 +74,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
 line = 1679
 symbol = "localVec"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
-line = 1681
-symbol = "mapDir"
 from = "u32"
 to = "uintptr_t"
 

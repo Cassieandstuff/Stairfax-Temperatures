@@ -103,6 +103,8 @@ class Graph:
         self.subnodes = {}                # SUB node -> (right-operand slots, right is SEED)
         self.copy_pred = defaultdict(set) # dst -> {src} for DIRECT value copies only
         self.recon = set()                # slots cast straight back to a pointer
+        self.dispatch = defaultdict(set)  # (fn-ptr field name, arity) -> {function USR}
+        self.icalls = []                  # ((field name, arity), arg index, tokens, direct)
         self.macro_skips = 0
 
     def flow(self, src, dst, copy=False):
@@ -142,6 +144,7 @@ class Analyzer:
         self.index = ci.Index.create()
         self.subs = {}                    # id -> (left cursor, right cursor) of `a - b`
         self.tu_tag = "0"                 # makes SUB node names unique across worker TUs
+        self.varfield = {}                # var USR -> fn-ptr field name it was loaded from
 
     # --- expression value sources -------------------------------------------
     def sources(self, e) -> set[str]:
@@ -249,6 +252,39 @@ class Analyzer:
             else:
                 self.g.flow(s, dst_slot, copy=True)       # direct copy: both ways
 
+    @staticmethod
+    def strip(e):
+        """Peel parens / implicit conversions / casts / derefs."""
+        while e is not None and e.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR, K.CSTYLE_CAST_EXPR,
+                                           K.UNARY_OPERATOR):
+            kids = list(e.get_children())
+            if not kids:
+                return e
+            e = kids[-1]
+        return e
+
+    def func_ref(self, e):
+        """(USR, arity) of a function named directly (through casts), else None."""
+        e = self.strip(e)
+        if e is not None and e.kind == K.DECL_REF_EXPR and e.referenced is not None \
+                and e.referenced.kind == K.FUNCTION_DECL:
+            fn = e.referenced
+            return (fn.get_usr(), len(list(fn.get_arguments())))
+        return None
+
+    def fnptr_field_name(self, e):
+        """Field name if e (through casts/parens/derefs) reads a function-pointer
+        struct field, or a variable previously loaded from one."""
+        e = self.strip(e)
+        if e is None:
+            return None
+        if e.kind == K.MEMBER_REF_EXPR and e.referenced is not None and \
+                e.referenced.kind == K.FIELD_DECL:
+            return e.referenced.spelling
+        if e.kind == K.DECL_REF_EXPR and e.referenced is not None:
+            return self.varfield.get(e.referenced.get_usr())
+        return None
+
     def direct_slot(self, e):
         """The slot an expression reads *directly* (through parens / implicit
         conversions / int->int casts), or None if it's arithmetic or a constant."""
@@ -277,7 +313,8 @@ class Analyzer:
                     af = rel(a.location.file.name if a.location.file else None)
                     if af:
                         self.g.decls[f"param:{c.get_usr()}#{i}"].add(
-                            (af, a.location.line, a.spelling, a.type.spelling, "param"))
+                            (af, a.location.line, a.spelling, a.type.spelling,
+                             f"param:{c.spelling}:{i}"))
                     self.g.flow(f"param:{c.get_usr()}#{i}", f"var:{a.get_usr()}")
                     self.g.flow(f"var:{a.get_usr()}", f"param:{c.get_usr()}#{i}")
         elif k == K.VAR_DECL and is_narrow_int(c.type):
@@ -315,6 +352,43 @@ class Analyzer:
             kids = list(c.get_children())
             if kids and is_narrow_int(fn.result_type):
                 self.sink(f"ret:{fn.get_usr()}", kids[0])
+        # --- function-pointer dispatch (DLL interface tables) ---------------
+        if k == K.INIT_LIST_EXPR:
+            rt = c.type.get_canonical()
+            if rt.kind == T.RECORD:
+                for fld, el in zip(rt.get_fields(), c.get_children()):
+                    fu = self.func_ref(el)
+                    if fu:
+                        self.g.dispatch[(fld.spelling, fu[1])].add(fu[0])
+        if k == K.BINARY_OPERATOR and self.binop(c) == "=":
+            kids = list(c.get_children())
+            if len(kids) == 2:
+                lhs = self.strip(kids[0])
+                fu = self.func_ref(kids[1])
+                if fu and lhs is not None and lhs.kind == K.MEMBER_REF_EXPR and lhs.referenced is not None:
+                    self.g.dispatch[(lhs.referenced.spelling, fu[1])].add(fu[0])
+                fname = self.fnptr_field_name(kids[1])
+                if fname and lhs is not None and lhs.kind == K.DECL_REF_EXPR and lhs.referenced is not None:
+                    self.varfield[lhs.referenced.get_usr()] = fname
+        if k == K.VAR_DECL:
+            kids = [ch for ch in c.get_children() if ch.kind != K.TYPE_REF]
+            if kids:
+                fname = self.fnptr_field_name(kids[-1])
+                if fname:
+                    self.varfield[c.get_usr()] = fname
+        if k == K.CALL_EXPR and (c.referenced is None or c.referenced.kind != K.FUNCTION_DECL):
+            kids = list(c.get_children())
+            fname = self.fnptr_field_name(kids[0]) if kids else None
+            if fname:
+                args = list(c.get_arguments())
+                for i, a in enumerate(args):
+                    toks = self.sources(a)
+                    if toks:
+                        # key (field name, arity): a call only reaches functions with the
+                        # same parameter count; same-named fields in other interface
+                        # structs with other signatures don't get its arguments.
+                        self.g.icalls.append(((fname, len(args)), i, sorted(toks),
+                                              self.direct_slot(a) is not None))
         if k in (K.CSTYLE_CAST_EXPR, K.UNEXPOSED_EXPR) and is_ptrish(c.type) and \
                 c.type.get_canonical().kind == T.POINTER:
             kids = list(c.get_children())
@@ -352,30 +426,104 @@ class Analyzer:
         self.visit(tu.cursor)
 
     # --- solve -------------------------------------------------------------
+    def resolve_indirect(self):
+        """Indirect call through fn-ptr field NAME -> arg i flows into param i of
+        every function placed in a field of that name (DLL interface tables:
+        ObjectDescriptorNN.render <-> ObjectInterface.render)."""
+        n = 0
+        for (fname, i, toks, direct) in self.g.icalls:
+            for fu in self.g.dispatch.get(fname, ()):
+                dst = f"param:{fu}#{i}"
+                for t in toks:
+                    if t == "SEED":
+                        self.g.seeds.add(dst)
+                    elif t.startswith("SUB:"):
+                        continue
+                    else:
+                        self.g.flow(t.lstrip("~"), dst, copy=direct and not t.startswith("~"))
+                        n += 1
+        self.indirect_edges = n
+
     def solve(self) -> set[str]:
-        """Carrying = closure of the seeds (pointer->int casts) and reconstruction
-        evidence (ints cast straight back to pointers), forward over all value
-        flow and BACKWARD over direct copies only (a variable passed straight into
-        a carrying param must carry too, or it truncates first; an offset added to
-        a pointer is never pulled in). SUB nodes (`a - b`) whose right operand
-        carries are differences, so they're disabled and we re-solve; disabling only
-        removes flow, so this terminates."""
+        """Two facts, kept apart so they can't alternate through hub slots:
+          MUST: a slot cast straight back to a pointer ((T*)x) must hold one. This
+                propagates BACKWARD over direct copies (a variable passed straight
+                into it must carry too, or it truncates first).
+          MAY:  anything pointer-valued flows FORWARD (assignment, args, returns,
+                pointer-preserving arithmetic) from the seeds ((int)ptr casts)
+                and from the MUST set.
+        Backward never starts from a slot that's carrying only because something
+        flowed in. Otherwise one quirk (a gamebit value cast to a pointer, a pointer
+        logged through logPrintf) floods every caller of a hub param (mmAlloc's
+        size, logPrintf's args) via forward-then-backward alternation.
+        SUB nodes (`a - b`) whose right operand carries are differences, so they're
+        disabled and we re-solve; that only removes flow, so it terminates."""
+        must = set(self.g.recon)
+        work = list(must)
+        while work:                                   # backward over copies only
+            s = work.pop()
+            for src in self.g.copy_pred.get(s, ()):
+                if src not in must and not src.startswith("SUB:"):
+                    must.add(src)
+                    work.append(src)
         disabled: set[str] = set()
         while True:
-            carrying = {s for s in (self.g.seeds | self.g.recon) if s not in disabled}
+            carrying = {x for x in (self.g.seeds | must) if x not in disabled}
             work = list(carrying)
-            while work:
+            while work:                               # forward over all flow
                 s = work.pop()
-                nxt = set(self.g.edges.get(s, ())) | self.g.copy_pred.get(s, set())
-                for d in nxt:
+                for d in self.g.edges.get(s, ()):
                     if d not in carrying and d not in disabled:
                         carrying.add(d)
                         work.append(d)
             newly = {n for n, (rights, rseed) in self.g.subnodes.items()
                      if n not in disabled and (rseed or rights & carrying)}
             if not newly:
-                return {s for s in carrying if not s.startswith("SUB:")}
+                self.disabled = disabled
+                self.must = must
+                return {x for x in carrying if not x.startswith("SUB:")}
             disabled |= newly
+
+
+def explain(an, carrying, name, limit=4):
+    """Print, for carrying slots declared as `name`, the shortest chain from a
+    seed ((int)ptr cast) or reconstruction ((T*)x) to it."""
+    from collections import deque
+    dis = getattr(an, "disabled", set())
+    label = lambda sl: ", ".join(sorted({f"{n}@{f}:{l}" for (f, l, n, t, k) in
+                                         an.g.decls.get(sl, ())})[:1]) or sl[:60]
+    copy_succ = defaultdict(set)                      # reverse of copy_pred
+    for d, srcs in an.g.copy_pred.items():
+        for s0 in srcs:
+            copy_succ[d].add(s0)
+    starts = [(x, "seed") for x in an.g.seeds] + [(x, "recon") for x in an.g.recon]
+    parent, q = {}, deque()
+    for x, why in starts:
+        if x not in parent and x not in dis:
+            parent[x] = (None, why)
+            q.append(x)
+    while q:
+        u = q.popleft()
+        for v in an.g.edges.get(u, ()):
+            if v not in parent and v not in dis:
+                kind = "copy" if u in an.g.copy_pred.get(v, ()) else "arith/flow"
+                parent[v] = (u, kind)
+                q.append(v)
+        if u in getattr(an, "must", set()):           # backward only from MUST slots
+            for v in copy_succ.get(u, ()):
+                if v not in parent and v not in dis and v in an.must:
+                    parent[v] = (u, "BACKWARD copy")
+                    q.append(v)
+    targets = [sl for sl in carrying if any(n == name for (_, _, n, _, _) in an.g.decls.get(sl, ()))]
+    for sl in targets[:limit]:
+        chain, cur = [], sl
+        while cur is not None:
+            pu, why = parent.get(cur, (None, "?"))
+            chain.append(f"{label(cur)}  [{why}]")
+            cur = pu
+        print(f"--- {label(sl)}")
+        for step in reversed(chain):
+            print(f"      {step}")
 
 
 def _parse_one(args):
@@ -387,7 +535,8 @@ def _parse_one(args):
     g = an.g
     return ({k: set(v) for k, v in g.edges.items()}, set(g.seeds),
             {k: set(v) for k, v in g.decls.items()}, list(g.casts), dict(g.fields),
-            dict(g.subnodes), {k: set(v) for k, v in g.copy_pred.items()}, set(g.recon))
+            dict(g.subnodes), {k: set(v) for k, v in g.copy_pred.items()}, set(g.recon),
+            {k: set(v) for k, v in g.dispatch.items()}, list(g.icalls))
 
 
 def parse_all(tus, jobs: int) -> "Analyzer":
@@ -395,7 +544,7 @@ def parse_all(tus, jobs: int) -> "Analyzer":
     import multiprocessing as mp
     an = Analyzer()
     with mp.Pool(jobs) as pool:
-        for n, (edges, seeds, decls, casts, fields, subs, cpred, recon) in enumerate(
+        for n, (edges, seeds, decls, casts, fields, subs, cpred, recon, disp, icalls) in enumerate(
                 pool.imap_unordered(_parse_one, [(i, str(t)) for i, t in enumerate(tus)]), 1):
             for k, v in edges.items():
                 an.g.edges[k] |= v
@@ -408,8 +557,12 @@ def parse_all(tus, jobs: int) -> "Analyzer":
             for k, v in cpred.items():
                 an.g.copy_pred[k] |= v
             an.g.recon |= recon
+            for k, v in disp.items():
+                an.g.dispatch[k] |= v
+            an.g.icalls += icalls
             if n % 100 == 0:
                 print(f"  parsed {n}/{len(tus)}", file=sys.stderr)
+    an.resolve_indirect()
     return an
 
 
@@ -429,6 +582,8 @@ def main(argv):
     ap.add_argument("--json", metavar="PATH")
     import os
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4)
+    ap.add_argument("--explain", metavar="NAME", action="append", default=[],
+                    help="print the seed->slot chain for carrying slots named NAME")
     args = ap.parse_args(argv)
 
     # Parse against a header tree built from HAND rules only (u32 pinned etc.), never
@@ -438,9 +593,13 @@ def main(argv):
     tus = tu_list(args.tus)
     an = parse_all(tus, args.jobs)
     carrying = an.solve()
+    for nm in args.explain:
+        explain(an, carrying, nm)
+    if args.explain:
+        return 0
 
     # decl sites to retype (vars/params) and functions to ret-widen
-    retypes, rets, fields, port_sites = [], [], [], []
+    retypes, rets, fields, port_sites, pretypes = [], [], [], [], []
     for s in sorted(carrying):
         if s.startswith("field:"):
             if s in an.g.fields:
@@ -454,6 +613,9 @@ def main(argv):
                 continue
             if kind == "ret":
                 rets.append((f, name))
+            elif kind.startswith("param:") and not name:
+                _, fn, idx = kind.split(":")
+                pretypes.append((f, line, fn, int(idx), ty))
             else:
                 retypes.append((f, line, name, ty))
     # narrowing casts whose operand is a pointer or a carrying slot
@@ -466,6 +628,9 @@ def main(argv):
 
     summary = {
         "tus": len(tus), "seeds": len(an.g.seeds), "recon_evidence": len(an.g.recon),
+        "must_slots": len(getattr(an, "must", ())),
+        "dispatch_fields": len(an.g.dispatch), "indirect_calls": len(an.g.icalls),
+        "indirect_edges": getattr(an, "indirect_edges", 0),
         "carrying_slots": len(carrying),
         "retype_sites": len(set(retypes)), "ret_funcs": len(set(rets)),
         "widen_casts": len(set(widen)), "carrying_fields": len(set(fields)),
@@ -483,10 +648,10 @@ def main(argv):
             print(f"  {x}", file=sys.stderr)
     if args.report_only:
         return 0
-    return write_rules(retypes, rets, widen)
+    return write_rules(retypes, rets, widen, pretypes)
 
 
-def write_rules(retypes, rets, widen) -> int:
+def write_rules(retypes, rets, widen, pretypes=()) -> int:
     """Emit generated rules, each pre-validated against the source text: a rule
     whose site doesn't match textually (macro-expanded code, `int a, b;`
     multi-declarators, spelling mismatches) is DROPPED and reported, never
@@ -515,6 +680,13 @@ def write_rules(retypes, rets, widen) -> int:
             continue
         out[f].append(f'[[pointer.retype]]\nfile = "{f}"\nline = {line}\nsymbol = "{name}"\n'
                       f'from = "{ty}"\nto = "uintptr_t"\n')
+    for (f, line, fn, idx, ty) in sorted(set(pretypes)):        # unnamed params
+        ty = ty.split("[")[0].strip()
+        if not passes._retype_param(text(f)[line - 1], fn, idx, ty, "uintptr_t"):
+            dropped.append(f"retype_param {f}:{line} {fn}#{idx} {ty} (no textual match)")
+            continue
+        out[f].append(f'[[pointer.retype_param]]\nfile = "{f}"\nline = {line}\nfunc = "{fn}"\n'
+                      f'index = {idx}\nfrom = "{ty}"\nto = "uintptr_t"\n')
     for (f, fn) in sorted(set(rets)):
         if (f, fn) in covered_ret:
             continue

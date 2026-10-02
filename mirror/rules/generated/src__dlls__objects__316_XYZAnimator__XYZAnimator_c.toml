@@ -30,13 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 48
-symbol = "t"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
 line = 51
 symbol = "boundsBufferOffset"
 from = "int"
@@ -72,29 +65,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 143
-symbol = "polygonGroupIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 144
-symbol = "polygonGroupType"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
 line = 151
 symbol = "groupDataOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 218
-symbol = "polygonGroupIndex"
 from = "int"
 to = "uintptr_t"
 

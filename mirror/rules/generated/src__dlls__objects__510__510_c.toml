@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/510/510.c"
-line = 77
-symbol = "mapGameBit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/510/510.c"
 line = 199
 symbol = "ident"
 from = "u32"

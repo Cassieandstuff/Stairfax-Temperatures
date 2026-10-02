@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
-line = 366
-symbol = "moveId"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
 line = 747
 symbol = "a0"
 from = "int"

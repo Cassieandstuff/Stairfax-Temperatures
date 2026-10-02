@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/main/shader.c"
-line = 143
-symbol = "gMapPendingFileFlags"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
 line = 189
 symbol = "gShaderMapRomBuffers"
 from = "int"
@@ -18,13 +11,6 @@ to = "uintptr_t"
 file = "decomp/src/main/shader.c"
 line = 399
 symbol = "idx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 1230
-symbol = "frame"
 from = "int"
 to = "uintptr_t"
 
@@ -51,27 +37,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/shader.c"
-line = 2133
-symbol = "ff"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 2263
-symbol = "d"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 2352
-symbol = "mapDir"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
 line = 2379
 symbol = "zc"
 from = "int"
@@ -93,35 +58,9 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/shader.c"
-line = 3070
-symbol = "tailLen"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 3244
-symbol = "celly"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 3245
-symbol = "cellx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
 line = 3480
 symbol = "gShaderMapRomBuffers"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/src/main/shader.c"
-func = "ViewFrustum_IsSphereVisible"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

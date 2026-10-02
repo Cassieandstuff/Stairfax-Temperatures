@@ -51,13 +51,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 375
-symbol = "n"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 377
 symbol = "tmpA"
 from = "int"
@@ -130,13 +123,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 539
 symbol = "c30"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 541
-symbol = "n"
 from = "int"
 to = "uintptr_t"
 
@@ -501,13 +487,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 1830
 symbol = "result"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 1886
-symbol = "p2"
 from = "int"
 to = "uintptr_t"
 

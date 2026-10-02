@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/345/345.c"
-line = 30
-symbol = "shaderIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/345/345.c"
-line = 31
-symbol = "polygonGroupIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/345/345.c"
 line = 62
 symbol = "renderArg2"
 from = "int"

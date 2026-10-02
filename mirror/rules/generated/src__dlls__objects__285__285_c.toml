@@ -6,10 +6,3 @@ line = 99
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/285/285.c"
-line = 120
-symbol = "hitType"
-from = "int"
-to = "uintptr_t"

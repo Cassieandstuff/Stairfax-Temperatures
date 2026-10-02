@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/627_FirePipe/FirePipe.c"
-line = 51
-symbol = "gFirePipeEmitTimerReset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/627_FirePipe/FirePipe.c"
 line = 168
 symbol = "priorityHit"
 from = "int"
@@ -25,13 +18,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/627_FirePipe/FirePipe.c"
 line = 462
 symbol = "bitVal"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/627_FirePipe/FirePipe.c"
-line = 561
-symbol = "clz"
 from = "u32"
 to = "uintptr_t"
 

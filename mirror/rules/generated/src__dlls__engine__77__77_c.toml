@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/77/77.c"
-line = 24
-symbol = "gCameraModeNpcSpeakMode6OrbitAngleOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/77/77.c"
 line = 137
 symbol = "mode"
 from = "int"

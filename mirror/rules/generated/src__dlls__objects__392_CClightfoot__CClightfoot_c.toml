@@ -23,13 +23,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/392_CClightfoot/CClightfoot.c"
-line = 221
-symbol = "moveId"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/392_CClightfoot/CClightfoot.c"
 line = 266
 symbol = "tmp"
 from = "u32"

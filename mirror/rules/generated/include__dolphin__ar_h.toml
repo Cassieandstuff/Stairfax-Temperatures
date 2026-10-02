@@ -10,13 +10,6 @@ to = "uintptr_t"
 [[pointer.retype]]
 file = "decomp/include/dolphin/ar.h"
 line = 59
-symbol = "length"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/dolphin/ar.h"
-line = 59
 symbol = "source"
 from = "u32"
 to = "uintptr_t"

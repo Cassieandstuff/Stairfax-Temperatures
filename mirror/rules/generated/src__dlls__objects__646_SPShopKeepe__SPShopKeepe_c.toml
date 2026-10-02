@@ -30,13 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
-line = 403
-symbol = "count"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
 line = 880
 symbol = "angleDelta"
 from = "int"

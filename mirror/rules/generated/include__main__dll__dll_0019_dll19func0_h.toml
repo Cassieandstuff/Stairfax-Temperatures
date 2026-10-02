@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/dll/dll_0019_dll19func0.h"
-line = 30
-symbol = "animMove"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_0019_dll19func0.h"
 line = 35
 symbol = "moveArg0"
 from = "int"
@@ -19,9 +12,4 @@ file = "decomp/include/main/dll/dll_0019_dll19func0.h"
 line = 35
 symbol = "moveArg1"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/dll/dll_0019_dll19func0.h"
-func = "dll_19_updateHitReaction"
 to = "uintptr_t"

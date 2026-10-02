@@ -7,20 +7,6 @@ symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/280_Duster/Duster.c"
-line = 65
-symbol = "hitResult"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/280_Duster/Duster.c"
-line = 84
-symbol = "floorHitCount"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/280_Duster/Duster.c"
 line = 222

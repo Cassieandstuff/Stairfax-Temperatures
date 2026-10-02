@@ -23,13 +23,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/597/597.c"
-line = 283
-symbol = "hitCount"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/597/597.c"
 line = 638
 symbol = "state"
 from = "int"
@@ -172,12 +165,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/597/597.c"
 line = 1438
 from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/597/597.c"
-line = 1842
-from = "u32"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

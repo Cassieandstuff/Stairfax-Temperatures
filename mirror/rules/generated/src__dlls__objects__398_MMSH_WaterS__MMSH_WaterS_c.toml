@@ -2,8 +2,8 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/398_MMSH_WaterS/MMSH_WaterS.c"
-line = 63
-symbol = "hitCount"
+line = 49
+symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 

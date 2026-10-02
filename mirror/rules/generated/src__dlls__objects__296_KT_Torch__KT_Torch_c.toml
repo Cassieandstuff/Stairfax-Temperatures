@@ -6,10 +6,3 @@ line = 33
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/296_KT_Torch/KT_Torch.c"
-line = 44
-symbol = "visibilityGameBit"
-from = "int"
-to = "uintptr_t"

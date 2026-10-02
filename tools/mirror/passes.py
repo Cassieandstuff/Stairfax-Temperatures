@@ -436,7 +436,7 @@ _NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
 def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
     """Merge the [pointer.*] tables from every *.toml under rules_dir."""
     promote, widen, audit, ret, osglob = [], [], [], [], []
-    retype, widen_cast, stride = [], [], []
+    retype, widen_cast, stride, retype_param = [], [], [], []
     # hand-written rules first, then mirror/rules/generated/ (infer_ptr_ints.py)
     gen = sorted((rules_dir / "generated").glob("*.toml")) if generated else []
     for toml in sorted(rules_dir.glob("*.toml")) + gen:
@@ -452,6 +452,7 @@ def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
         retype += p.get("retype", [])
         widen_cast += p.get("widen_cast", [])
         stride += p.get("stride", [])
+        retype_param += p.get("retype_param", [])
         osglob += data.get("osglobals", {}).get("read", [])
     for kind, rs in (("promote", promote), ("ret", ret)):
         for r in rs:
@@ -461,7 +462,7 @@ def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
                     f"{rules_dir} has no file=; symbol rules must be scoped to one TU")
     return {"promote": promote, "widen": widen, "audit": audit,
             "ret": ret, "retype": retype, "widen_cast": widen_cast,
-            "stride": stride, "osglobals": osglob}
+            "stride": stride, "retype_param": retype_param, "osglobals": osglob}
 
 
 def _type_pat(t: str) -> str:
@@ -488,6 +489,37 @@ def _stride(line: str, symbol: str, frm: str, to: str, occurrence: int | None):
     the named variable, so unrelated 4s on the line are untouched."""
     pat = re.compile(rf"(\b{re.escape(symbol)}\s*(?:[+-]=|[+-])\s*){re.escape(frm)}\b")
     return _replace_one(pat, line, lambda m: f"{m.group(1)}{to}", occurrence)
+
+
+def _retype_param(line: str, func: str, index: int, frm: str, to: str):
+    """Retype the index-th (0-based) parameter of `func(...)` on a single-line
+    signature, named or unnamed: `int f(char*, int)` -> `int f(char*, uintptr_t)`."""
+    m = re.search(rf"\b{re.escape(func)}\s*\(", line)
+    if not m:
+        return None
+    start = m.end()
+    depth, i, params, cur = 1, start, [], start
+    while i < len(line) and depth:
+        ch = line[i]
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+            if depth == 0:
+                params.append((cur, i))
+                break
+        elif ch == "," and depth == 1:
+            params.append((cur, i))
+            cur = i + 1
+        i += 1
+    if depth or not (0 <= index < len(params)):
+        return None
+    a, b = params[index]
+    seg = line[a:b]
+    new_seg, n = re.subn(rf"\b{_type_pat(frm)}\b", to, seg, count=1)
+    if not n:
+        return None
+    return line[:a] + new_seg + line[b:]
 
 
 def _replace_one(pat, line, repl, occurrence):
@@ -629,6 +661,23 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         else:
             why = "not found" if cnt == 0 else f"{cnt} matches; set occurrence="
             unmatched.append(f"retype {rel}:{n} '{frm} {sym}': {why}")
+
+    # retype_param: widen the N-th parameter of func on a signature line (works for
+    # unnamed parameters, which retype can't target).
+    for r in rules.get("retype_param", []):
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n = r.get("line")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)):
+            unmatched.append(f"retype_param {rel}:{n}: line out of range")
+            continue
+        nl = _retype_param(lines[n - 1], r["func"], r["index"], r.get("from", "int"),
+                           r.get("to", "uintptr_t"))
+        if nl:
+            lines[n - 1] = nl
+            applied.append(f"retype_param {r['func']}#{r['index']} at line {n}")
+        else:
+            unmatched.append(f"retype_param {rel}:{n} {r['func']}#{r['index']}: no match")
 
     # widen_cast: widen one bare narrowing cast at a line (macro bodies included).
     for r in rules.get("widen_cast", []):

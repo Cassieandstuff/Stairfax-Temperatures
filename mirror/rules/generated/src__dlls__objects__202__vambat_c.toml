@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/vambat.c"
-line = 103
-symbol = "msgFlag"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/vambat.c"
 line = 195
 symbol = "gridB"
 from = "int"

@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/590/590.c"
-line = 95
-symbol = "hit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/590/590.c"
 line = 167
 symbol = "setup"
 from = "int"

@@ -9,21 +9,9 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/2/maketex.c"
-line = 649
-symbol = "idx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/2/maketex.c"
 line = 709
 symbol = "key"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/src/dlls/engine/2/maketex.c"
-func = "arrayIndexOf"
 to = "uintptr_t"
 
 [[pointer.ret]]

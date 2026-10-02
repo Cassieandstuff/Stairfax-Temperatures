@@ -3,13 +3,6 @@
 [[pointer.retype]]
 file = "decomp/include/main/obj_message.h"
 line = 10
-symbol = "message"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/obj_message.h"
-line = 10
 symbol = "param"
 from = "u32"
 to = "uintptr_t"
@@ -17,21 +10,7 @@ to = "uintptr_t"
 [[pointer.retype]]
 file = "decomp/include/main/obj_message.h"
 line = 11
-symbol = "message"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/obj_message.h"
-line = 11
 symbol = "param"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/obj_message.h"
-line = 12
-symbol = "message"
 from = "u32"
 to = "uintptr_t"
 

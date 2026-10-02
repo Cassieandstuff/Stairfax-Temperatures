@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/297_CampFire/CampFire.c"
-line = 72
-symbol = "effectCount"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/297_CampFire/CampFire.c"
 line = 124
 symbol = "flickerOffset"
 from = "int"

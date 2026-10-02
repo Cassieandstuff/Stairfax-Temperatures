@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 372
-symbol = "hit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
 line = 718
 symbol = "state"
 from = "int"
@@ -19,13 +12,6 @@ file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
 line = 720
 symbol = "commandSpawnIds"
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 1372
-symbol = "moveId"
-from = "int"
 to = "uintptr_t"
 
 [[pointer.retype]]

@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/21/21.c"
-line = 26
-symbol = "sCurvesCachedHitCount"
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
-line = 108
-symbol = "hits"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
 line = 113
 symbol = "ang"
 from = "int"
@@ -89,13 +75,6 @@ file = "decomp/src/dlls/engine/21/21.c"
 line = 870
 symbol = "pointIndices"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
-line = 1417
-symbol = "bit"
-from = "u32"
 to = "uintptr_t"
 
 [[pointer.ret]]

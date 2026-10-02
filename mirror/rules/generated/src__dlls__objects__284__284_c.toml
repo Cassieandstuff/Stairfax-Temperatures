@@ -6,10 +6,3 @@ line = 284
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/284/284.c"
-line = 295
-symbol = "gameBit"
-from = "int"
-to = "uintptr_t"

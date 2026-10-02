@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/pinpon.c"
-line = 121
-symbol = "cmd"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/pinpon.c"
 line = 307
 symbol = "randVal"
 from = "u32"

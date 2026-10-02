@@ -7,15 +7,5 @@ to = "uintptr_t"
 
 [[pointer.ret]]
 file = "decomp/include/main/objhits.h"
-func = "ObjHits_GetPriorityHitWithPosition"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/objhits.h"
-func = "ObjHits_PollPriorityHitEffectWithCooldown"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/objhits.h"
 func = "ObjHits_PollPriorityHitWithCooldown"
 to = "uintptr_t"

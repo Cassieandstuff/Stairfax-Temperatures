@@ -30,13 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/625/625.c"
-line = 214
-symbol = "count"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
 line = 244
 symbol = "maxIndex"
 from = "int"
@@ -51,28 +44,7 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/625/625.c"
-line = 248
-symbol = "count"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
-line = 278
-symbol = "maxIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
 line = 752
 symbol = "p2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
-line = 793
-symbol = "evOut"
 from = "int"
 to = "uintptr_t"

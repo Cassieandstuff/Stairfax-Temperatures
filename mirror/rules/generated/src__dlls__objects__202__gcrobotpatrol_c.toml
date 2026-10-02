@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/gcrobotpatrol.c"
-line = 126
-symbol = "childId"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/gcrobotpatrol.c"
-line = 151
-symbol = "msg"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/gcrobotpatrol.c"
 line = 344
 symbol = "flag"
 from = "int"

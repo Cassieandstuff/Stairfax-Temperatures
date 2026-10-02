@@ -9,27 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/audio.c"
-line = 53
-symbol = "gMidiWadPayloadSize"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
-line = 58
-symbol = "gMidiWadLoadedSize"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
-line = 105
-symbol = "size"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
 line = 237
 symbol = "request"
 from = "u32"
@@ -44,51 +23,9 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/audio.c"
-line = 253
-symbol = "size"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
-line = 680
-symbol = "group"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
-line = 834
-symbol = "size"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
-line = 1225
-symbol = "track"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
-line = 1230
-symbol = "size"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
 line = 1231
 symbol = "arenaOffset"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/audio.c"
-line = 1287
-symbol = "size2"
-from = "u32"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -116,10 +53,4 @@ occurrence = 2
 file = "decomp/src/main/audio.c"
 line = 270
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/audio.c"
-line = 1261
-from = "int"
 to = "uintptr_t"

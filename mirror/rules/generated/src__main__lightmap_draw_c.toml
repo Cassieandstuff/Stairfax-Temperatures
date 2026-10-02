@@ -35,20 +35,6 @@ symbol = "state"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/main/lightmap_draw.c"
-line = 645
-symbol = "a"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/lightmap_draw.c"
-line = 645
-symbol = "b"
-from = "u32"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/main/lightmap_draw.c"
 line = 324

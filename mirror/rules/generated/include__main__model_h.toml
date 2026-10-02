@@ -6,17 +6,3 @@ line = 476
 symbol = "jointIndex"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/model.h"
-line = 495
-symbol = "id"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/model.h"
-line = 506
-symbol = "arg"
-from = "int"
-to = "uintptr_t"

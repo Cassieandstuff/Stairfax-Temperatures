@@ -6,8 +6,3 @@ line = 21
 symbol = "a"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/objprint_api.h"
-func = "characterTrackJointList"
-to = "uintptr_t"

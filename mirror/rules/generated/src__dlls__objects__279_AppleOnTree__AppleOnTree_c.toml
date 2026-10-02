@@ -35,13 +35,6 @@ symbol = "placement"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/279_AppleOnTree/AppleOnTree.c"
-line = 645
-symbol = "eventBit"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.ret]]
 file = "decomp/src/dlls/objects/279_AppleOnTree/AppleOnTree.c"
 func = "appleontree_bounceGroundStep"

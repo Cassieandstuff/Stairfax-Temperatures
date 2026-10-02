@@ -16,42 +16,7 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/700_Andross/Andross.c"
-line = 386
-symbol = "move"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/700_Andross/Andross.c"
-line = 393
-symbol = "move"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/700_Andross/Andross.c"
-line = 572
-symbol = "gdl"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/700_Andross/Andross.c"
 line = 579
 symbol = "gAndrossSpawnObjectIds"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/700_Andross/Andross.c"
-line = 1415
-symbol = "mapDirIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/700_Andross/Andross.c"
-line = 1585
-symbol = "mapDirIndex"
 from = "int"
 to = "uintptr_t"

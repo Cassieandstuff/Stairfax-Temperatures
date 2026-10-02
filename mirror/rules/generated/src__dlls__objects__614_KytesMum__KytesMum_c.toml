@@ -42,13 +42,6 @@ symbol = "p2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/614_KytesMum/KytesMum.c"
-line = 386
-symbol = "startMove"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/614_KytesMum/KytesMum.c"
 line = 324

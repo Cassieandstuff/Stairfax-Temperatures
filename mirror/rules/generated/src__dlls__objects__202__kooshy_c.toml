@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/kooshy.c"
-line = 136
-symbol = "msgFlag"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/kooshy.c"
 line = 172
 symbol = "gridB"
 from = "int"

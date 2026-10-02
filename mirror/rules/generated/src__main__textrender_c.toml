@@ -23,13 +23,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/textrender.c"
-line = 1070
-symbol = "size"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/textrender.c"
 line = 1133
 symbol = "sSubtitleCtrlCmdScratch"
 from = "u32"

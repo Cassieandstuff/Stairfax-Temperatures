@@ -9,14 +9,7 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/225_WispBaddie/WispBaddie.c"
-line = 40
-symbol = "pathEnded"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/225_WispBaddie/WispBaddie.c"
-line = 136
-symbol = "hitPriority"
+line = 118
+symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"

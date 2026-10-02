@@ -6,8 +6,3 @@ line = 41
 symbol = "p2"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/dll/DR/dll_0261_drlasercannon.h"
-func = "drlasercannon_aimAtTarget"
-to = "uintptr_t"

@@ -20,8 +20,3 @@ line = 108
 symbol = "p2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/dll/dll_024D_bossdrakor.h"
-func = "bossdrakor_chooseNextMove"
-to = "uintptr_t"

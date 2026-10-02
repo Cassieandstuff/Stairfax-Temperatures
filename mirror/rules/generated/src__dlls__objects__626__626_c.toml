@@ -30,13 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/626/626.c"
-line = 426
-symbol = "move"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/626/626.c"
 line = 427
 symbol = "count"
 from = "int"
@@ -60,13 +53,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/626/626.c"
 line = 1005
 symbol = "p2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/626/626.c"
-line = 1047
-symbol = "hit"
 from = "int"
 to = "uintptr_t"
 

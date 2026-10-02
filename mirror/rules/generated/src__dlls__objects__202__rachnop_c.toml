@@ -27,10 +27,3 @@ line = 224
 symbol = "angle"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/rachnop.c"
-line = 459
-symbol = "eventKind"
-from = "int"
-to = "uintptr_t"

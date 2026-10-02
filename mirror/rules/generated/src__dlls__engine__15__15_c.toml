@@ -2,36 +2,8 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/15/15.c"
-line = 27
-symbol = "gPlayerMoveFastMoveId"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/15/15.c"
-line = 28
-symbol = "gPlayerMoveSlowMoveId"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/15/15.c"
 line = 30
 symbol = "playerOverride"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/15/15.c"
-line = 332
-symbol = "a"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/15/15.c"
-line = 332
-symbol = "b"
 from = "u32"
 to = "uintptr_t"
 
@@ -46,17 +18,5 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/15/15.c"
 line = 871
 symbol = "mapBlock"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/15/15.c"
-line = 293
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/15/15.c"
-line = 298
 from = "int"
 to = "uintptr_t"

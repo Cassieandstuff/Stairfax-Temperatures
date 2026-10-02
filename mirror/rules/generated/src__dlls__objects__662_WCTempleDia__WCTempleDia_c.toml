@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/662_WCTempleDia/WCTempleDia.c"
-line = 35
-symbol = "slot"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/662_WCTempleDia/WCTempleDia.c"
 line = 93
 symbol = "p2"
 from = "int"

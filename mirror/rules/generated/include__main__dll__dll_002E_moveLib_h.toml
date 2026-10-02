@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/dll/dll_002E_moveLib.h"
-line = 101
-symbol = "point"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_002E_moveLib.h"
-line = 103
-symbol = "reattackDelayBase"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_002E_moveLib.h"
 line = 103
 symbol = "reattackDelayMin"
 from = "int"
@@ -25,12 +11,5 @@ to = "uintptr_t"
 file = "decomp/include/main/dll/dll_002E_moveLib.h"
 line = 105
 symbol = "curvePointIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_002E_moveLib.h"
-line = 108
-symbol = "move"
 from = "int"
 to = "uintptr_t"

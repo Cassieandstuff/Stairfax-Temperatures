@@ -9,20 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/25/25.c"
-line = 405
-symbol = "hit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/25/25.c"
-line = 655
-symbol = "animMove"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/25/25.c"
 line = 698
 symbol = "gridB"
 from = "int"
@@ -68,11 +54,6 @@ file = "decomp/src/dlls/engine/25/25.c"
 line = 1203
 symbol = "grid0"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/src/dlls/engine/25/25.c"
-func = "dll_19_updateHitReaction"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

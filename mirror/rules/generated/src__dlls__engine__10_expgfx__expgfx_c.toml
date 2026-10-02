@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 751
-symbol = "frame"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 781
-symbol = "a3"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 786
 symbol = "screenPos"
 from = "s32"
@@ -131,20 +117,6 @@ file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 3559
 symbol = "slotPoolBase"
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 3964
-symbol = "poolIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 4048
-symbol = "poolIndex"
-from = "int"
 to = "uintptr_t"
 
 [[pointer.retype]]

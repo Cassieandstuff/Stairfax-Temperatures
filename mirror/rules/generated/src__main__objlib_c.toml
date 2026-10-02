@@ -24,21 +24,7 @@ to = "uintptr_t"
 [[pointer.retype]]
 file = "decomp/src/main/objlib.c"
 line = 479
-symbol = "message"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
-line = 479
 symbol = "param"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
-line = 518
-symbol = "message"
 from = "u32"
 to = "uintptr_t"
 
@@ -52,34 +38,13 @@ to = "uintptr_t"
 [[pointer.retype]]
 file = "decomp/src/main/objlib.c"
 line = 574
-symbol = "message"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
-line = 574
 symbol = "param"
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
-line = 602
-symbol = "queueBytes"
-from = "int"
 to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/objlib.c"
 line = 643
-symbol = "collisionType"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
-line = 666
 symbol = "collisionType"
 from = "int"
 to = "uintptr_t"
@@ -100,35 +65,9 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/objlib.c"
-line = 973
-symbol = "pointIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
-line = 976
-symbol = "jointIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
 line = 989
 symbol = "pointIndex"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objlib.c"
-line = 995
-symbol = "jointIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/src/main/objlib.c"
-func = "ObjHits_PollPriorityHitEffectWithCooldown"
 to = "uintptr_t"
 
 [[pointer.ret]]
@@ -139,11 +78,6 @@ to = "uintptr_t"
 [[pointer.ret]]
 file = "decomp/src/main/objlib.c"
 func = "ObjMsg_Pop"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/src/main/objlib.c"
-func = "ObjTrigger_IsSet"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

@@ -9,29 +9,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/211/211.c"
-line = 474
-symbol = "hitFound"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/211/211.c"
-line = 816
-symbol = "hitFound"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/211/211.c"
 line = 1107
 symbol = "p2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/211/211.c"
-line = 1199
-symbol = "hitCount"
 from = "int"
 to = "uintptr_t"
 

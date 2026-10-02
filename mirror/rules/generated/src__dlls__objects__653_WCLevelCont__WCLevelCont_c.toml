@@ -6,10 +6,3 @@ line = 768
 symbol = "p2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/653_WCLevelCont/WCLevelCont.c"
-line = 782
-symbol = "flag"
-from = "int"
-to = "uintptr_t"

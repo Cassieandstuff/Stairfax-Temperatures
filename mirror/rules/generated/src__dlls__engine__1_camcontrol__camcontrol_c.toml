@@ -2,34 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 157
-symbol = "gCamcontrolActiveActionId"
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 159
-symbol = "gCamcontrolQueuedActionId"
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 168
-symbol = "gCamcontrolSavedActionId"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 240
-symbol = "renderArg2"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
 line = 447
 symbol = "gridFromStorage"
 from = "int"
@@ -46,86 +18,5 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
 line = 449
 symbol = "traceOutStorage"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 885
-symbol = "renderArg2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1192
-symbol = "actionNo"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1337
-symbol = "actionId"
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1337
-symbol = "dataSize"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-func = "Camera_getMode"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1251
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1252
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1253
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1254
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1282
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1283
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1284
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/1_camcontrol/camcontrol.c"
-line = 1285
 from = "int"
 to = "uintptr_t"

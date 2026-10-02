@@ -7,20 +7,6 @@ symbol = "p2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/687/687.c"
-line = 131
-symbol = "i"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/687/687.c"
-line = 153
-symbol = "hit"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/687/687.c"
 line = 81

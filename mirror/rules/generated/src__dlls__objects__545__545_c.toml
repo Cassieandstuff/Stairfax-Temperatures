@@ -13,10 +13,3 @@ line = 116
 symbol = "p2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/545/545.c"
-line = 131
-symbol = "key"
-from = "int"
-to = "uintptr_t"

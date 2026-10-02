@@ -44,13 +44,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
-line = 621
-symbol = "objectTriggerIsSet"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
 line = 622
 symbol = "triggerIsSet"
 from = "u32"
@@ -86,13 +79,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
-line = 721
-symbol = "triggerIsSet"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
 line = 804
 symbol = "gameBit"
 from = "u32"
@@ -116,13 +102,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
 line = 918
 symbol = "renderArg2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
-line = 920
-symbol = "pointIndex"
 from = "int"
 to = "uintptr_t"
 

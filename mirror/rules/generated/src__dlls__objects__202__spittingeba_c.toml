@@ -30,13 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/202/spittingeba.c"
-line = 185
-symbol = "eventKind"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/spittingeba.c"
 line = 223
 symbol = "state"
 from = "int"
