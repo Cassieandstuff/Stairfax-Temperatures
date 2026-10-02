@@ -12,7 +12,7 @@ import build_mirror as bm, passes
 bm.gen_headers(passes.load_pointer_rules(bm.MIRROR / "rules"))   # complete mirror/include
 ok = fail = 0
 with tempfile.TemporaryDirectory() as td:
-    for f in sorted(Path("decomp/src/main").rglob("*.c")):
+    for f in sorted(Path("decomp/src/main").rglob("*.c")) + sorted(Path("decomp/src/dlls").rglob("*.c")):
         r = subprocess.run([bm.CC, *bm.CFLAGS, *bm.INCLUDES,
                             str(f), "-o", f"{td}/p.o"], capture_output=True, text=True)
         hz, _ = bm.implicit_decl_hazards(r.stderr)

@@ -14,25 +14,6 @@ symbol = "mtxBuf"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/main/model.c"
-line = 812
-symbol = "pos"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/model.c"
-line = 813
-symbol = "end"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/src/main/model.c"
-func = "modelLoad_calcSizes"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/main/model.c"
 line = 245

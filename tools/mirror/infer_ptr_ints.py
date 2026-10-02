@@ -137,6 +137,7 @@ class Analyzer:
         self.g = Graph()
         self.index = ci.Index.create()
         self.subs = {}                    # id -> (left cursor, right cursor) of `a - b`
+        self.tu_tag = "0"                 # makes SUB node names unique across worker TUs
 
     # --- expression value sources -------------------------------------------
     def sources(self, e) -> set[str]:
@@ -189,7 +190,7 @@ class Analyzer:
                 # time: record as a guarded flow.
                 if a and b:
                     self.subs[id(e)] = (kids[0], kids[1])
-                    return {f"SUB:{id(e)}"}
+                    return {f"SUB:{self.tu_tag}:{id(e)}"}
                 return a
             if op == ",":
                 return b
@@ -229,7 +230,7 @@ class Analyzer:
                 # `p - n` stays a pointer, `p - q` is a size. Route through a SUB node
                 # the solver disables once its right operand is known to carry.
                 node = s
-                left, right = self.subs[int(s[4:])]
+                left, right = self.subs[int(s.rsplit(":", 1)[1])]
                 rsrc = self.sources(right)
                 self.g.subnodes[node] = ({r for r in rsrc if not r.startswith(("SEED", "SUB:"))},
                                          "SEED" in rsrc)
@@ -343,6 +344,38 @@ class Analyzer:
             disabled |= newly
 
 
+def _parse_one(args):
+    """Worker: parse one TU, return its graph fragment (plain, picklable data)."""
+    i, path = args
+    an = Analyzer()
+    an.tu_tag = str(i)
+    an.parse(Path(path))
+    g = an.g
+    return ({k: set(v) for k, v in g.edges.items()}, set(g.seeds),
+            {k: set(v) for k, v in g.decls.items()}, list(g.casts), dict(g.fields),
+            dict(g.subnodes))
+
+
+def parse_all(tus, jobs: int) -> "Analyzer":
+    """Parse TUs in parallel and merge fragments into one Analyzer graph."""
+    import multiprocessing as mp
+    an = Analyzer()
+    with mp.Pool(jobs) as pool:
+        for n, (edges, seeds, decls, casts, fields, subs) in enumerate(
+                pool.imap_unordered(_parse_one, [(i, str(t)) for i, t in enumerate(tus)]), 1):
+            for k, v in edges.items():
+                an.g.edges[k] |= v
+            an.g.seeds |= seeds
+            for k, v in decls.items():
+                an.g.decls[k] |= v
+            an.g.casts += casts
+            an.g.fields.update(fields)
+            an.g.subnodes.update(subs)
+            if n % 100 == 0:
+                print(f"  parsed {n}/{len(tus)}", file=sys.stderr)
+    return an
+
+
 def tu_list(which: str) -> list[Path]:
     build = [REPO / "decomp" / t for t in bm.read_manifest()]
     if which == "build":
@@ -357,18 +390,16 @@ def main(argv):
     ap.add_argument("--tus", choices=["build", "all"], default="build")
     ap.add_argument("--report-only", action="store_true")
     ap.add_argument("--json", metavar="PATH")
+    import os
+    ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4)
     args = ap.parse_args(argv)
 
     # Parse against a header tree built from HAND rules only (u32 pinned etc.), never
     # from previously generated rules: those would already have widened the
     # declarations, so the analyzer would stop seeing them and drop their rules.
     bm.gen_headers(passes.load_pointer_rules(REPO / "mirror" / "rules", generated=False))
-    an = Analyzer()
     tus = tu_list(args.tus)
-    for i, tu in enumerate(tus, 1):
-        an.parse(tu)
-        if i % 50 == 0:
-            print(f"  parsed {i}/{len(tus)}", file=sys.stderr)
+    an = parse_all(tus, args.jobs)
     carrying = an.solve()
 
     # decl sites to retype (vars/params) and functions to ret-widen

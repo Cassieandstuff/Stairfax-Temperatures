@@ -13,3 +13,10 @@ line = 9
 symbol = "arg3"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/sys/objects.h"
+line = 17
+symbol = "objectId"
+from = "u32"
+to = "uintptr_t"
