@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/objprint.c"
-line = 713
-symbol = "angle"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objprint.c"
 line = 844
 symbol = "iv"
 from = "int"
@@ -32,13 +25,6 @@ to = "uintptr_t"
 file = "decomp/src/main/objprint.c"
 line = 1168
 symbol = "val"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/objprint.c"
-line = 1200
-symbol = "v"
 from = "int"
 to = "uintptr_t"
 

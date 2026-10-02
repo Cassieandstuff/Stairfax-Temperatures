@@ -6,10 +6,3 @@ line = 49
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/398_MMSH_WaterS/MMSH_WaterS.c"
-line = 118
-symbol = "packedXyzAnimatorObjectId"
-from = "u32"
-to = "uintptr_t"

@@ -30,20 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 1951
-symbol = "diff"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 2428
-symbol = "delta"
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
 line = 2537
 symbol = "p2"
 from = "int"
@@ -147,30 +133,6 @@ to = "uintptr_t"
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
 line = 1882
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 1994
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 1998
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 2050
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/201_Baddie/Baddie.c"
-line = 2054
 from = "int"
 to = "uintptr_t"
 

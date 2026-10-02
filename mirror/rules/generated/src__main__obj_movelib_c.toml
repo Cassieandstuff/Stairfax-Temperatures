@@ -62,21 +62,3 @@ line = 168
 symbol = "gridOut"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/obj_movelib.c"
-line = 81
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/obj_movelib.c"
-line = 82
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/obj_movelib.c"
-line = 83
-from = "int"
-to = "uintptr_t"

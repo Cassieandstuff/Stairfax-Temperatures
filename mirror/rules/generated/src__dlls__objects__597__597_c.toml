@@ -30,13 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/597/597.c"
-line = 834
-symbol = "mapBlockIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/597/597.c"
 line = 942
 symbol = "gameBitSet"
 from = "u32"
@@ -46,13 +39,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/597/597.c"
 line = 1147
 symbol = "state"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/597/597.c"
-line = 1222
-symbol = "hitKind"
 from = "int"
 to = "uintptr_t"
 
@@ -153,18 +139,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/597/597.c"
 line = 1155
 from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/597/597.c"
-line = 1435
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/597/597.c"
-line = 1438
-from = "s32"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/314_VisAnimator/VisAnimator.c"
-line = 28
-symbol = "blockIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/314_VisAnimator/VisAnimator.c"
 line = 30
 symbol = "gateValue"
 from = "int"

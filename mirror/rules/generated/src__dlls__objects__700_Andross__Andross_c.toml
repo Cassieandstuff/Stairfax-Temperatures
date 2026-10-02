@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/700_Andross/Andross.c"
-line = 126
-symbol = "spawnRadius"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/700_Andross/Andross.c"
-line = 225
-symbol = "hasHit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/700_Andross/Andross.c"
 line = 579
 symbol = "gAndrossSpawnObjectIds"
 from = "int"

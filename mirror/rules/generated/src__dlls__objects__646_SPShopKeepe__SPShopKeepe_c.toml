@@ -16,27 +16,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
-line = 339
-symbol = "rng"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
-line = 400
-symbol = "rng"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
-line = 880
-symbol = "angleDelta"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
 line = 992
 symbol = "p2"
 from = "int"
@@ -58,10 +37,4 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
 line = 971
 from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
-line = 1053
-from = "s32"
 to = "uintptr_t"

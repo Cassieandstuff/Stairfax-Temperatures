@@ -24,27 +24,3 @@ file = "decomp/src/dlls/objects/217_Pollen/Pollen.c"
 line = 109
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/217_Pollen/Pollen.c"
-line = 156
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/217_Pollen/Pollen.c"
-line = 159
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/217_Pollen/Pollen.c"
-line = 162
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/217_Pollen/Pollen.c"
-line = 173
-from = "s32"
-to = "uintptr_t"

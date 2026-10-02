@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/206/206.c"
-line = 133
-symbol = "attackRoll"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/206/206.c"
 line = 686
 symbol = "fwdArg2"
 from = "int"
@@ -25,10 +18,4 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/206/206.c"
 line = 232
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/206/206.c"
-line = 590
-from = "s32"
 to = "uintptr_t"

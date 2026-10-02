@@ -21,24 +21,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/engine/3/3.c"
-line = 222
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/3/3.c"
-line = 223
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/3/3.c"
-line = 224
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/3/3.c"
 line = 497
 from = "u32"
 to = "uintptr_t"

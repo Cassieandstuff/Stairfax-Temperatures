@@ -6,9 +6,3 @@ line = 376
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/396_MMSH_Shrine/MMSH_Shrine.c"
-line = 432
-from = "s32"
-to = "uintptr_t"

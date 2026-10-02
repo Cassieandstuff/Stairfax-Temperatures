@@ -37,12 +37,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
-line = 154
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
 line = 167
 from = "u32"
 to = "uintptr_t"

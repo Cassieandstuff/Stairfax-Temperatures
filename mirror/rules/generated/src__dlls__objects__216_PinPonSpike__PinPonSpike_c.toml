@@ -7,11 +7,6 @@ symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.ret]]
-file = "decomp/src/dlls/objects/216_PinPonSpike/PinPonSpike.c"
-func = "pinponspike_calculateLaunchAngle"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/216_PinPonSpike/PinPonSpike.c"
 line = 95

@@ -20,8 +20,3 @@ line = 12
 symbol = "param"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/obj_message.h"
-func = "ObjMsg_Pop"
-to = "uintptr_t"

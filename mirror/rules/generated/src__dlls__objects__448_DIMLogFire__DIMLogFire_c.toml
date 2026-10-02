@@ -7,13 +7,6 @@ symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/448_DIMLogFire/DIMLogFire.c"
-line = 128
-symbol = "randomOffset"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/448_DIMLogFire/DIMLogFire.c"
 line = 90

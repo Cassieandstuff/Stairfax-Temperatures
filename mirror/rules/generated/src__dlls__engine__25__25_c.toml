@@ -23,13 +23,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/25/25.c"
-line = 706
-symbol = "delta"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/25/25.c"
 line = 877
 symbol = "moveArg0"
 from = "int"

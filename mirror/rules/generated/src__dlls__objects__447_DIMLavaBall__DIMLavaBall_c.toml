@@ -6,9 +6,3 @@ line = 71
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/447_DIMLavaBall/DIMLavaBall.c"
-line = 138
-from = "int"
-to = "uintptr_t"

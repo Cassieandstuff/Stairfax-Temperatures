@@ -2,27 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/626/626.c"
-line = 103
-symbol = "roll"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/626/626.c"
-line = 148
-symbol = "prevCount"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/626/626.c"
-line = 150
-symbol = "roll"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/626/626.c"
 line = 227
 symbol = "total"
 from = "int"
@@ -66,24 +45,6 @@ to = "uintptr_t"
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/626/626.c"
 line = 112
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/626/626.c"
-line = 376
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/626/626.c"
-line = 481
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/626/626.c"
-line = 490
 from = "int"
 to = "uintptr_t"
 

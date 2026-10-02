@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/71/71.c"
-line = 538
-symbol = "yaw"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/71/71.c"
 line = 540
 symbol = "controlWindow"
 from = "int"

@@ -25,9 +25,3 @@ file = "decomp/src/dlls/objects/376_DFSH_Shrine/DFSH_Shrine.c"
 line = 274
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/376_DFSH_Shrine/DFSH_Shrine.c"
-line = 275
-from = "s32"
-to = "uintptr_t"

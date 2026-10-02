@@ -1,0 +1,46 @@
+# Slots the analyzer would widen but the signedness check held back: widening
+# them changes a comparison's meaning (x < 0, signed vs unsigned). Either the
+# analyzer is wrong (not a pointer) or it's a sign/tag test needing a hand
+# decision. Produced by tools/mirror/check_signedness.py --emit-holds.
+decomp/src/dlls/engine/10_expgfx/expgfx.c:poolOrResource
+decomp/src/dlls/engine/10_expgfx/expgfx.c:screenPos
+decomp/src/dlls/engine/2/2.c:gObjSeqScriptedButtonMasks
+decomp/src/dlls/engine/2/maketex.c:key
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:act
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:action
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:best
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:bestLink
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:bestNeighborIds
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:candidateIds
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:candidates
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:results
+decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c:sel
+decomp/src/dlls/engine/21/21.c:iv
+decomp/src/dlls/engine/21/21.c:pointIndices
+decomp/src/dlls/engine/23/23.c:gSaveGameObjGroupCacheIdx
+decomp/src/dlls/objects/198_AnimatedObj/AnimatedObj.c:loadedAnimDataIndexPlusOne
+decomp/src/dlls/objects/199_DIM2RoofRub/DIM2RoofRub.c:loadedAnimDataIndexPlusOne
+decomp/src/dlls/objects/226/226.c:idx
+decomp/src/dlls/objects/238_EffectBox/EffectBox.c:gateGameBit
+decomp/src/dlls/objects/274/274.c:triggerBitValue
+decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c:blockIndex
+decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c:displayListIndex
+decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c:value
+decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c:loadedAnimDataIndexPlusOne
+decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c:scanLimit
+decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c:slotArg
+decomp/src/dlls/objects/388/388.c:cachedAnimDataIndexPlusOne
+decomp/src/dlls/objects/397_MMSH_Scales/MMSH_Scales.c:cachedAnimDataIndexPlusOne
+decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c:value
+decomp/src/dlls/objects/441_SC_Cloudrun/SC_Cloudrun.c:cachedAnimDataIndexPlusOne
+decomp/src/dlls/objects/501/501.c:chainIndex
+decomp/src/dlls/objects/506_WM_seqobjec/WM_seqobjec.c:transitionCountdown
+decomp/src/dlls/objects/604/604.c:targetType
+decomp/src/dlls/objects/614_KytesMum/KytesMum.c:questBits
+decomp/src/dlls/objects/626/626.c:prevCount
+decomp/src/main/gameloop_main.c:gameBit
+decomp/src/main/gameloop_main.c:val
+decomp/src/main/objlib.c:pointIndex
+decomp/src/main/objprint.c:v
+decomp/src/main/pi_pathsearch.c:63
+decomp/src/main/pi_pathsearch.c:foundNodeIndex

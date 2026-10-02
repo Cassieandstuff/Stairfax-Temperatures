@@ -6,10 +6,3 @@ line = 53
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/397_MMSH_Scales/MMSH_Scales.c"
-line = 107
-symbol = "cachedAnimDataIndexPlusOne"
-from = "int"
-to = "uintptr_t"

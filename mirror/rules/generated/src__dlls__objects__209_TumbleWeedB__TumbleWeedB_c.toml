@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
-line = 429
-symbol = "randomValue"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
 line = 591
 symbol = "fwdArg2"
 from = "int"
@@ -23,24 +16,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
-line = 496
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
 line = 700
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
-line = 933
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/209_TumbleWeedB/TumbleWeedB.c"
-line = 941
-from = "s32"
 to = "uintptr_t"

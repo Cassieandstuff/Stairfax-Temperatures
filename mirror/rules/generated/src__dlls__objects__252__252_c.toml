@@ -13,10 +13,3 @@ line = 53
 symbol = "rememberedGameBitValue"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/252/252.c"
-line = 54
-symbol = "triggerId"
-from = "u32"
-to = "uintptr_t"

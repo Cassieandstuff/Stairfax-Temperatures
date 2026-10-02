@@ -9,12 +9,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/268_LanternFire/LanternFire.c"
-line = 169
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/268_LanternFire/LanternFire.c"
 line = 194
 from = "u32"
 to = "uintptr_t"

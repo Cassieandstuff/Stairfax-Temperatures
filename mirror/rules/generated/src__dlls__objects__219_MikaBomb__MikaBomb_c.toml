@@ -7,20 +7,6 @@ symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/219_MikaBomb/MikaBomb.c"
-line = 117
-symbol = "effectId"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/219_MikaBomb/MikaBomb.c"
-line = 135
-symbol = "effectId"
-from = "u32"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/219_MikaBomb/MikaBomb.c"
 line = 114

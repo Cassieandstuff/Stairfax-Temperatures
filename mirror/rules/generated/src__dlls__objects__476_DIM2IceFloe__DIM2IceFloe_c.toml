@@ -6,27 +6,3 @@ line = 44
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/476_DIM2IceFloe/DIM2IceFloe.c"
-line = 117
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/476_DIM2IceFloe/DIM2IceFloe.c"
-line = 125
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/476_DIM2IceFloe/DIM2IceFloe.c"
-line = 129
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/476_DIM2IceFloe/DIM2IceFloe.c"
-line = 134
-from = "s32"
-to = "uintptr_t"

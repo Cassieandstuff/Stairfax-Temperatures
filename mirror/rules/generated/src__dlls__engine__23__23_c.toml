@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/23/23.c"
-line = 33
-symbol = "gSaveGameObjGroupCacheIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/23/23.c"
 line = 158
 symbol = "gMapObjGroupStatuses"
 from = "u32"

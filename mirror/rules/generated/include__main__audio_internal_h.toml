@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/audio_internal.h"
-line = 225
-symbol = "gMidiWadArenaSize"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/audio_internal.h"
 line = 252
 symbol = "gAudioStreamFadeTable"
 from = "int"
@@ -25,12 +18,5 @@ to = "uintptr_t"
 file = "decomp/include/main/audio_internal.h"
 line = 277
 symbol = "request"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/audio_internal.h"
-line = 307
-symbol = "dest"
 from = "u32"
 to = "uintptr_t"

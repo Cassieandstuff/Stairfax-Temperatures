@@ -21,19 +21,6 @@ symbol = "p2"
 from = "u32"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/417/417.c"
-line = 650
-symbol = "triggerIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/417/417.c"
-line = 252
-from = "s32"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/417/417.c"
 line = 325

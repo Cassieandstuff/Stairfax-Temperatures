@@ -6,29 +6,3 @@ line = 98
 symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/204_ChukChuk/ChukChuk.c"
-line = 115
-symbol = "relativeAngle"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/204_ChukChuk/ChukChuk.c"
-line = 116
-symbol = "attackRoll"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/204_ChukChuk/ChukChuk.c"
-line = 172
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/204_ChukChuk/ChukChuk.c"
-line = 173
-from = "u32"
-to = "uintptr_t"

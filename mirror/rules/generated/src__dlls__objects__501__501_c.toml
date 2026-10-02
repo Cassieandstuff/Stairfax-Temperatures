@@ -21,13 +21,6 @@ symbol = "light"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/501/501.c"
-line = 130
-symbol = "chainIndex"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/501/501.c"
 line = 151

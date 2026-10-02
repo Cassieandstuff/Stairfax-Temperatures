@@ -6,10 +6,3 @@ line = 46
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/506_WM_seqobjec/WM_seqobjec.c"
-line = 57
-symbol = "transitionCountdown"
-from = "int"
-to = "uintptr_t"

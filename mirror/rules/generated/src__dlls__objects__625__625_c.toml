@@ -2,36 +2,8 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/625/625.c"
-line = 206
-symbol = "maxIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
-line = 208
-symbol = "maxIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
-line = 210
-symbol = "maxIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
 line = 212
 symbol = "collected"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/625/625.c"
-line = 244
-symbol = "maxIndex"
 from = "int"
 to = "uintptr_t"
 

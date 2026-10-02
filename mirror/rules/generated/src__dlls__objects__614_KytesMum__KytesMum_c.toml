@@ -16,13 +16,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/614_KytesMum/KytesMum.c"
-line = 94
-symbol = "questBits"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/614_KytesMum/KytesMum.c"
 line = 95
 symbol = "triggerIds"
 from = "int"

@@ -16,13 +16,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/575_DB_egg/DB_egg.c"
-line = 474
-symbol = "hit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/575_DB_egg/DB_egg.c"
 line = 537
 symbol = "curvePair"
 from = "int"

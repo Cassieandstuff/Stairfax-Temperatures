@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/384_MMP_asteroi/MMP_asteroi.c"
-line = 86
-symbol = "timer"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/384_MMP_asteroi/MMP_asteroi.c"
 line = 118
 symbol = "renderArg2"
 from = "int"

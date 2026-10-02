@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 786
-symbol = "screenPos"
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 1019
 symbol = "count"
 from = "int"
@@ -18,13 +11,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 1943
 symbol = "gExpgfxLastAddedSlot"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 1957
-symbol = "poolIndex"
 from = "int"
 to = "uintptr_t"
 
@@ -46,48 +32,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 2111
 symbol = "sourceId"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2381
-symbol = "nextActivePool"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2382
-symbol = "scanIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2388
-symbol = "poolOrResource"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2402
-symbol = "curPool"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2731
-symbol = "rnd"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 3413
-symbol = "attachedTableKey"
 from = "u32"
 to = "uintptr_t"
 
@@ -117,13 +61,6 @@ file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 3559
 symbol = "slotPoolBase"
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 4260
-symbol = "attachedTableKey"
-from = "int"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -197,18 +134,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2469
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2491
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 2556
 from = "u32"
 to = "uintptr_t"
@@ -217,12 +142,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 2571
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
-line = 2735
-from = "int"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

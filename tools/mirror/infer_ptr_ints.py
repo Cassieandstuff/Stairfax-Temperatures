@@ -102,6 +102,7 @@ class Graph:
         self.fields = {}                  # field slot -> (struct.field, file, line)
         self.subnodes = {}                # SUB node -> (right-operand slots, right is SEED)
         self.copy_pred = defaultdict(set) # dst -> {src} for DIRECT value copies only
+        self.arg_pred = defaultdict(set)  # param slot -> {src}: direct copies at CALL sites
         self.recon = set()                # slots cast straight back to a pointer
         self.dispatch = defaultdict(set)  # (fn-ptr field name, arity) -> {function USR}
         self.icalls = []                  # ((field name, arity), arg index, tokens, direct)
@@ -112,6 +113,8 @@ class Graph:
             self.edges[src].add(dst)
             if copy:
                 self.copy_pred[dst].add(src)
+                if dst.startswith("param:"):
+                    self.arg_pred[dst].add(src)
 
 
 def slot_of_decl(c) -> str | None:
@@ -458,15 +461,25 @@ class Analyzer:
         size, logPrintf's args) via forward-then-backward alternation.
         SUB nodes (`a - b`) whose right operand carries are differences, so they're
         disabled and we re-solve; that only removes flow, so it terminates."""
-        must = set(self.g.recon)
+        # MUST seeds: reconstruction evidence on variables/params/returns. Not on
+        # struct FIELDS: a field is one slot shared program-wide, so one overloaded
+        # use (rebuilt as a pointer here, passed as an id there) would poison every
+        # reader. Pointers STORED into fields still flow (MAY) normally.
+        must = {x for x in self.g.recon if not x.startswith("field:")}
         work = list(must)
-        while work:                                   # backward over copies only
+        while work:
+            # backward ONLY from a param to the direct args at its call sites. One
+            # value at one point, so it's sound. Not through `x = e` assignments:
+            # locals get reused (shader_dolphin's v1 holds a texel address, then a
+            # random number), which would wrongly make randomGetRange's result a
+            # pointer.
             s = work.pop()
-            for src in self.g.copy_pred.get(s, ()):
+            for src in self.g.arg_pred.get(s, ()):
                 if src not in must and not src.startswith("SUB:"):
                     must.add(src)
                     work.append(src)
-        disabled: set[str] = set()
+        self.field_recon = {x for x in self.g.recon if x.startswith("field:")}
+        disabled: set[str] = set(getattr(self, "held", ()))
         while True:
             carrying = {x for x in (self.g.seeds | must) if x not in disabled}
             work = list(carrying)
@@ -492,8 +505,8 @@ def explain(an, carrying, name, limit=4):
     dis = getattr(an, "disabled", set())
     label = lambda sl: ", ".join(sorted({f"{n}@{f}:{l}" for (f, l, n, t, k) in
                                          an.g.decls.get(sl, ())})[:1]) or sl[:60]
-    copy_succ = defaultdict(set)                      # reverse of copy_pred
-    for d, srcs in an.g.copy_pred.items():
+    copy_succ = defaultdict(set)                      # reverse of arg_pred
+    for d, srcs in an.g.arg_pred.items():
         for s0 in srcs:
             copy_succ[d].add(s0)
     starts = [(x, "seed") for x in an.g.seeds] + [(x, "recon") for x in an.g.recon]
@@ -536,7 +549,8 @@ def _parse_one(args):
     return ({k: set(v) for k, v in g.edges.items()}, set(g.seeds),
             {k: set(v) for k, v in g.decls.items()}, list(g.casts), dict(g.fields),
             dict(g.subnodes), {k: set(v) for k, v in g.copy_pred.items()}, set(g.recon),
-            {k: set(v) for k, v in g.dispatch.items()}, list(g.icalls))
+            {k: set(v) for k, v in g.dispatch.items()}, list(g.icalls),
+            {k: set(v) for k, v in g.arg_pred.items()})
 
 
 def parse_all(tus, jobs: int) -> "Analyzer":
@@ -544,7 +558,7 @@ def parse_all(tus, jobs: int) -> "Analyzer":
     import multiprocessing as mp
     an = Analyzer()
     with mp.Pool(jobs) as pool:
-        for n, (edges, seeds, decls, casts, fields, subs, cpred, recon, disp, icalls) in enumerate(
+        for n, (edges, seeds, decls, casts, fields, subs, cpred, recon, disp, icalls, apred) in enumerate(
                 pool.imap_unordered(_parse_one, [(i, str(t)) for i, t in enumerate(tus)]), 1):
             for k, v in edges.items():
                 an.g.edges[k] |= v
@@ -560,6 +574,8 @@ def parse_all(tus, jobs: int) -> "Analyzer":
             for k, v in disp.items():
                 an.g.dispatch[k] |= v
             an.g.icalls += icalls
+            for k, v in apred.items():
+                an.g.arg_pred[k] |= v
             if n % 100 == 0:
                 print(f"  parsed {n}/{len(tus)}", file=sys.stderr)
     an.resolve_indirect()
@@ -582,6 +598,8 @@ def main(argv):
     ap.add_argument("--json", metavar="PATH")
     import os
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4)
+    ap.add_argument("--hold", metavar="FILE", help="slots (decomp/path:symbol per line) to "
+                    "hold back: not widened, and they don't propagate")
     ap.add_argument("--explain", metavar="NAME", action="append", default=[],
                     help="print the seed->slot chain for carrying slots named NAME")
     args = ap.parse_args(argv)
@@ -592,6 +610,11 @@ def main(argv):
     bm.gen_headers(passes.load_pointer_rules(REPO / "mirror" / "rules", generated=False))
     tus = tu_list(args.tus)
     an = parse_all(tus, args.jobs)
+    held_keys = set()
+    if args.hold and Path(args.hold).exists():
+        held_keys = {l.strip() for l in Path(args.hold).read_text().splitlines() if l.strip()}
+    an.held = {sl for sl, ds in an.g.decls.items()
+               if any(f"{f}:{n}" in held_keys for (f, _, n, _, _) in ds)}
     carrying = an.solve()
     for nm in args.explain:
         explain(an, carrying, nm)
@@ -648,7 +671,19 @@ def main(argv):
             print(f"  {x}", file=sys.stderr)
     if args.report_only:
         return 0
-    return write_rules(retypes, rets, widen, pretypes)
+    # cast-line holds ("decomp/path:LINE"): drop generated widen_casts on that line
+    cast_holds = {(k.rsplit(":", 1)[0], int(k.rsplit(":", 1)[1])) for k in held_keys
+                  if k.rsplit(":", 1)[1].isdigit()}
+    widen = [w for w in widen if (w[0], w[1]) not in cast_holds]
+    rc = write_rules(retypes, rets, widen, pretypes)
+    if held_keys:
+        (REPO / "mirror" / "rules" / "generated" / "HELD.txt").write_text(
+            "# Slots the analyzer would widen but the signedness check held back: widening\n"
+            "# them changes a comparison's meaning (x < 0, signed vs unsigned). Either the\n"
+            "# analyzer is wrong (not a pointer) or it's a sign/tag test needing a hand\n"
+            "# decision. Produced by tools/mirror/check_signedness.py --emit-holds.\n"
+            + "\n".join(sorted(held_keys)) + "\n")
+    return rc
 
 
 def write_rules(retypes, rets, widen, pretypes=()) -> int:

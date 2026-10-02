@@ -6,10 +6,3 @@ line = 42
 symbol = "renderArg2"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/468_WORLDAstero/WORLDAstero.c"
-line = 86
-symbol = "baseAngle"
-from = "int"
-to = "uintptr_t"

@@ -20,8 +20,3 @@ line = 26
 symbol = "obj"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/main/dll/player_api.h"
-func = "playerIsDisguised"
-to = "uintptr_t"

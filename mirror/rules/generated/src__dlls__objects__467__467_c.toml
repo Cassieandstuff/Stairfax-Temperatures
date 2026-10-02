@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/467/467.c"
-line = 118
-symbol = "xMin"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/467/467.c"
-line = 118
-symbol = "yMin"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/467/467.c"
 line = 161
 symbol = "renderArg2"
 from = "int"

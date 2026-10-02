@@ -12,15 +12,3 @@ file = "decomp/src/dlls/objects/500/500.c"
 line = 50
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/500/500.c"
-line = 64
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/500/500.c"
-line = 107
-from = "s32"
-to = "uintptr_t"

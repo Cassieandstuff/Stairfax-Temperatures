@@ -41,27 +41,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/211/211.c"
-line = 340
-from = "s32"
-to = "uintptr_t"
-occurrence = 1
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/211/211.c"
-line = 341
-from = "s32"
-to = "uintptr_t"
-occurrence = 1
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/211/211.c"
-line = 342
-from = "s32"
-to = "uintptr_t"
-occurrence = 1
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/211/211.c"
 line = 1259
 from = "int"
 to = "uintptr_t"

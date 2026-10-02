@@ -7,13 +7,6 @@ symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/298_CFCrate/CFCrate.c"
-line = 280
-symbol = "tableOffset"
-from = "u32"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/298_CFCrate/CFCrate.c"
 line = 100

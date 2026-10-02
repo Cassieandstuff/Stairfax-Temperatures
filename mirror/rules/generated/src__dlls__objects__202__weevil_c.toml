@@ -6,16 +6,3 @@ line = 89
 symbol = "gWeevilCurveInitData"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/202/weevil.c"
-line = 161
-symbol = "rnd"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/202/weevil.c"
-line = 224
-from = "s32"
-to = "uintptr_t"

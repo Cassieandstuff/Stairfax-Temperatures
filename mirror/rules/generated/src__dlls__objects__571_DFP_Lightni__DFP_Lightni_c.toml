@@ -20,10 +20,3 @@ line = 87
 symbol = "eventBlocked"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/571_DFP_Lightni/DFP_Lightni.c"
-line = 191
-symbol = "randomValue"
-from = "int"
-to = "uintptr_t"

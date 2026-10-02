@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/425_BombPlant/BombPlant.c"
-line = 83
-symbol = "timerValue"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/425_BombPlant/BombPlant.c"
 line = 164
 symbol = "flags"
 from = "int"

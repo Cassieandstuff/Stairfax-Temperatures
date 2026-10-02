@@ -58,20 +58,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/604/604.c"
-line = 668
-symbol = "targetType"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/604/604.c"
-line = 670
-symbol = "choice"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/604/604.c"
 line = 675
 symbol = "pulseTypes"
 from = "u32"

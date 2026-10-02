@@ -6,10 +6,3 @@ line = 105
 symbol = "p2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/529/529.c"
-line = 160
-symbol = "ang"
-from = "int"
-to = "uintptr_t"

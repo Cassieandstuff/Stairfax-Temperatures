@@ -2,23 +2,9 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/609_DR_LaserCan/DR_LaserCan.c"
-line = 144
-symbol = "yaw"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/609_DR_LaserCan/DR_LaserCan.c"
 line = 308
 symbol = "p2"
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/609_DR_LaserCan/DR_LaserCan.c"
-line = 384
-symbol = "hit"
-from = "int"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

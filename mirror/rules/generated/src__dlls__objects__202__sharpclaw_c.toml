@@ -9,12 +9,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/202/sharpclaw.c"
-line = 537
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/202/sharpclaw.c"
 line = 1284
 from = "int"
 to = "uintptr_t"

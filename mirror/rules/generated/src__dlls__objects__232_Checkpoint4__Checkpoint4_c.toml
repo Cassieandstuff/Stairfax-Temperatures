@@ -6,10 +6,3 @@ line = 34
 symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/232_Checkpoint4/Checkpoint4.c"
-line = 50
-symbol = "heading"
-from = "u32"
-to = "uintptr_t"

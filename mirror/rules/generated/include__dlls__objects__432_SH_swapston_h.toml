@@ -6,8 +6,3 @@ line = 74
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/dlls/objects/432_SH_swapston.h"
-func = "warpstone_advanceAnimEvents"
-to = "uintptr_t"

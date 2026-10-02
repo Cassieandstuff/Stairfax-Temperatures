@@ -64,12 +64,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/202/spittingeba.c"
-line = 116
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/202/spittingeba.c"
 line = 143
 from = "int"
 to = "uintptr_t"

@@ -12,9 +12,3 @@ file = "decomp/src/dlls/objects/499_SB_MiniFire/SB_MiniFire.c"
 line = 49
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/499_SB_MiniFire/SB_MiniFire.c"
-line = 114
-from = "s32"
-to = "uintptr_t"

@@ -23,12 +23,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/213_Kaldachom/Kaldachom.c"
-line = 438
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/213_Kaldachom/Kaldachom.c"
 line = 690
 from = "int"
 to = "uintptr_t"

@@ -9,29 +9,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
-line = 747
-symbol = "a0"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
-line = 748
-symbol = "a1"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
 line = 1081
 symbol = "p2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
-line = 1102
-symbol = "hitResult"
 from = "int"
 to = "uintptr_t"
 
@@ -53,17 +32,3 @@ file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
 line = 349
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
-line = 762
-from = "s32"
-to = "uintptr_t"
-occurrence = 2
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
-line = 772
-from = "s32"
-to = "uintptr_t"
-occurrence = 2

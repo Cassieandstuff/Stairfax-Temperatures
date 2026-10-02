@@ -9,71 +9,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 49
-symbol = "pickIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 50
-symbol = "pickIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 362
-symbol = "candidates"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 392
-symbol = "candidates"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 522
-symbol = "pickIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 524
-symbol = "candidates"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 551
-symbol = "pickIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 553
-symbol = "candidates"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 809
 symbol = "curveType"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 912
-symbol = "action"
 from = "int"
 to = "uintptr_t"
 
@@ -86,37 +23,9 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1021
-symbol = "sel"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1028
-symbol = "candidateIds"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1030
 symbol = "queueIndices"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1179
-symbol = "bestNeighborIds"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1242
-symbol = "candidateIds"
-from = "u32"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -142,22 +51,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1429
-symbol = "candidates"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1483
 symbol = "adjacentWindow"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1484
-symbol = "candidates"
 from = "int"
 to = "uintptr_t"
 
@@ -191,13 +86,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1793
-symbol = "best"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1797
 symbol = "queueIds"
 from = "int"
@@ -208,13 +96,6 @@ file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1799
 symbol = "resultIds"
 from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1922
-symbol = "act"
-from = "int"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -233,29 +114,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1960
-symbol = "best"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 1964
 symbol = "queueIds"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 1966
-symbol = "results"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 2104
-symbol = "candidates"
 from = "int"
 to = "uintptr_t"
 
@@ -277,13 +137,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
 line = 2456
 symbol = "ids"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/20_Hcurves/Hcurves_romcurve.c"
-line = 2593
-symbol = "bestLink"
 from = "int"
 to = "uintptr_t"
 

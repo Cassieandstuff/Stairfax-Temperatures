@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/maketex_api.h"
-line = 18
-symbol = "value"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/maketex_api.h"
 line = 26
 symbol = "key"
 from = "int"

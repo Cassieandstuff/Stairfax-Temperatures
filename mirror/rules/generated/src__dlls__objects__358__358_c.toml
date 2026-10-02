@@ -12,9 +12,3 @@ file = "decomp/src/dlls/objects/358/358.c"
 line = 41
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/358/358.c"
-line = 109
-from = "int"
-to = "uintptr_t"

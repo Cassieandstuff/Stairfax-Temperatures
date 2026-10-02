@@ -6,10 +6,3 @@ line = 51
 symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/198_AnimatedObj/AnimatedObj.c"
-line = 179
-symbol = "loadedAnimDataIndexPlusOne"
-from = "int"
-to = "uintptr_t"

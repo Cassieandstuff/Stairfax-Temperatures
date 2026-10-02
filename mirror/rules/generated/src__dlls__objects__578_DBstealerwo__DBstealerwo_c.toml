@@ -51,20 +51,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 377
-symbol = "tmpA"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 379
-symbol = "tmpC"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 383
 symbol = "msgA"
 from = "int"
@@ -121,13 +107,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 539
-symbol = "c30"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 542
 symbol = "q"
 from = "int"
@@ -137,13 +116,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 544
 symbol = "best"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 550
-symbol = "tmpA"
 from = "int"
 to = "uintptr_t"
 
@@ -172,13 +144,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 558
 symbol = "msgC"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 657
-symbol = "c30"
 from = "int"
 to = "uintptr_t"
 
@@ -261,13 +226,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 723
-symbol = "tmpA"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 755
 symbol = "tD"
 from = "int"
@@ -275,36 +233,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 779
-symbol = "tEa"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 801
 symbol = "tG"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 840
-symbol = "tHa"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 868
-symbol = "objGroup"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 871
-symbol = "messageArg"
 from = "int"
 to = "uintptr_t"
 
@@ -331,13 +261,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 954
-symbol = "slotIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 955
 symbol = "frame"
 from = "int"
@@ -352,29 +275,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 976
-symbol = "objGroup"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 1015
 symbol = "q"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 1025
-symbol = "tmpA"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 1027
-symbol = "tmp2A"
 from = "int"
 to = "uintptr_t"
 
@@ -410,20 +312,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 1169
 symbol = "q"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 1176
-symbol = "tmpA"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 1178
-symbol = "tmp2A"
 from = "int"
 to = "uintptr_t"
 
@@ -471,13 +359,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 1407
-symbol = "frame2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 1781
 symbol = "baddie"
 from = "int"
@@ -487,13 +368,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 1830
 symbol = "result"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 2037
-symbol = "randomValue"
 from = "int"
 to = "uintptr_t"
 
@@ -714,10 +588,4 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
 line = 2015
 from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
-line = 2052
-from = "s32"
 to = "uintptr_t"

@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/modgfx/152/152.c"
-line = 32
-symbol = "variant"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/modgfx/152/152.c"
 line = 181
 symbol = "gDll98EffectResourceData"
 from = "u32"

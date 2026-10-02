@@ -6,15 +6,3 @@ line = 28
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/369_IMSpaceRing/IMSpaceRing.c"
-line = 90
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/369_IMSpaceRing/IMSpaceRing.c"
-line = 94
-from = "int"
-to = "uintptr_t"

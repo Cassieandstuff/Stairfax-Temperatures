@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/300_Transporter/Transporter.c"
-line = 473
-symbol = "obj"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/300_Transporter/Transporter.c"
 line = 474
 symbol = "self"
 from = "int"
@@ -33,24 +26,6 @@ file = "decomp/src/dlls/objects/300_Transporter/Transporter.c"
 line = 525
 symbol = "id"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/300_Transporter/Transporter.c"
-line = 132
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/300_Transporter/Transporter.c"
-line = 136
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/300_Transporter/Transporter.c"
-line = 146
-from = "s32"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

@@ -23,13 +23,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/5/5.c"
-line = 1865
-symbol = "timer"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/5/5.c"
 line = 2107
 symbol = "tmp"
 from = "int"

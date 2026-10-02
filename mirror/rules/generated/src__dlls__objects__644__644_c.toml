@@ -64,24 +64,6 @@ occurrence = 2
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/644/644.c"
-line = 150
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/644/644.c"
-line = 151
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/644/644.c"
-line = 152
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/644/644.c"
 line = 183
 from = "int"
 to = "uintptr_t"

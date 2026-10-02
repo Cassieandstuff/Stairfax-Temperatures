@@ -6,16 +6,3 @@ line = 113
 symbol = "bitState"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/307_sfxPlayer/sfxPlayer.c"
-line = 206
-symbol = "delay"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/307_sfxPlayer/sfxPlayer.c"
-line = 176
-from = "s32"
-to = "uintptr_t"

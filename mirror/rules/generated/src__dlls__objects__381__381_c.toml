@@ -2,37 +2,9 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/381/381.c"
-line = 38
-symbol = "unusedExplosionVariant"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/381/381.c"
-line = 40
-symbol = "debrisType"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/381/381.c"
 line = 95
 symbol = "renderArg2"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/381/381.c"
-line = 116
-symbol = "hitType"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/381/381.c"
-line = 117
-symbol = "explosionVariant"
-from = "u32"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -44,24 +16,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/381/381.c"
-line = 48
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/381/381.c"
-line = 51
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/381/381.c"
 line = 85
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/381/381.c"
-line = 193
 from = "u32"
 to = "uintptr_t"

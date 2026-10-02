@@ -86,10 +86,10 @@ def gen_one(rel: str, rules: dict) -> tuple[Path, int, int]:
     return dst, before, after
 
 
-def gen_headers(rules: dict) -> list[str]:
-    """Build mirror/include: decomp/include + port shadow overlay + rule rewrites.
-    Returns the transformed headers (include-relative)."""
-    dst_root = MIRROR / "include"
+def gen_headers(rules: dict, dst_root: Path | None = None) -> list[str]:
+    """Build a header tree (default mirror/include): decomp/include + port shadow
+    overlay + rule rewrites. Returns the transformed headers (include-relative)."""
+    dst_root = dst_root or (MIRROR / "include")
     shutil.rmtree(dst_root, ignore_errors=True)
     shutil.copytree(DECOMP / "include", dst_root)
     shutil.copytree(REPO / "include", dst_root, dirs_exist_ok=True)   # port shadows win

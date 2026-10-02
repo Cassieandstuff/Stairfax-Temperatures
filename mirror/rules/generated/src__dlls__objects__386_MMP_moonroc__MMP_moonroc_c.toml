@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/386_MMP_moonroc/MMP_moonroc.c"
-line = 90
-symbol = "hit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/386_MMP_moonroc/MMP_moonroc.c"
-line = 117
-symbol = "mapBlockIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/386_MMP_moonroc/MMP_moonroc.c"
 line = 340
 symbol = "renderArg2"
 from = "int"

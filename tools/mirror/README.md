@@ -101,6 +101,30 @@ member can compile with unresolved pointer-width criticals (silent truncation, n
 a compile error) until rules are authored and a diff case proves it. Grow the
 manifest and drive the criticals to zero one TU at a time.
 
+## Whole-program conversion (the `int obj` convention)
+
+Hand rules don't scale to the ~2,000 sites where objects travel as `int`. The
+generated layer does it:
+
+```sh
+python3 tools/mirror/regen.py      # analyze -> generate -> signedness fixpoint -> build -> difftest
+```
+
+- `infer_ptr_ints.py` — libclang whole-program inference of integers that carry
+  pointers. Pointer values (`(int)ptr`) flow FORWARD; "must hold a pointer"
+  evidence (`(T*)x`) flows BACKWARD only from params to their call-site args.
+  Indirect calls through DLL interface tables resolve by (field name, arity).
+  Writes `mirror/rules/generated/*.toml` (hand rules always win), `DROPPED.txt`
+  (sites not expressible as a text rule) and `HELD.txt`. `--explain NAME` prints
+  the evidence chain for a slot.
+- `check_signedness.py` — compiles each TU before and after the generated rules
+  with clang's sign-comparison diagnostics; a comparison whose meaning changed
+  (`x < 0` now always false, signed vs unsigned) means the slot must not be
+  widened automatically. `regen.py` holds those slots back (they don't widen and
+  don't propagate) and iterates to a fixpoint. `HELD.txt` lists them: each is
+  either an analyzer false positive or a pointer compared by sign (a tag test),
+  needing a hand decision.
+
 ## Behavioral diff harness
 
 `difftest/` proves the rewriter is behavior-preserving by compiling a case two

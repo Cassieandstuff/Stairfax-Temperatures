@@ -30,13 +30,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
-line = 1048
-symbol = "hitResult"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
 line = 1240
 symbol = "lbl_80325AA0"
 from = "int"

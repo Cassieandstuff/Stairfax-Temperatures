@@ -6,15 +6,3 @@ line = 419
 symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/229/229.c"
-line = 546
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/229/229.c"
-line = 548
-from = "s32"
-to = "uintptr_t"

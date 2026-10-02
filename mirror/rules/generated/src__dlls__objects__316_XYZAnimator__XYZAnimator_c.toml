@@ -23,22 +23,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 44
-symbol = "blockIndex"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
 line = 51
 symbol = "boundsBufferOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 52
-symbol = "displayListIndex"
 from = "int"
 to = "uintptr_t"
 
@@ -67,13 +53,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
 line = 151
 symbol = "groupDataOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 222
-symbol = "value"
 from = "int"
 to = "uintptr_t"
 

@@ -100,13 +100,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/2/2.c"
-line = 1973
-symbol = "gObjSeqScriptedButtonMasks"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/2/2.c"
 line = 1975
 symbol = "gObjSeqMsgIds"
 from = "int"

@@ -2,27 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/488_SB_Galleon/SB_Galleon.c"
-line = 93
-symbol = "wrap"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/488_SB_Galleon/SB_Galleon.c"
-line = 94
-symbol = "diff"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/488_SB_Galleon/SB_Galleon.c"
-line = 95
-symbol = "angY"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/488_SB_Galleon/SB_Galleon.c"
 line = 1152
 symbol = "p2"
 from = "int"

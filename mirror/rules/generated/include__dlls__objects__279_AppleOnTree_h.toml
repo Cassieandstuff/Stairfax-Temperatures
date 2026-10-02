@@ -6,13 +6,3 @@ line = 128
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/dlls/objects/279_AppleOnTree.h"
-func = "appleontree_bounceGroundStep"
-to = "uintptr_t"
-
-[[pointer.ret]]
-file = "decomp/include/dlls/objects/279_AppleOnTree.h"
-func = "appleontree_bounceWaterStep"
-to = "uintptr_t"
