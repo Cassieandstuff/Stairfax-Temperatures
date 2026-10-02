@@ -598,7 +598,7 @@ def main(argv):
     ap.add_argument("--json", metavar="PATH")
     import os
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4)
-    ap.add_argument("--hold", metavar="FILE", help="slots (decomp/path:symbol per line) to "
+    ap.add_argument("--hold", metavar="FILE", help="slots (decomp/path:symbol@declline per line) to "
                     "hold back: not widened, and they don't propagate")
     ap.add_argument("--explain", metavar="NAME", action="append", default=[],
                     help="print the seed->slot chain for carrying slots named NAME")
@@ -613,8 +613,11 @@ def main(argv):
     held_keys = set()
     if args.hold and Path(args.hold).exists():
         held_keys = {l.strip() for l in Path(args.hold).read_text().splitlines() if l.strip()}
+    # "file:name@line" holds one declaration; legacy "file:name" holds every
+    # same-named slot in the file
     an.held = {sl for sl, ds in an.g.decls.items()
-               if any(f"{f}:{n}" in held_keys for (f, _, n, _, _) in ds)}
+               if any(f"{f}:{n}@{ln}" in held_keys or f"{f}:{n}" in held_keys
+                      for (f, ln, n, _, _) in ds)}
     carrying = an.solve()
     for nm in args.explain:
         explain(an, carrying, nm)

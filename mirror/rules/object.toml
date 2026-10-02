@@ -1,0 +1,74 @@
+# object.c: sites the signedness check held back from automatic widening (regen
+# of the 764-TU build set). Each is a real pointer site; the generated
+# uintptr_t widening was wrong for it, so it is decided here by hand.
+#
+# Sentinel tests: the game marks "no entry" with -1 in pointer-carrying ints
+# (`fn != -1`, `(int)def == -1`). uintptr_t would make that an unsigned compare
+# against a promoted -1, which only works by accident; intptr_t keeps the signed
+# meaning at full pointer width.
+#
+# Interface tables: ObjectInterface is an array of function pointers, but two
+# sites read it with 4-byte slots — `((int*)*p)[1]` and `(char*)*dll + 0x18`.
+# On a 64-bit host those land mid-pointer; they must index pointer-sized slots.
+
+# --- objFreeObjdef: pointer identity compares ---------------------------------
+# `*(int*)&otherObj->anim.parent == (int)obj` compares the low 32 bits of a
+# pointer field against a truncated pointer. Compare both at full width.
+[[pointer.widen_cast]]
+file = "decomp/src/main/object.c"
+line = 926   # if (*(int*)&otherObj->anim.parent == (int)obj)
+from = "int*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/object.c"
+line = 926
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/object.c"
+line = 947   # if (*(int*)&otherObj->pendingParentObj == (int)obj)
+from = "int*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/object.c"
+line = 947
+from = "int"
+to = "uintptr_t"
+
+# --- Obj_RunInitCallback: interface slot 1 (init), -1 sentinel ---------------
+[[pointer.retype]]
+file = "decomp/src/main/object.c"
+line = 1414  # int fn = ((int*)*p)[1];
+symbol = "fn"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/object.c"
+line = 1414
+from = "int*"
+to = "intptr_t*"
+
+# --- objSetupObject: -1 sentinel on the loaded def ---------------------------
+[[pointer.widen_cast]]
+file = "decomp/src/main/object.c"
+line = 1870  # if (def == NULL || (int)def == -1)
+from = "int"
+to = "intptr_t"
+
+# --- objSetupObject: getObjectTypeId via a raw 0x18 byte offset, -1 sentinel ---
+[[pointer.widen_cast]]
+file = "decomp/src/main/object.c"
+line = 1929  # (int)(fp = *(int (**)(void*))((char*)*tmpl.anim.dll + 0x18)) != -1
+from = "int"
+to = "intptr_t"
+
+[[pointer.stride]]
+file = "decomp/src/main/object.c"
+line = 1929
+symbol = "dll"
+from = "0x18"   # == offsetof(ObjectInterface, getObjectTypeId) on the GameCube
+to = "offsetof(ObjectInterface, getObjectTypeId)"

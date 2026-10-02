@@ -65,31 +65,35 @@ def check(rel: str, hand: dict, tmp: Path, base_inc: list[str]) -> list[str]:
 
 
 def retyped_symbols() -> dict:
-    """{decomp file: {symbols retyped by GENERATED rules}}"""
+    """{decomp file: {symbol: [decl lines]}} retyped by GENERATED rules"""
     gen = passes.load_pointer_rules(REPO / "mirror" / "rules")
     hand = passes.load_pointer_rules(REPO / "mirror" / "rules", generated=False)
     hand_keys = {(r["file"], r.get("line")) for k in ("retype", "promote") for r in hand[k]}
     out = {}
     for r in gen["retype"]:
         if (r["file"], r.get("line")) not in hand_keys:
-            out.setdefault(r["file"], set()).add(r["symbol"])
+            out.setdefault(r["file"], {}).setdefault(r["symbol"], []).append(r["line"])
     return out
 
 
 def holds_for(found: list[str]) -> list[str]:
-    """Map each flagged comparison to the generated-retyped symbol(s) on that line."""
+    """Map each flagged comparison to the generated-retyped declaration in scope on
+    that line, as `file:symbol@declline`. "In scope" = the nearest declaration of
+    that name at or before the comparison (C declares before use); a same-named
+    slot elsewhere in the file (another function's `int obj`) is not held."""
     syms = retyped_symbols()
     holds = set()
     for f in found:
         rel, line = f.split(":")[0], int(f.split(":")[1])
         text = (REPO / "decomp" / rel).read_text(errors="replace").splitlines()[line - 1]
         hit = False
-        for sym in syms.get(f"decomp/{rel}", ()):
-            if re.search(rf"\b{re.escape(sym)}\b", text):
-                holds.add(f"decomp/{rel}:{sym}")
+        for sym, decls in syms.get(f"decomp/{rel}", {}).items():
+            before = [d for d in decls if d <= line]
+            if before and re.search(rf"\b{re.escape(sym)}\b", text):
+                holds.add(f"decomp/{rel}:{sym}@{max(before)}")
                 hit = True
         if not hit:
-            # no widened declaration on the line: a generated widen_cast did it
+            # no widened declaration in scope: a generated widen_cast did it
             # (e.g. `id == (int)ptr` vs an int id). Hold the casts on this line.
             holds.add(f"decomp/{rel}:{line}")
     return sorted(holds)
