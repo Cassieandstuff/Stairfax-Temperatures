@@ -40,8 +40,11 @@ out of the P2 rewriter's transform of that file for the mirror. Rules come from 
 real manifest (`mirror/rules/`), so it validates the shipping rules against real
 decomp bytes. The `shim.h` supplies only the handful of types/macros the extracted
 function needs — not the TU's whole header web — and `driver.c` calls it and prints
-a canonical (address-free) result. Example: `track_init` extracts
-`trackInitCollisionBuffers` from `track_dolphin.c`.
+a canonical (address-free) result. Examples: `track_init` extracts
+`trackInitCollisionBuffers` from `track_dolphin.c`; `render_packed` extracts
+`modelRenderInterpolateRootTransform` and its packed-address helpers from
+`render.c` and drives two synthetic animations that together exercise both
+bitstream refill paths.
 
 `extract.toml` fields: `source` (repo-relative TU), `rules` (rules dir, default
 `mirror/rules`), and `ranges` (list of inclusive `[start, end]` line ranges).

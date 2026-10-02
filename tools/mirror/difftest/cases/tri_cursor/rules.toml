@@ -3,28 +3,33 @@
 
 # file-scope end-of-buffer pointer stored in int
 [[pointer.promote]]
+file = "tools/mirror/difftest/cases/tri_cursor/case.c"
 symbol = "gTriBufEnd"
 to = "uintptr_t"
 
 # K&R param `cur` (the cursor) — line-pinned so it can't hit an unrelated local
 [[pointer.promote]]
+file = "tools/mirror/difftest/cases/tri_cursor/case.c"
 symbol = "cur"
 to = "uintptr_t"
 line = 19
 
 # locals that hold pointers
 [[pointer.promote]]
+file = "tools/mirror/difftest/cases/tri_cursor/case.c"
 symbol = "buf"
 to = "uintptr_t"
 line = 34
 
 [[pointer.promote]]
+file = "tools/mirror/difftest/cases/tri_cursor/case.c"
 symbol = "end"
 to = "uintptr_t"
 line = 35
 
 # triBuild returns the cursor pointer through an int return type
 [[pointer.ret]]
+file = "tools/mirror/difftest/cases/tri_cursor/case.c"
 func = "triBuild"
 to = "uintptr_t"
 

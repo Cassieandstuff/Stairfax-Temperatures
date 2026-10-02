@@ -62,7 +62,9 @@ does not name). Rule kinds and their known limits are documented in
 `mirror/rules/pointers.toml`. The loop:
 
 1. `--worklist <tu>` → read the criticals.
-2. Add a `promote` / `ret` / `widen` / `audit` rule per critical to `pointers.toml`.
+2. Add a rule per critical under `mirror/rules/` — `promote` / `ret` / `retype` /
+   `widen` / `widen_cast` / `audit` (shapes documented in `pointers.toml`; every rule
+   names its TU with `file=`).
 3. `--emit <tu>` → see `critical … N -> M`; iterate until 0.
 
 A "0 critical" emit clears every *line-visible* hazard; it is not a proof of

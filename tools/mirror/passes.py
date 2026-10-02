@@ -57,6 +57,19 @@ _RE_NARROW_DECL = re.compile(
 # semicolon, immediately preceding old-style parameter decls.
 _RE_KNR_SIG = re.compile(r"\b[A-Za-z_]\w*\s*\([A-Za-z_][\w\s,]*\)\s*$")
 
+# A function-like macro whose ENTIRE body is a narrow cast of its argument, e.g.
+#   #define RENDER_PACKED_ADDRESS(pointer) ((u32)(pointer))
+# — a conversion macro. Critical when its name/param says it carries an address.
+_RE_MACRO_NARROW_CAST = re.compile(
+    rf"^\s*#\s*define\s+(?P<name>\w+)\s*\(\s*(?P<arg>\w+)\s*\)\s*"
+    rf"\(?\s*\(\s*{_NARROW}\s*\)\s*\(\s*(?P=arg)\s*\)\s*\)?\s*$")
+_RE_ADDRESSY = re.compile(r"ptr|pointer|addr|address", re.IGNORECASE)
+
+# A single-line function definition/prototype signature (prefix captured for
+# param parsing). Multi-line signatures are not handled (heuristic).
+_RE_FUNC_SIG = re.compile(r"^[A-Za-z_][\w\s\*]*?\b[A-Za-z_]\w*\s*\((?P<params>[^;{()]*)\)\s*\{?\s*$")
+_RE_NARROW_PARAM = re.compile(rf"^\s*(?:const\s+)?{_NARROW}\s+(?P<name>[A-Za-z_]\w*)\s*$")
+
 # (int)/(u32)/(s32) applied to something that is (or yields) a pointer.
 _RE_PTR_TO_NARROW = re.compile(
     rf"\((?P<ty>{_NARROW})\)\s*(?P<rhs>[A-Za-z_]\w*|\&|mmAlloc|g[A-Z]\w*)")
@@ -185,9 +198,59 @@ def scan_text_pointer_width(text: str, rel: str) -> list[Finding]:
             rule_hint=f"[[pointer.promote]] symbol=\"{name}\" to=\"uintptr_t\"",
         ))
 
+    # Pass C: narrow-typed parameters dereferenced as addresses inside their own
+    # function body, e.g. `static void f(u64* d, u32 packed) { *(u64*)(packed & ~7) }`.
+    # The param must widen (retype) or the dereference truncates on a 64-bit host.
+    depth = 0
+    in_blk = False
+    sig_line = 0
+    live_sig = 0
+    pending: set[str] = set()     # narrow params of a signature awaiting its body
+    live: set[str] = set()        # narrow params of the function we're inside
+    for i, ln in enumerate(lines, 1):
+        code, in_blk = _strip_noncode(ln, in_blk)
+        if depth == 0:
+            m = _RE_FUNC_SIG.match(code)
+            if m and ";" not in code:
+                pending = set()
+                for p in m.group("params").split(","):
+                    pm = _RE_NARROW_PARAM.match(p)
+                    if pm:
+                        pending.add(pm.group("name"))
+                sig_line = i
+        opened = depth == 0 and "{" in code
+        depth += code.count("{") - code.count("}")
+        if depth < 0:
+            depth = 0
+        if opened and depth > 0:
+            live, pending = pending, set()
+            live_sig = sig_line
+            continue
+        if depth == 0:
+            live = set()
+            continue
+        for p in live:
+            if re.search(rf"\(\s*[A-Za-z_]\w*\s*\*\s*\)\s*\(?\s*{re.escape(p)}\b", code):
+                findings.append(Finding(
+                    "narrow_param_deref", "critical", rel, i, ln.strip(),
+                    f"param '{p}' is a narrow int but is dereferenced as an address; "
+                    "truncates on a 64-bit host.",
+                    "[[pointer.retype]] file=\"%s\" line=%d symbol=\"%s\" from=\"u32\" "
+                    "to=\"uintptr_t\"  # signature line" % (rel, live_sig, p)))
+
     # Pass B: per-line cast/address hazards.
     for i, ln in enumerate(lines, 1):
         s = ln.strip()
+        mm = _RE_MACRO_NARROW_CAST.match(ln)
+        if mm:
+            addressy = bool(_RE_ADDRESSY.search(mm.group("name")) or
+                            _RE_ADDRESSY.search(mm.group("arg")))
+            findings.append(Finding(
+                "macro_narrow_cast", "critical" if addressy else "review", rel, i, s,
+                f"conversion macro '{mm.group('name')}' narrows its argument to a 32-bit "
+                "int" + ("; it carries an address, so every use truncates on 64-bit."
+                         if addressy else "; confirm the argument is never a pointer."),
+                "[[pointer.widen_cast]] file=\"%s\" line=%d from=\"u32\" to=\"uintptr_t\"" % (rel, i)))
         if _RE_ROUNDTRIP.search(ln):
             findings.append(Finding(
                 "ptr_int_roundtrip", "critical", rel, i, s,
@@ -337,6 +400,7 @@ _NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
 def load_pointer_rules(rules_dir: Path) -> dict:
     """Merge the [pointer.*] tables from every *.toml under rules_dir."""
     promote, widen, audit, ret, osglob = [], [], [], [], []
+    retype, widen_cast = [], []
     for toml in sorted(rules_dir.glob("*.toml")):
         try:
             data = tomllib.loads(toml.read_text())
@@ -347,9 +411,51 @@ def load_pointer_rules(rules_dir: Path) -> dict:
         widen += p.get("widen", [])
         audit += p.get("audit", [])
         ret += p.get("ret", [])
+        retype += p.get("retype", [])
+        widen_cast += p.get("widen_cast", [])
         osglob += data.get("osglobals", {}).get("read", [])
+    for kind, rs in (("promote", promote), ("ret", ret)):
+        for r in rs:
+            if not r.get("file"):
+                raise SystemExit(
+                    f"error: [[pointer.{kind}]] {r.get('symbol') or r.get('func')!r} in "
+                    f"{rules_dir} has no file=; symbol rules must be scoped to one TU")
     return {"promote": promote, "widen": widen, "audit": audit,
-            "ret": ret, "osglobals": osglob}
+            "ret": ret, "retype": retype, "widen_cast": widen_cast,
+            "osglobals": osglob}
+
+
+def _type_pat(t: str) -> str:
+    """Regex for a (possibly multi-word) C type token, e.g. 'unsigned int'."""
+    return r"\s+".join(re.escape(w) for w in t.split())
+
+
+def _retype(line: str, symbol: str, frm: str, to: str, occurrence: int | None):
+    """Replace `<frm> <symbol>` with `<to> <symbol>` on a line (a param, local or
+    global). Returns (new_line, n_matches); new_line is None when not applied."""
+    pat = re.compile(rf"\b{_type_pat(frm)}(\s+{re.escape(symbol)}\b)")
+    return _replace_one(pat, line, lambda m: f"{to}{m.group(1)}", occurrence)
+
+
+def _widen_cast(line: str, frm: str, to: str, occurrence: int | None):
+    """Replace a bare `(<frm>)` cast with `(<to>)` on a line."""
+    pat = re.compile(rf"\(\s*{_type_pat(frm)}\s*\)")
+    return _replace_one(pat, line, lambda m: f"({to})", occurrence)
+
+
+def _replace_one(pat, line, repl, occurrence):
+    ms = list(pat.finditer(line))
+    if not ms:
+        return None, 0
+    if occurrence is None:
+        if len(ms) != 1:              # ambiguous: refuse rather than over-rewrite
+            return None, len(ms)
+        m = ms[0]
+    else:
+        if not (1 <= occurrence <= len(ms)):
+            return None, len(ms)
+        m = ms[occurrence - 1]
+    return line[:m.start()] + repl(m) + line[m.end():], len(ms)
 
 
 # Absolute OS-globals read: *(T*)0xADDR -> os_globals_read_u32(0xADDRu).
@@ -395,6 +501,8 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
 
     # promotions: symbol-targeted, optionally pinned to a specific line.
     for r in rules["promote"]:
+        if not _rule_targets(r, rel):
+            continue
         sym, to = r.get("symbol"), r.get("to", "uintptr_t")
         pin = r.get("line")
         if not sym:
@@ -427,6 +535,8 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
 
     # return-type widening: function-name-targeted (proto + definition).
     for r in rules["ret"]:
+        if not _rule_targets(r, rel):
+            continue
         func, to = r.get("func"), r.get("to", "uintptr_t")
         if not func:
             continue
@@ -456,6 +566,40 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         else:
             unmatched.append(f"widen {rel}:{n}: no narrowing pointer cast to widen")
 
+    # retype: change the declared type of one symbol at a line (params included).
+    for r in rules.get("retype", []):
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n, sym = r.get("line"), r.get("symbol")
+        frm, to = r.get("from", "u32"), r.get("to", "uintptr_t")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)) or not sym:
+            unmatched.append(f"retype {rel}:{n}: bad line/symbol")
+            continue
+        nl, cnt = _retype(lines[n - 1], sym, frm, to, r.get("occurrence"))
+        if nl:
+            lines[n - 1] = nl
+            applied.append(f"retype {sym} {frm}->{to} at line {n}")
+        else:
+            why = "not found" if cnt == 0 else f"{cnt} matches; set occurrence="
+            unmatched.append(f"retype {rel}:{n} '{frm} {sym}': {why}")
+
+    # widen_cast: widen one bare narrowing cast at a line (macro bodies included).
+    for r in rules.get("widen_cast", []):
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n = r.get("line")
+        frm, to = r.get("from", "u32"), r.get("to", "uintptr_t")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)):
+            unmatched.append(f"widen_cast {rel}:{n}: line out of range")
+            continue
+        nl, cnt = _widen_cast(lines[n - 1], frm, to, r.get("occurrence"))
+        if nl:
+            lines[n - 1] = nl
+            applied.append(f"widen_cast ({frm})->({to}) at line {n}")
+        else:
+            why = "no such cast" if cnt == 0 else f"{cnt} casts; set occurrence="
+            unmatched.append(f"widen_cast {rel}:{n} ({frm}): {why}")
+
     # OS-globals reads: (file,line)-targeted; rewrite to the runtime accessor and
     # ensure the runtime header is included.
     need_os_header = False
@@ -478,6 +622,14 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
     if need_os_header and "stairfax_os.h" not in text:
         text = '#include "stairfax_os.h"\n' + text
     return text, applied, unmatched
+
+
+def _rule_targets(r: dict, rel: str) -> bool:
+    """A rule applies to `rel` when it names that file. Rules without `file` are
+    rejected: an unscoped symbol rule could silently rewrite a same-named variable
+    in an unrelated TU."""
+    f = r.get("file")
+    return bool(f) and _norm(f) == _norm(rel)
 
 
 def _norm(p: str) -> str:

@@ -1,28 +1,40 @@
 # P2 pointer-width resolutions.
 #
-# Consumed and APPLIED by tools/mirror/mirror_build.py --emit (pass P2). Four rule
-# kinds, all deterministic and idempotent:
+# Consumed and APPLIED by tools/mirror/mirror_build.py --emit / build_mirror.py
+# (pass P2). Rule kinds, all deterministic and idempotent. Every rule names the
+# one TU it applies to with file= (required: an unscoped symbol rule could rewrite
+# a same-named variable in an unrelated TU, so the loader rejects it).
 #
-#   [[pointer.promote]]  symbol="gFoo" to="uintptr_t"  [line=NN]
+#   [[pointer.promote]]  file="..." symbol="gFoo" to="uintptr_t"  [line=NN]
 #       Widen the declaration of a narrow-int variable that holds a pointer.
-#       Symbol-only targets file-scope decls and K&R params (brace-depth 0), so a
-#       common local name is never hit by accident. Add line=NN to pin a specific
-#       declaration (needed for a local, or an ambiguous name).
+#       Without line=, targets brace-depth-0 decls (globals + K&R params) only;
+#       add line=NN to pin a local or an ambiguous name.
 #
-#   [[pointer.ret]]      func="fn" to="uintptr_t"
+#   [[pointer.ret]]      file="..." func="fn" to="uintptr_t"
 #       Widen a function's return type (prototype + definition) when it returns a
-#       pointer through a narrow int. The line scanner cannot see this; name it.
+#       pointer through a narrow int.
 #
-#   [[pointer.widen]]    file="decomp/src/main/foo.c" line=NN
+#   [[pointer.retype]]   file="..." line=NN symbol="p" from="u32" to="uintptr_t"
+#       Change the declared type of one symbol on one line — function parameters
+#       (prototype and definition are separate lines/rules), locals, globals.
+#       Refuses if `<from> <symbol>` matches more than once unless occurrence=N.
+#
+#   [[pointer.widen]]    file="..." line=NN
 #       Widen a narrowing cast that touches a pointer at that line:
 #         (T*)(int)x     -> (T*)(uintptr_t)x
 #         (int)mmAlloc.. -> (uintptr_t)mmAlloc..
 #
+#   [[pointer.widen_cast]] file="..." line=NN from="u32" to="uintptr_t" [occurrence=N]
+#       Widen one bare `(from)` cast at a line, including inside a #define body
+#       (e.g. a pointer-packing conversion macro). Refuses if the line has more
+#       than one such cast unless occurrence= picks one.
+#
 #   [[pointer.audit]]    file="..." line=NN ok=true note="compare-only"
 #       A ptr->narrow cast reviewed and judged benign (records intent; no rewrite).
 #
-# KNOWN LIMITATION of the heuristic scanner: it does not detect pointer-typed
-# prototype parameters declared `int`, nor pointer values propagated across a call
+# KNOWN LIMITATION of the heuristic scanner: it catches a narrow-int parameter
+# only when its own function dereferences it (narrow_param_deref), and only for
+# single-line signatures; it does not follow pointer values across a call
 # boundary. Those need type-aware analysis (libclang, P1) and, ultimately, the
 # oracle-vs-mirror behavioral diff harness to *prove* a TU is correct. A "0
 # critical" worklist means "no line-visible hazard left", not "proven sound".
@@ -33,21 +45,25 @@
 # sites feed/consume those same pointers.
 
 [[pointer.promote]]
+file = "decomp/src/main/track_dolphin.c"
 symbol = "gIntersectLinePool"
 to = "uintptr_t"
 note = "scratch line pool; (int)mmAlloc @ trackInitCollisionBuffers, deref'd as (u8*)"
 
 [[pointer.promote]]
+file = "decomp/src/main/track_dolphin.c"
 symbol = "gIntersectLineIndexTable"
 to = "uintptr_t"
 note = "line index table; same pattern as gIntersectLinePool"
 
 [[pointer.promote]]
+file = "decomp/src/main/track_dolphin.c"
 symbol = "gTrackTriangleBufferEnd"
 to = "uintptr_t"
 note = "end-of-buffer pointer compared against (u32)cur"
 
 [[pointer.promote]]
+file = "decomp/src/main/track_dolphin.c"
 symbol = "cur"
 to = "uintptr_t"
 note = "K&R int param in trackBuildBlockTriangles; the triangle-buffer cursor"
@@ -81,6 +97,7 @@ note = "gIntersectLineIndexTable = (int)mmAlloc(...)"
 # trackBuildBlockTriangles returns the triangle-buffer cursor (a pointer) through
 # an int return type — not visible to the line scanner. Widen proto + definition.
 [[pointer.ret]]
+file = "decomp/src/main/track_dolphin.c"
 func = "trackBuildBlockTriangles"
 to = "uintptr_t"
 note = "returns `cur` (buffer pointer); int return type truncates on 64-bit"

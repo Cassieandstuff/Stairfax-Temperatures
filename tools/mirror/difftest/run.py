@@ -35,7 +35,10 @@ sys.path.insert(0, str(MIRROR_TOOLS))
 import passes  # noqa: E402
 
 CC = "clang"
-CFLAGS = ["-m64", "-O1", "-w", "-DDIFFTEST_MAIN", f"-I{HERE}"]
+# -fno-strict-aliasing: the decomp type-puns (MWCC semantics); keep UB-driven
+# optimizer differences between oracle and mirror from posing as a behavior diff.
+CFLAGS = ["-m64", "-O1", "-w", "-fno-strict-aliasing", "-DDIFFTEST_MAIN", f"-I{HERE}"]
+LDFLAGS = ["-lm"]
 CASES = HERE / "cases"
 
 
@@ -46,7 +49,7 @@ def _run(cmd: list[str], **kw):
 def _compile(src: Path, out: Path, extra: list[str],
              extra_srcs: list[str] | None = None) -> tuple[bool, str]:
     srcs = [str(src)] + [str(s) for s in (extra_srcs or [])]
-    r = _run([CC, *CFLAGS, *extra, *srcs, "-o", str(out)])
+    r = _run([CC, *CFLAGS, *extra, *srcs, "-o", str(out), *LDFLAGS])
     return r.returncode == 0, r.stderr
 
 
