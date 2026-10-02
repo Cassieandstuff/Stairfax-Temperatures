@@ -158,19 +158,7 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/main/object.c"
-line = 926
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/object.c"
 line = 931
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/main/object.c"
-line = 947
 from = "int"
 to = "uintptr_t"
 

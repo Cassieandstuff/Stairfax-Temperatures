@@ -49,6 +49,8 @@ decomp/src/main/mm.c:requestedSize
 decomp/src/main/mm.c:size
 decomp/src/main/object.c:1870
 decomp/src/main/object.c:1929
+decomp/src/main/object.c:926
+decomp/src/main/object.c:947
 decomp/src/main/object.c:fn
 decomp/src/main/object.c:obj
 decomp/src/main/objlib.c:pointIndex
