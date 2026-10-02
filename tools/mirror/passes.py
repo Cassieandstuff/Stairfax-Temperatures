@@ -433,11 +433,13 @@ import tomllib
 _NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
 
 
-def load_pointer_rules(rules_dir: Path) -> dict:
+def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
     """Merge the [pointer.*] tables from every *.toml under rules_dir."""
     promote, widen, audit, ret, osglob = [], [], [], [], []
     retype, widen_cast, stride = [], [], []
-    for toml in sorted(rules_dir.glob("*.toml")):
+    # hand-written rules first, then mirror/rules/generated/ (infer_ptr_ints.py)
+    gen = sorted((rules_dir / "generated").glob("*.toml")) if generated else []
+    for toml in sorted(rules_dir.glob("*.toml")) + gen:
         try:
             data = tomllib.loads(toml.read_text())
         except Exception as e:  # a malformed manifest should fail loudly
@@ -694,10 +696,10 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         else:
             unmatched.append(f"osglobals {rel}:{n}: no *(T*)0xADDR read to rewrite")
 
-    text = "".join(lines)
-    if need_os_header and "stairfax_os.h" not in text:
-        text = '#include "stairfax_os.h"\n' + text
-    return text, applied, unmatched
+    # The accessor's declaration comes from mirror/runtime/mirror_prelude.h, which
+    # the mirror build force-includes; nothing is inserted, so files stay
+    # line-preserving.
+    return "".join(lines), applied, unmatched
 
 
 def rule_files(rules: dict) -> set[str]:

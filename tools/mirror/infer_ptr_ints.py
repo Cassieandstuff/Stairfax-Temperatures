@@ -53,7 +53,7 @@ PTRISH = {T.POINTER, T.INCOMPLETEARRAY, T.CONSTANTARRAY, T.FUNCTIONPROTO,
 # Parse exactly as the mirror compiles: transformed headers first (u32/s32 pinned
 # to 32 bits by mirror/rules/types.toml; run build_mirror.py --gen-only first).
 INC = list(bm.INCLUDES)
-ARGS = ["-m64", "-fdeclspec", "-Wno-everything", "-x", "c"] + INC
+ARGS = ["-m64", "-include", "mirror_prelude.h", "-fdeclspec", "-Wno-everything", "-x", "c"] + INC
 
 
 def canon(t):
@@ -72,12 +72,25 @@ def is_ptrish(t) -> bool:
 
 
 def rel(path: str | None) -> str | None:
+    """Repo-relative path of a source location. We parse through the generated
+    mirror/include tree, so header locations come back as mirror/include/<h>; map
+    them to the decomp header rules target (decomp/include/<h>). A header that comes
+    from the port's shadow overlay maps to include/<h>: port-owned code, which rules
+    don't rewrite (reported instead)."""
     if not path:
         return None
     try:
-        return Path(path).resolve().relative_to(REPO).as_posix()
+        r = Path(path).resolve().relative_to(REPO).as_posix()
     except ValueError:
         return None
+    if r.startswith("mirror/include/"):
+        h = r[len("mirror/include/"):]
+        if (REPO / "include" / h).exists():
+            return f"include/{h}"
+        return f"decomp/include/{h}"
+    if r.startswith("mirror/src/"):
+        return "decomp/" + r[len("mirror/src/"):]
+    return r
 
 
 class Graph:
@@ -87,6 +100,7 @@ class Graph:
         self.decls = defaultdict(set)     # slot -> {(file, line, name, typespell, kind)}
         self.casts = []                   # (file, line, col, from_spelling, operand_slots, is_ptr_to_int)
         self.fields = {}                  # field slot -> (struct.field, file, line)
+        self.subnodes = {}                # SUB node -> (right-operand slots, right is SEED)
         self.macro_skips = 0
 
     def flow(self, src, dst):
@@ -122,7 +136,7 @@ class Analyzer:
     def __init__(self):
         self.g = Graph()
         self.index = ci.Index.create()
-        self.subs = {}                    # id -> `a - b` BinaryOperator cursor
+        self.subs = {}                    # id -> (left cursor, right cursor) of `a - b`
 
     # --- expression value sources -------------------------------------------
     def sources(self, e) -> set[str]:
@@ -174,7 +188,7 @@ class Analyzer:
                 # p - n stays a pointer; p - q is a difference. Decided at solve
                 # time: record as a guarded flow.
                 if a and b:
-                    self.subs[id(e)] = kids[0]    # p - n: pointer-ness from the left
+                    self.subs[id(e)] = (kids[0], kids[1])
                     return {f"SUB:{id(e)}"}
                 return a
             if op == ",":
@@ -212,15 +226,19 @@ class Analyzer:
             if s == "SEED":
                 self.g.seeds.add(dst_slot)
             elif s.startswith("SUB:"):
-                # `p - n` stays a pointer, `p - q` is a difference. We can't decide
-                # which before solving, so take pointer-ness from the left operand
-                # only (an offset subtracted from a pointer never gets widened).
-                left = self.subs.get(int(s[4:]))
-                for s2 in (self.sources(left) if left is not None else set()):
+                # `p - n` stays a pointer, `p - q` is a size. Route through a SUB node
+                # the solver disables once its right operand is known to carry.
+                node = s
+                left, right = self.subs[int(s[4:])]
+                rsrc = self.sources(right)
+                self.g.subnodes[node] = ({r for r in rsrc if not r.startswith(("SEED", "SUB:"))},
+                                         "SEED" in rsrc)
+                for s2 in self.sources(left):
                     if s2 == "SEED":
-                        self.g.seeds.add(dst_slot)
+                        self.g.seeds.add(node)
                     elif not s2.startswith("SUB:"):
-                        self.g.flow(s2, dst_slot)
+                        self.g.flow(s2, node)
+                self.g.flow(node, dst_slot)
             else:
                 self.g.flow(s, dst_slot)
 
@@ -305,15 +323,24 @@ class Analyzer:
 
     # --- solve -------------------------------------------------------------
     def solve(self) -> set[str]:
-        carrying = set(self.g.seeds)
-        work = list(carrying)
-        while work:
-            s = work.pop()
-            for d in self.g.edges.get(s, ()):
-                if d not in carrying:
-                    carrying.add(d)
-                    work.append(d)
-        return carrying
+        """Forward closure from the seeds; SUB nodes (`a - b`) whose right operand
+        carries a pointer are differences, so they're disabled and we re-solve.
+        Disabling only removes flow, so this terminates."""
+        disabled: set[str] = set()
+        while True:
+            carrying = {s for s in self.g.seeds if s not in disabled}
+            work = list(carrying)
+            while work:
+                s = work.pop()
+                for d in self.g.edges.get(s, ()):
+                    if d not in carrying and d not in disabled:
+                        carrying.add(d)
+                        work.append(d)
+            newly = {n for n, (rights, rseed) in self.g.subnodes.items()
+                     if n not in disabled and (rseed or rights & carrying)}
+            if not newly:
+                return {s for s in carrying if not s.startswith("SUB:")}
+            disabled |= newly
 
 
 def tu_list(which: str) -> list[Path]:
@@ -332,6 +359,10 @@ def main(argv):
     ap.add_argument("--json", metavar="PATH")
     args = ap.parse_args(argv)
 
+    # Parse against a header tree built from HAND rules only (u32 pinned etc.), never
+    # from previously generated rules: those would already have widened the
+    # declarations, so the analyzer would stop seeing them and drop their rules.
+    bm.gen_headers(passes.load_pointer_rules(REPO / "mirror" / "rules", generated=False))
     an = Analyzer()
     tus = tu_list(args.tus)
     for i, tu in enumerate(tus, 1):
@@ -341,13 +372,16 @@ def main(argv):
     carrying = an.solve()
 
     # decl sites to retype (vars/params) and functions to ret-widen
-    retypes, rets, fields = [], [], []
+    retypes, rets, fields, port_sites = [], [], [], []
     for s in sorted(carrying):
         if s.startswith("field:"):
             if s in an.g.fields:
                 fields.append(an.g.fields[s])
             continue
         for (f, line, name, ty, kind) in sorted(an.g.decls.get(s, ())):
+            if f.startswith("include/"):
+                port_sites.append(f"{kind} {f}:{line} {name}")
+                continue
             if not f.startswith(("decomp/src/", "decomp/include/")):
                 continue
             if kind == "ret":
@@ -373,48 +407,69 @@ def main(argv):
             "summary": summary,
             "retypes": sorted(set(retypes)), "rets": sorted(set(rets)),
             "widen": sorted(set(widen)), "fields": sorted(set(fields), key=str)}, indent=1))
+    if port_sites:
+        print(f"note: {len(set(port_sites))} carrying decl(s) live in the port's shadow "
+              "headers (include/): fix by hand there:", file=sys.stderr)
+        for x in sorted(set(port_sites))[:20]:
+            print(f"  {x}", file=sys.stderr)
     if args.report_only:
         return 0
     return write_rules(retypes, rets, widen)
 
 
 def write_rules(retypes, rets, widen) -> int:
-    hand = passes.load_pointer_rules(REPO / "mirror" / "rules")
+    """Emit generated rules, each pre-validated against the source text: a rule
+    whose site doesn't match textually (macro-expanded code, `int a, b;`
+    multi-declarators, spelling mismatches) is DROPPED and reported, never
+    emitted as a rule that silently wouldn't apply."""
+    import re
+    import shutil
+    hand = passes.load_pointer_rules(REPO / "mirror" / "rules", generated=False)
     covered = {(passes._norm(r.get("file", "")), r.get("line")) for k in
                ("retype", "promote", "widen", "widen_cast") for r in hand[k]}
     covered_ret = {(passes._norm(r.get("file", "")), r.get("func")) for r in hand["ret"]}
-    out = defaultdict(list)
+    out, dropped = defaultdict(list), []
+    src = {}
+
+    def text(f):
+        if f not in src:
+            src[f] = (REPO / f).read_text(errors="replace").splitlines()
+        return src[f]
 
     for (f, line, name, ty) in sorted(set(retypes)):
         if (f, line) in covered:
+            continue
+        ty = ty.split("[")[0].strip()                     # u32 tbl[N] -> u32
+        nl, cnt = passes._retype(text(f)[line - 1], name, ty, "uintptr_t", None)
+        if not nl:
+            dropped.append(f"retype {f}:{line} {ty} {name} ({cnt} textual matches)")
             continue
         out[f].append(f'[[pointer.retype]]\nfile = "{f}"\nline = {line}\nsymbol = "{name}"\n'
                       f'from = "{ty}"\nto = "uintptr_t"\n')
     for (f, fn) in sorted(set(rets)):
         if (f, fn) in covered_ret:
             continue
+        if not any(passes._promote_return(l, fn, "uintptr_t") for l in text(f)):
+            dropped.append(f"ret {f} {fn} (no textual narrow return)")
+            continue
         out[f].append(f'[[pointer.ret]]\nfile = "{f}"\nfunc = "{fn}"\nto = "uintptr_t"\n')
-    # widen_cast: occurrence = rank of this cast among same-spelling casts on the line
     by_line = defaultdict(list)
     for (f, line, col, frm) in sorted(set(widen)):
         by_line[(f, line, frm)].append(col)
-    src_cache = {}
     for (f, line, frm), cols in sorted(by_line.items()):
         if (f, line) in covered:
             continue
-        lines = src_cache.setdefault(f, (REPO / f).read_text(errors="replace").splitlines())
-        import re
         pat = re.compile(rf"\(\s*{passes._type_pat(frm)}\s*\)")
-        all_cols = [m.start() + 1 for m in pat.finditer(lines[line - 1])]
+        all_cols = [m.start() + 1 for m in pat.finditer(text(f)[line - 1])]
         for col in cols:
-            occ = all_cols.index(col) + 1 if col in all_cols else None
-            if occ is None:
-                continue                      # macro / mismatched spelling: skip
+            if col not in all_cols:
+                dropped.append(f"widen_cast {f}:{line} ({frm}) col {col} (macro or spelling)")
+                continue
+            occ = all_cols.index(col) + 1
             out[f].append(f'[[pointer.widen_cast]]\nfile = "{f}"\nline = {line}\nfrom = "{frm}"\n'
                           f'to = "uintptr_t"\n' + (f"occurrence = {occ}\n" if len(all_cols) > 1 else ""))
 
     gen = REPO / "mirror" / "rules" / "generated"
-    import shutil
     shutil.rmtree(gen, ignore_errors=True)
     gen.mkdir(parents=True)
     for f, blocks in out.items():
@@ -422,7 +477,12 @@ def write_rules(retypes, rets, widen) -> int:
         (gen / name).write_text(f"# GENERATED by tools/mirror/infer_ptr_ints.py for {f}. "
                                 "DO NOT EDIT; hand rules in mirror/rules/*.toml take precedence.\n\n"
                                 + "\n".join(blocks))
-    print(f"wrote {len(out)} generated rule file(s) to {gen.relative_to(REPO)}", file=sys.stderr)
+    (gen / "DROPPED.txt").write_text(
+        "# Sites the analyzer found but could not express as a text rule.\n"
+        "# Each needs a hand rule or a different fix.\n" + "\n".join(dropped) + "\n")
+    n = sum(len(b) for b in out.values())
+    print(f"wrote {n} generated rule(s) in {len(out)} file(s) to {gen.relative_to(REPO)}; "
+          f"{len(dropped)} dropped (see DROPPED.txt)", file=sys.stderr)
     return 0
 
 

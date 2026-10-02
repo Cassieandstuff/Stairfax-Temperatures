@@ -39,6 +39,9 @@ CC = "clang"
 # optimizer differences between oracle and mirror from posing as a behavior diff.
 CFLAGS = ["-m64", "-O1", "-w", "-fno-strict-aliasing", "-DDIFFTEST_MAIN", f"-I{HERE}"]
 LDFLAGS = ["-lm"]
+# Mirror builds get the same force-included prelude as the real mirror build
+# (stdint + runtime accessor decls); the oracle is untransformed decomp code.
+MIRROR_PRELUDE = ["-include", "mirror_prelude.h", f"-I{REPO / 'mirror' / 'runtime'}"]
 CASES = HERE / "cases"
 
 
@@ -108,7 +111,8 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
     if not ok:
         print(f"[{name}] FAIL — oracle did not compile:\n{err}")
         return False
-    ok, err = _compile(wd / "mirror" / "driver.c", wd / "mirror_bin", [f"-I{wd/'mirror'}"])
+    ok, err = _compile(wd / "mirror" / "driver.c", wd / "mirror_bin",
+                       [*MIRROR_PRELUDE, f"-I{wd/'mirror'}"])
     if not ok:
         print(f"[{name}] FAIL — mirror did not compile:\n{err}")
         return False
@@ -180,7 +184,7 @@ def run_case(case: Path, workdir: Path) -> bool:
     if not ok:
         print(f"[{name}] FAIL — oracle did not compile:\n{err}")
         return False
-    ok, err = _compile(mirror_src, wd / "mirror", incs, links)
+    ok, err = _compile(mirror_src, wd / "mirror", [*MIRROR_PRELUDE, *incs], links)
     if not ok:
         print(f"[{name}] FAIL — mirror did not compile:\n{err}")
         return False

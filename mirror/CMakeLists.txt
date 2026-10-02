@@ -49,5 +49,5 @@ endif()
 # when an implicitly-declared callee really returns a pointer, which would truncate
 # to int) runs in tools/mirror/build_mirror.py, which gates these sources before
 # CMake compiles them.
-target_compile_options(stairfax_mirror PRIVATE -m64 -w -fdeclspec
+target_compile_options(stairfax_mirror PRIVATE -m64 -w -fdeclspec -include mirror_prelude.h
                        -Wno-error=implicit-function-declaration)
