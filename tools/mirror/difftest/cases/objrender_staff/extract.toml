@@ -1,0 +1,15 @@
+# Real-TU diff case: objRender's staff-child walk (objprint.c).
+#
+#   walk = (int)obj;  int staff = (int)((GameObject*)walk)->childObjs[0];
+#   staffUpdateSegmentTransforms(staff, obj, (int)OBJPRINT_ACTIVE_BANK(staff), ...);
+#   walk += 4;
+# Mirror rules (objprint.toml) widen walk/staff/the casts AND rewrite the stride to
+# sizeof(void*). This case checks the walk visits the right children with the
+# right models on a high heap.
+
+source = "decomp/src/main/objprint.c"
+rules = "mirror/rules"
+
+ranges = [
+    [1382, 1438],   # void objRender(int a, int b, int c, int d, GameObject* obj, int flag)
+]

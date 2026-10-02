@@ -1,0 +1,24 @@
+# shader_dolphin.c warped-noise texture init: `int v1` first carries a texel
+# ADDRESS (sWarpNoiseTexture + offsets, lines 320-323), then is reused for a random
+# channel value (324+). Widen the local and its two pointer-casting assignments.
+# The reuse is unaffected: v1 - randomGetRange(...) may wrap as uintptr_t, but it's
+# assigned back to int v2/v3, giving the same 32-bit value as the original int math.
+
+[[pointer.retype]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 305   # int v1;
+symbol = "v1"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 320   # v1 = (int)(sWarpNoiseTexture + ylo);
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 321   # v1 = (int)((u8*)v1 + yhi);
+from = "int"
+to = "uintptr_t"

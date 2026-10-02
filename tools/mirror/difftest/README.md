@@ -45,13 +45,23 @@ a canonical (address-free) result. Examples: `track_init` extracts
 `modelRenderInterpolateRootTransform` and its packed-address helpers from
 `render.c` and drives two synthetic animations that together exercise both
 bitstream refill paths; `drawbox_str` extracts `gameTextDrawBox` and passes a
-subtitle string through its id-or-pointer `boxId` parameter.
+subtitle string through its id-or-pointer `boxId` parameter; `objrender_staff`
+extracts `objRender`'s staff-child walk (pointer-size stride).
 
 `extract.toml` fields: `source` (repo-relative TU), `rules` (rules dir, default
 `mirror/rules`), and `ranges` (list of inclusive `[start, end]` line ranges).
 Line numbers into a frozen vendored decomp are stable; if a re-vendor moves them,
 update the ranges (the harness fails loudly if the extracted mirror equals the
 oracle, i.e. the rules stopped touching the extracted code).
+
+### When the oracle needs the 32-bit *layout*, not just a low heap
+The low-heap trick only makes pointer→int truncation lossless. It doesn't make
+pointer *fields* 4 bytes wide. When the hazard is a pointer-size stride (e.g.
+`walk += 4` over `childObjs[]`), the oracle's shim must give the walked array
+the GameCube layout (`u32` slots under `DIFFTEST_ORACLE_LOWMEM`) while the mirror
+uses native pointer slots. See `objrender_staff/shim.h` (`GuestPtr`). Removing the
+`[[pointer.stride]]` rule makes that case's mirror segfault, which proves the
+rule is load-bearing.
 
 ## Optional per-case build config (`case.toml`)
 

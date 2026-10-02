@@ -64,7 +64,7 @@ does not name). Rule kinds and their known limits are documented in
 
 1. `--worklist <tu>` → read the criticals.
 2. Add a rule per critical under `mirror/rules/` — `promote` / `ret` / `retype` /
-   `widen` / `widen_cast` / `audit` (shapes documented in `pointers.toml`; every rule
+   `widen` / `widen_cast` / `stride` / `audit` (shapes documented in `pointers.toml`; every rule
    names its TU with `file=`).
 3. `--emit <tu>` → see `critical … N -> M`; iterate until 0.
 

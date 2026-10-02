@@ -29,13 +29,19 @@
 #       (e.g. a pointer-packing conversion macro). Refuses if the line has more
 #       than one such cast unless occurrence= picks one.
 #
+#   [[pointer.stride]]   file="..." line=NN symbol="walk" from="4" to="sizeof(void*)"
+#       A pointer-array walk stepping by the GameCube pointer size: rewrites the
+#       step literal in `walk += 4` / `walk + 4` for the named variable only. Not
+#       detected by the scanner; find by reading code or by a difftest.
+#
 #   [[pointer.audit]]    file="..." line=NN ok=true note="compare-only"
 #       A ptr->narrow cast reviewed and judged benign (records intent; no rewrite).
 #
 # KNOWN LIMITATION of the heuristic scanner: it catches a narrow-int parameter
 # only when its own function dereferences it (narrow_param_deref), and only for
 # single-line signatures; it does not follow pointer values across a call
-# boundary. Those need type-aware analysis (libclang, P1) and, ultimately, the
+# boundary. Pointer-size strides (`p += 4` over a pointer array) are not detected at
+# all. Deliberately-unresolved findings: docs/mirror/pointer-width-deferred.md. Those need type-aware analysis (libclang, P1) and, ultimately, the
 # oracle-vs-mirror behavioral diff harness to *prove* a TU is correct. A "0
 # critical" worklist means "no line-visible hazard left", not "proven sound".
 

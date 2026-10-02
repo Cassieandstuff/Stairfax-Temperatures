@@ -198,6 +198,40 @@ def scan_text_pointer_width(text: str, rel: str) -> list[Finding]:
             rule_hint=f"[[pointer.promote]] symbol=\"{name}\" to=\"uintptr_t\"",
         ))
 
+    # Pass D: function-local narrow ints that carry a pointer: assigned from a
+    # narrowing cast (`x = (int)p` / `int x = (int)p`) and rebuilt as a pointer in
+    # the same function (`(T*)x`). The file-scope analog is int_global_holds_ptr.
+    _RE_LOCAL_DECL = re.compile(rf"^\s*{_NARROW}\s+(?P<name>[A-Za-z_]\w*)\s*(?:=|;)")
+    depth = 0
+    in_blk = False
+    decls: dict[str, int] = {}
+    fn_lines: list[tuple[int, str]] = []
+    def _flush():
+        for name, dline in decls.items():
+            fed = any(re.search(rf"\b{name}\s*=\s*\(\s*{_NARROW}\s*\)", c) for _, c in fn_lines)
+            rebuilt = [i for i, c in fn_lines
+                       if re.search(rf"\(\s*[A-Za-z_]\w*\s*\*\s*\)\s*\(?\s*{name}\b(?!\s*\*)", c)]
+            if fed and rebuilt:
+                findings.append(Finding(
+                    "local_int_holds_ptr", "critical", rel, dline, lines[dline - 1].strip(),
+                    f"local '{name}' is a narrow int assigned from a pointer cast and "
+                    f"rebuilt as a pointer (line {rebuilt[0]}); truncates on a 64-bit host.",
+                    "[[pointer.retype]] file=\"%s\" line=%d symbol=\"%s\" from=\"int\" "
+                    "to=\"uintptr_t\"  # + widen_cast the assignment" % (rel, dline, name)))
+    for i, ln in enumerate(lines, 1):
+        code, in_blk = _strip_noncode(ln, in_blk)
+        if depth > 0:
+            fn_lines.append((i, code))
+            m = _RE_LOCAL_DECL.match(code)
+            if m and m.group("name") not in decls:
+                decls[m.group("name")] = i
+        depth += code.count("{") - code.count("}")
+        if depth < 0:
+            depth = 0
+        if depth == 0 and fn_lines:
+            _flush()
+            decls, fn_lines = {}, []
+
     # Pass C: narrow-typed parameters dereferenced as addresses inside their own
     # function body, e.g. `static void f(u64* d, u32 packed) { *(u64*)(packed & ~7) }`.
     # The param must widen (retype) or the dereference truncates on a 64-bit host.
@@ -230,7 +264,9 @@ def scan_text_pointer_width(text: str, rel: str) -> list[Finding]:
             live = set()
             continue
         for p in live:
-            if re.search(rf"\(\s*[A-Za-z_]\w*\s*\*\s*\)\s*\(?\s*{re.escape(p)}\b", code):
+            # `(T*)(p * 4 + base)` scales p as an index into some other address;
+            # p itself isn't the pointer, so don't blame it.
+            if re.search(rf"\(\s*[A-Za-z_]\w*\s*\*\s*\)\s*\(?\s*{re.escape(p)}\b(?!\s*\*)", code):
                 findings.append(Finding(
                     "narrow_param_deref", "critical", rel, i, ln.strip(),
                     f"param '{p}' is a narrow int but is dereferenced as an address; "
@@ -400,7 +436,7 @@ _NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
 def load_pointer_rules(rules_dir: Path) -> dict:
     """Merge the [pointer.*] tables from every *.toml under rules_dir."""
     promote, widen, audit, ret, osglob = [], [], [], [], []
-    retype, widen_cast = [], []
+    retype, widen_cast, stride = [], [], []
     for toml in sorted(rules_dir.glob("*.toml")):
         try:
             data = tomllib.loads(toml.read_text())
@@ -413,6 +449,7 @@ def load_pointer_rules(rules_dir: Path) -> dict:
         ret += p.get("ret", [])
         retype += p.get("retype", [])
         widen_cast += p.get("widen_cast", [])
+        stride += p.get("stride", [])
         osglob += data.get("osglobals", {}).get("read", [])
     for kind, rs in (("promote", promote), ("ret", ret)):
         for r in rs:
@@ -422,7 +459,7 @@ def load_pointer_rules(rules_dir: Path) -> dict:
                     f"{rules_dir} has no file=; symbol rules must be scoped to one TU")
     return {"promote": promote, "widen": widen, "audit": audit,
             "ret": ret, "retype": retype, "widen_cast": widen_cast,
-            "osglobals": osglob}
+            "stride": stride, "osglobals": osglob}
 
 
 def _type_pat(t: str) -> str:
@@ -441,6 +478,14 @@ def _widen_cast(line: str, frm: str, to: str, occurrence: int | None):
     """Replace a bare `(<frm>)` cast with `(<to>)` on a line."""
     pat = re.compile(rf"\(\s*{_type_pat(frm)}\s*\)")
     return _replace_one(pat, line, lambda m: f"({to})", occurrence)
+
+
+def _stride(line: str, symbol: str, frm: str, to: str, occurrence: int | None):
+    """Replace a pointer-size step literal: `<symbol> += <frm>` / `-=` / `<symbol> + <frm>`
+    -> `<to>` (e.g. 4 -> sizeof(void*)). Targets the literal only where it steps
+    the named variable, so unrelated 4s on the line are untouched."""
+    pat = re.compile(rf"(\b{re.escape(symbol)}\s*(?:[+-]=|[+-])\s*){re.escape(frm)}\b")
+    return _replace_one(pat, line, lambda m: f"{m.group(1)}{to}", occurrence)
 
 
 def _replace_one(pat, line, repl, occurrence):
@@ -599,6 +644,23 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         else:
             why = "no such cast" if cnt == 0 else f"{cnt} casts; set occurrence="
             unmatched.append(f"widen_cast {rel}:{n} ({frm}): {why}")
+
+    # stride: a pointer-array walk stepping by a 32-bit pointer size literal.
+    for r in rules.get("stride", []):
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n, sym = r.get("line"), r.get("symbol")
+        frm, to = str(r.get("from", "4")), r.get("to", "sizeof(void*)")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)) or not sym:
+            unmatched.append(f"stride {rel}:{n}: bad line/symbol")
+            continue
+        nl, cnt = _stride(lines[n - 1], sym, frm, to, r.get("occurrence"))
+        if nl:
+            lines[n - 1] = nl
+            applied.append(f"stride {sym} {frm}->{to} at line {n}")
+        else:
+            why = "not found" if cnt == 0 else f"{cnt} matches; set occurrence="
+            unmatched.append(f"stride {rel}:{n} '{sym} += {frm}': {why}")
 
     # OS-globals reads: (file,line)-targeted; rewrite to the runtime accessor and
     # ensure the runtime header is included.
