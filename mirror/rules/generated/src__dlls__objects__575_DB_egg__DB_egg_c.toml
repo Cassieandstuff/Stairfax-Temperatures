@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/575_DB_egg/DB_egg.c"
-line = 134
-symbol = "msgArg"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/575_DB_egg/DB_egg.c"
 line = 458
 symbol = "p1"
 from = "int"

@@ -394,13 +394,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 15674
-symbol = "param"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 15926
 symbol = "obj"
 from = "int"

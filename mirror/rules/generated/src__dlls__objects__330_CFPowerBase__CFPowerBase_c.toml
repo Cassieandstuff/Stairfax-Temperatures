@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/330_CFPowerBase/CFPowerBase.c"
-line = 32
-symbol = "messageSender"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/330_CFPowerBase/CFPowerBase.c"
 line = 87
 symbol = "renderArg2"
 from = "int"

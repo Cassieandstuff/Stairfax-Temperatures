@@ -7,13 +7,6 @@ symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/331_CFMainCryst/CFMainCryst.c"
-line = 318
-symbol = "messageSender"
-from = "u32"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/331_CFMainCryst/CFMainCryst.c"
 line = 302
