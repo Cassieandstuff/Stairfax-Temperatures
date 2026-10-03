@@ -1,0 +1,26 @@
+# GameObject.userData1 / userData2 (object.h, obj+0xF4/0xF8): per-class scratch
+# words. Each object class picks the role: countdown timers, latches, game-bit
+# bools, enums, laundered f32 / s16 halves -- and object handles (pointers:
+# SB_ShipHead, SPitembeam, 467, DR_CloudRun, SB_Cloudrun, SB_ShipGun, InvHit,
+# ...). One field can't be 4 bytes for the ints and 8 for the pointers, so it
+# becomes intptr_t: pointers fit, the int roles stay signed (their `< 0`, `-=`
+# and sentinel tests keep their meaning), and laundered f32/s16 access stays
+# consistent on a little-endian host (always the low bytes). InvHit's
+# `*(GameObject**)&obj->userData1` (8-byte read of a 4-byte field: it fused
+# userData1+userData2) becomes correct.
+#
+# The analyzer still treats these fields as one program-wide slot, so readers that
+# use the word as an int stay held (HELD.txt); that's right: they are ints.
+[[pointer.retype]]
+file = "decomp/include/game/objects/object.h"
+line = 76  # s32 userData1;
+symbol = "userData1"
+from = "s32"
+to = "intptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/game/objects/object.h"
+line = 87  # s32 userData2;
+symbol = "userData2"
+from = "s32"
+to = "intptr_t"

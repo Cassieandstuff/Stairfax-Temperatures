@@ -95,6 +95,11 @@ def is_narrow_int(t) -> bool:
     return c.kind in NARROW_INT and c.get_size() == 4
 
 
+def is_ptr_width_int(t) -> bool:
+    c = canon(t)
+    return c.kind in (T.LONG, T.ULONG, T.LONGLONG, T.ULONGLONG) and c.get_size() == 8
+
+
 def is_ptrish(t) -> bool:
     return canon(t).kind in PTRISH
 
@@ -214,6 +219,11 @@ class Analyzer:
             d = e.referenced
             if d is not None and d.kind == K.FIELD_DECL and is_narrow_int(d.type):
                 return {f"field:{d.get_usr()}"}
+            if d is not None and d.kind == K.FIELD_DECL and is_ptr_width_int(d.type):
+                # a field a hand rule widened to intptr_t because some classes keep
+                # pointers in it (GameObject.userData1/2): reading it may yield a
+                # pointer, so it seeds like `(int)ptr`
+                return {"SEED"}
             return set()
         if k == K.CALL_EXPR:
             d = e.referenced
