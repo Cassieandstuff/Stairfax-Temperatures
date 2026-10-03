@@ -59,19 +59,3 @@ line = 62
 from = "u8 resetHitboxMode;"
 to = "u8 resetHitboxMode; u8 padTail[sizeof(ObjHitsPriorityState) - offsetof(ObjHitsPriorityState, resetHitboxMode) - sizeof(u8)];"
 
-# ARWBombColl compares `(u32)hitState->lastHitObject == (u32)getArwing()`. With
-# lastHitObject already uintptr_t the analyzer no longer flags the first cast,
-# but truncating it would break the (widened) equality on a high heap.
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/671_ARWBombColl/ARWBombColl.c"
-line = 142
-from = "u32"
-to = "uintptr_t"
-occurrence = 1
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/671_ARWBombColl/ARWBombColl.c"
-line = 162
-from = "u32"
-to = "uintptr_t"
-occurrence = 1

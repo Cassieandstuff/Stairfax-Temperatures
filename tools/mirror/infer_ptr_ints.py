@@ -521,9 +521,15 @@ class Analyzer:
                 toks = [t.spelling for t in c.get_tokens()]
                 frm = self.cast_spelling(toks)
                 if frm:
+                    srcs = self.sources(inner)
+                    # narrowing a pointer-width int that seeds (a field a hand rule
+                    # widened because it carries pointers: `(u32)hs->lastHitObject`)
+                    # truncates the pointer just like `(u32)ptr` does
+                    ptr_inner = is_ptrish(inner.type) or \
+                        (is_ptr_width_int(inner.type) and "SEED" in srcs)
                     self.g.casts.append((f, c.extent.start.line, c.extent.start.column, frm,
-                                         is_ptrish(inner.type), sorted(
-                                             s for s in self.sources(inner)
+                                         ptr_inner, sorted(
+                                             s for s in srcs
                                              if not s.startswith(("SEED", "SUB:")))))
         for ch in c.get_children():
             self.visit(ch, fn)
