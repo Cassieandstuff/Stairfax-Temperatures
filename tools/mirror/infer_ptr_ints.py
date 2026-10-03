@@ -67,6 +67,27 @@ def canon(t):
 POLYMORPHIC = {"alignUp2", "roundUpTo4", "roundUpTo8", "roundUpTo16", "roundUpTo32"}
 
 
+_EVAL_LIB = None
+
+
+def _eval_lib():
+    """libclang's evaluator with real signatures. ctypes defaults restype to a C
+    int, which truncates the returned CXEvalResult pointer on a 64-bit host (and
+    dispose then crashes the worker)."""
+    global _EVAL_LIB
+    if _EVAL_LIB is None:
+        import ctypes
+        lib = ci.conf.lib
+        lib.clang_Cursor_Evaluate.argtypes = [ci.Cursor]
+        lib.clang_Cursor_Evaluate.restype = ctypes.c_void_p
+        lib.clang_EvalResult_getAsLongLong.argtypes = [ctypes.c_void_p]
+        lib.clang_EvalResult_getAsLongLong.restype = ctypes.c_longlong
+        lib.clang_EvalResult_dispose.argtypes = [ctypes.c_void_p]
+        lib.clang_EvalResult_dispose.restype = None
+        _EVAL_LIB = lib
+    return _EVAL_LIB
+
+
 def is_narrow_int(t) -> bool:
     c = canon(t)
     if c.kind in (T.CONSTANTARRAY, T.INCOMPLETEARRAY):     # u32 tbl[N]: element slot
@@ -353,11 +374,14 @@ class Analyzer:
             # inside a macro expansion (NULL is ((void*)0)) a literal has no tokens
             # of its own: ask clang for its value
             try:
-                r = ci.conf.lib.clang_Cursor_Evaluate(e)
+                lib = _eval_lib()
+                r = lib.clang_Cursor_Evaluate(e)
+                if not r:
+                    return False
                 try:
-                    return ci.conf.lib.clang_EvalResult_getAsLongLong(r) == 0
+                    return lib.clang_EvalResult_getAsLongLong(r) == 0
                 finally:
-                    ci.conf.lib.clang_EvalResult_dispose(r)
+                    lib.clang_EvalResult_dispose(r)
             except Exception:
                 return False
         return False
