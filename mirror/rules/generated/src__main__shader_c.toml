@@ -16,36 +16,8 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/shader.c"
-line = 1435
-symbol = "textureCursor"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
 line = 1911
 symbol = "base"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 2103
-symbol = "rectA"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 2379
-symbol = "zc"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/shader.c"
-line = 2548
-symbol = "ofs"
 from = "int"
 to = "uintptr_t"
 

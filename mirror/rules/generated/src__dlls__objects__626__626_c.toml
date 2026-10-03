@@ -16,20 +16,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/626/626.c"
-line = 543
-symbol = "gHighTopIdleSequenceIds"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/626/626.c"
-line = 544
-symbol = "gHighTopIdleSequenceWeights"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/626/626.c"
 line = 1005
 symbol = "p2"
 from = "int"

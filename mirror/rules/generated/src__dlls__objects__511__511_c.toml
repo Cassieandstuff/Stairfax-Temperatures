@@ -6,10 +6,3 @@ line = 45
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/511/511.c"
-line = 74
-symbol = "nextCarryState"
-from = "int"
-to = "uintptr_t"

@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/46/46.c"
-line = 228
-symbol = "args"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/46/46.c"
 line = 528
 symbol = "seqHandle"
 from = "int"

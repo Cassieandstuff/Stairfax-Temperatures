@@ -2,27 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/589_BossDrakor/BossDrakor.c"
-line = 173
-symbol = "limitedNeckStep"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/589_BossDrakor/BossDrakor.c"
-line = 395
-symbol = "gBossDrakorMoveStateTable"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/589_BossDrakor/BossDrakor.c"
-line = 396
-symbol = "gBossDrakorMoveSpeedTable"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/589_BossDrakor/BossDrakor.c"
 line = 566
 symbol = "p2"
 from = "int"

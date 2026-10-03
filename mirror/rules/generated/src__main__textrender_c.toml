@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/main/textrender.c"
-line = 66
-symbol = "sSubtitleCtrlCmdScratch"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/textrender.c"
-line = 508
-symbol = "params"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/textrender.c"
 line = 761
 symbol = "ox"
 from = "int"
@@ -26,18 +12,4 @@ file = "decomp/src/main/textrender.c"
 line = 762
 symbol = "oy"
 from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/textrender.c"
-line = 929
-symbol = "params"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/textrender.c"
-line = 1133
-symbol = "sSubtitleCtrlCmdScratch"
-from = "u32"
 to = "uintptr_t"

@@ -1,0 +1,13 @@
+# XYZAnimator.c: hand decision for a slot the signedness check held back.
+
+# blockIndex: a loop index (`blockIndex < (int)(u32)blockData->polyGroupCount`),
+# then, after that loop, reused for the MapBlockBoundsRec* returned by
+# mapBlockGetDisplayListBounds and dereferenced six times. The signed compare
+# only ever sees the index. intptr_t keeps it signed and holds the pointer whole;
+# as a plain int (held) the widened cast on line 89 still truncated the pointer.
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
+line = 44  # int blockIndex;
+symbol = "blockIndex"
+from = "int"
+to = "intptr_t"

@@ -28,6 +28,11 @@ symbol = "oldStatus"
 from = "int"
 to = "uintptr_t"
 
+[[pointer.ret]]
+file = "decomp/src/dlls/engine/23/23.c"
+func = "SaveGame_mapGetObjGroups"
+to = "uintptr_t"
+
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/engine/23/23.c"
 line = 287

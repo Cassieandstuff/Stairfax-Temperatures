@@ -7,41 +7,6 @@ symbol = "state"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
-line = 621
-symbol = "off"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
-line = 716
-symbol = "iv"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
-line = 717
-symbol = "off"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
-line = 766
-symbol = "loopIdx"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/engine/21/21.c"
-line = 768
-symbol = "off"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.ret]]
 file = "decomp/src/dlls/engine/21/21.c"
 func = "playerHasKrazoaSpirit"

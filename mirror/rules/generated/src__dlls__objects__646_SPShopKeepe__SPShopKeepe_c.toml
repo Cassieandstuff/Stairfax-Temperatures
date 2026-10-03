@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
-line = 214
-symbol = "head"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
 line = 992
 symbol = "p2"
 from = "int"

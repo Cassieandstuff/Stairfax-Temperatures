@@ -58,13 +58,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/object.c"
-line = 1822
-symbol = "offsets"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/object.c"
 line = 1827
 symbol = "modelPtr"
 from = "int"

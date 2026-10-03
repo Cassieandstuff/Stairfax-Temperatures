@@ -20,10 +20,3 @@ line = 120
 symbol = "savedCharset"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/subtitle.c"
-line = 137
-symbol = "args"
-from = "int"
-to = "uintptr_t"

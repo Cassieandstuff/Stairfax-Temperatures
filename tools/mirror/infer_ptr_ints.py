@@ -348,7 +348,18 @@ class Analyzer:
             return False
         if e.kind == K.INTEGER_LITERAL:
             toks = [t.spelling for t in e.get_tokens()]
-            return bool(toks) and toks[0].rstrip("uUlL") in ("0", "0x0")
+            if toks:
+                return toks[0].rstrip("uUlL") in ("0", "0x0")
+            # inside a macro expansion (NULL is ((void*)0)) a literal has no tokens
+            # of its own: ask clang for its value
+            try:
+                r = ci.conf.lib.clang_Cursor_Evaluate(e)
+                try:
+                    return ci.conf.lib.clang_EvalResult_getAsLongLong(r) == 0
+                finally:
+                    ci.conf.lib.clang_EvalResult_dispose(r)
+            except Exception:
+                return False
         return False
 
     def visit(self, c, fn=None):

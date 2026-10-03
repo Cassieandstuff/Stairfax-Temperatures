@@ -6,24 +6,3 @@ line = 64
 symbol = "p2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_0266_kytesmum.h"
-line = 75
-symbol = "gKytesMumQuestBits"
-from = "const s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_0266_kytesmum.h"
-line = 76
-symbol = "gKytesMumTriggerIds"
-from = "const s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_0266_kytesmum.h"
-line = 77
-symbol = "gKytesMumQuestIdleSfxTable"
-from = "int"
-to = "uintptr_t"

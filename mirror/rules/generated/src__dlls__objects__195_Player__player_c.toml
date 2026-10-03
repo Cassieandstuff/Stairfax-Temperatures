@@ -114,27 +114,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 348
-symbol = "lbl_80332EC0"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 400
-symbol = "lbl_802C2C50"
-from = "const int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 401
-symbol = "lbl_802C2C68"
-from = "const int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 538
 symbol = "param"
 from = "int"
@@ -163,34 +142,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 3668
-symbol = "z"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 3800
-symbol = "z"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 4072
-symbol = "cleanupCounters"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 4272
-symbol = "z"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 4665
 symbol = "slot"
 from = "int"
@@ -207,27 +158,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 4824
 symbol = "slot"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 4982
-symbol = "z"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 5462
-symbol = "lbl_803DC688"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 5474
-symbol = "lbl_803DC6C4"
 from = "int"
 to = "uintptr_t"
 
@@ -270,13 +200,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 8167
 symbol = "state"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 9258
-symbol = "z"
 from = "int"
 to = "uintptr_t"
 
@@ -436,13 +359,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 12090
-symbol = "z"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 12249
 symbol = "a"
 from = "int"
@@ -459,13 +375,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 14002
 symbol = "model"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 14298
-symbol = "z"
 from = "int"
 to = "uintptr_t"
 
@@ -550,13 +459,6 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/195_Player/player.c"
 line = 17058
 symbol = "obj"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/195_Player/player.c"
-line = 18038
-symbol = "gPlayerStateHandlers"
 from = "int"
 to = "uintptr_t"
 

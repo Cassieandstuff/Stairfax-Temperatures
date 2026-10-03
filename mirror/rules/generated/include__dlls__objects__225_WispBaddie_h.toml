@@ -6,17 +6,3 @@ line = 59
 symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/dlls/objects/225_WispBaddie.h"
-line = 67
-symbol = "gWispBaddieCurveInitData"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/dlls/objects/225_WispBaddie.h"
-line = 69
-symbol = "gGroundBaddieModelChainIds"
-from = "u32"
-to = "uintptr_t"

@@ -23,6 +23,13 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/lightmap_draw.c"
+line = 407
+symbol = "cursor"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/lightmap_draw.c"
 line = 443
 symbol = "state"
 from = "int"
@@ -30,8 +37,22 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/lightmap_draw.c"
+line = 447
+symbol = "cursor"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/lightmap_draw.c"
 line = 485
 symbol = "state"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/lightmap_draw.c"
+line = 488
+symbol = "cursor"
 from = "int"
 to = "uintptr_t"
 

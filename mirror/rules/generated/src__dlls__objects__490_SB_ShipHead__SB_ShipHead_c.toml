@@ -28,13 +28,6 @@ symbol = "result"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
-line = 125
-symbol = "messageSender"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
 line = 167

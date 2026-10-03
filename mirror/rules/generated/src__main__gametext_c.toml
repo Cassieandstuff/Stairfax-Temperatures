@@ -7,13 +7,6 @@ symbol = "boxIdx"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/main/gametext.c"
-line = 255
-symbol = "gUtf8ClassOffsetTable"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/main/gametext.c"
 line = 154

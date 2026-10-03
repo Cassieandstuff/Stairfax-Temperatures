@@ -6,10 +6,3 @@ line = 817
 symbol = "gdl"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/599_DR_EarthWar/DR_EarthWar.c"
-line = 1245
-symbol = "gEarthWarriorTailChainJointIndices"
-from = "s32"
-to = "uintptr_t"

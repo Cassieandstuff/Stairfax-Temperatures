@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/359_SpiritDoorL/SpiritDoorL.c"
-line = 39
-symbol = "gSpiritDoorLockOrbitOffsetBase"
-from = "const u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/359_SpiritDoorL/SpiritDoorL.c"
 line = 66
 symbol = "renderArg2"
 from = "int"

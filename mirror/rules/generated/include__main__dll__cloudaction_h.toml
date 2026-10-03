@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/dll/cloudaction.h"
-line = 18
-symbol = "lbl_803DB618"
-from = "s32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/cloudaction.h"
 line = 28
 symbol = "a"
 from = "int"

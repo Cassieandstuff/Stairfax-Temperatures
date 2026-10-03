@@ -6,3 +6,10 @@ line = 62
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/345/345.c"
+line = 89
+symbol = "hitObject"
+from = "u32"
+to = "uintptr_t"

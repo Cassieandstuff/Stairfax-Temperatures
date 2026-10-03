@@ -43,7 +43,65 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 173
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 185
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 198
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 220
+from = "u32"
+to = "uintptr_t"
+occurrence = 1
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 220
+from = "u32"
+to = "uintptr_t"
+occurrence = 2
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 235
+from = "u32"
+to = "uintptr_t"
+occurrence = 1
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 235
+from = "u32"
+to = "uintptr_t"
+occurrence = 2
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 259
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
 line = 277
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/433_SH_staff/SH_staff.c"
+line = 286
 from = "u32"
 to = "uintptr_t"
 

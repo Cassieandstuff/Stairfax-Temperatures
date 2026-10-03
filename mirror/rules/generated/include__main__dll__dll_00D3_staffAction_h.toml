@@ -6,10 +6,3 @@ line = 14
 symbol = "p2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/include/main/dll/dll_00D3_staffAction.h"
-line = 22
-symbol = "gStaffActionHitReactionMoves"
-from = "int"
-to = "uintptr_t"

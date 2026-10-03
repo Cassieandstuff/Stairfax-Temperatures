@@ -6,10 +6,3 @@ line = 656
 symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/208_Grimble/Grimble.c"
-line = 772
-symbol = "gGrimbleHitReactionMoves"
-from = "int"
-to = "uintptr_t"

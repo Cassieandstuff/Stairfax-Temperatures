@@ -2,20 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/main/render.c"
-line = 22
-symbol = "gModelRenderAdpcmStepTable"
-from = "const int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/render.c"
-line = 35
-symbol = "gModelRenderAdpcmIndexDeltaTable"
-from = "const int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/render.c"
 line = 621
 symbol = "unused0"
 from = "int"

@@ -7,13 +7,6 @@ symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/381/381.c"
-line = 242
-symbol = "curveInitParams"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/381/381.c"
 line = 85

@@ -21,20 +21,6 @@ symbol = "textId"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/main/gametext_tail.c"
-line = 465
-symbol = "lineStarts"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/gametext_tail.c"
-line = 466
-symbol = "params"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/main/gametext_tail.c"
 line = 380

@@ -48,10 +48,3 @@ line = 699
 symbol = "next"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/main/modelEngine.c"
-line = 1908
-symbol = "gModelEngineUiDllResourceIds"
-from = "s32"
-to = "uintptr_t"

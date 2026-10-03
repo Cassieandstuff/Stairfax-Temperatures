@@ -2,34 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 41
-symbol = "vertexDataOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 42
-symbol = "groupDataOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 43
-symbol = "triangleDataOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 51
-symbol = "boundsBufferOffset"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
 line = 105
 symbol = "blockAddress"
 from = "int"
@@ -51,8 +23,15 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
-line = 151
-symbol = "groupDataOffset"
+line = 142
+symbol = "vertexIndex"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/316_XYZAnimator/XYZAnimator.c"
+line = 145
+symbol = "dataOffset"
 from = "int"
 to = "uintptr_t"
 
