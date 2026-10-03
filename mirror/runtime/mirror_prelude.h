@@ -11,4 +11,5 @@
 #include <stdint.h>
 #include "stairfax_os.h"     /* os_globals_read_u32: [[osglobals.read]] rewrites */
 #include "stairfax_seqpair.h" /* seqPairTableLookupPtr: [[call.retarget]] rewrites */
+#include "stairfax_model.h"   /* stairfax_model_load_unpacked: model_hoststruct.toml */
 #endif
