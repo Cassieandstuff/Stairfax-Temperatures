@@ -30,6 +30,13 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/main/objprint_dolphin.c"
+line = 1866
+symbol = "t18"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint_dolphin.c"
 line = 2481
 symbol = "pAddr"
 from = "u32"

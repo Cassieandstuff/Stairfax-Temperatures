@@ -2,7 +2,7 @@
 
 [[pointer.retype]]
 file = "decomp/include/main/rcp_dolphin_api.h"
-line = 43
-symbol = "frame"
+line = 13
+symbol = "index"
 from = "int"
 to = "uintptr_t"
