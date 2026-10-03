@@ -1,0 +1,77 @@
+# --- Hit-state struct views: one allocation, two names ---
+# anim.hitReactState is allocated as an ObjHitsPriorityState (object.c sizes it
+# with sizeof; objhits.c carves it from the state arena) and read through both
+# ObjHitsPriorityState* and ObjHitReactState*. On the GameCube the views agree
+# byte for byte: ObjHitReactState's head (activeHit, the entry counts, the
+# `entries` pointer) is priority's pad00[0x0C], and resetFrameCount/capsuleScale,
+# flags, shapeFlags, activeHitboxMode and resetHitboxMode share offsets. On the
+# host the 8-byte `entries` pointer and the widened pointer-carrying fields move
+# everything, so the two views drifted apart.
+#
+# Fix: priority becomes the authoritative layout (it names the head, pointer
+# included), and ObjHitReactState's pads are sized from priority's offsets, so
+# every shared field lands on its twin by construction. Pinned by
+# _Static_asserts in mirror/runtime/stairfax_hitstate.c.
+
+[[text.replace]]
+file = "decomp/include/main/objhits_types.h"
+line = 61  # u8 pad00[0x0C];
+from = "u8 pad00[0x0C];"
+to = "int activeHit; s16 activeEntryByteCount; s16 entryBufferByteCapacity; void* entries;"
+
+# lastHitObject: objhits.c and 282.c store `(u32)obj`; 227.c, 413.c, Baddie,
+# SB_CannonBa, 610 etc. cast it back to GameObject* and dereference it.
+[[pointer.retype]]
+file = "decomp/include/main/objhits_types.h"
+line = 79  # u32 lastHitObject;
+symbol = "lastHitObject"
+from = "u32"
+to = "uintptr_t"
+
+# The include goes on the blank line 6, keeping every line number intact.
+[[text.replace]]
+file = "decomp/include/main/objHitReact_types.h"
+line = 6
+from = "\n"
+to = "#include \"main/objhits_types.h\"\n"
+
+[[text.replace]]
+file = "decomp/include/main/objHitReact_types.h"
+line = 55
+from = "[0x58 - 0x0C]"
+to = "[offsetof(ObjHitsPriorityState, capsuleScale) - offsetof(ObjHitsPriorityState, entries) - sizeof(void*)]"
+
+[[text.replace]]
+file = "decomp/include/main/objHitReact_types.h"
+line = 57
+from = "[0x60 - 0x5A]"
+to = "[offsetof(ObjHitsPriorityState, flags) - offsetof(ObjHitsPriorityState, capsuleScale) - sizeof(s16)]"
+
+[[text.replace]]
+file = "decomp/include/main/objHitReact_types.h"
+line = 60
+from = "[0xAE - 0x63]"
+to = "[offsetof(ObjHitsPriorityState, activeHitboxMode) - offsetof(ObjHitsPriorityState, shapeFlags) - sizeof(u8)]"
+
+[[text.replace]]
+file = "decomp/include/main/objHitReact_types.h"
+line = 62
+from = "u8 resetHitboxMode;"
+to = "u8 resetHitboxMode; u8 padTail[sizeof(ObjHitsPriorityState) - offsetof(ObjHitsPriorityState, resetHitboxMode) - sizeof(u8)];"
+
+# ARWBombColl compares `(u32)hitState->lastHitObject == (u32)getArwing()`. With
+# lastHitObject already uintptr_t the analyzer no longer flags the first cast,
+# but truncating it would break the (widened) equality on a high heap.
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/671_ARWBombColl/ARWBombColl.c"
+line = 142
+from = "u32"
+to = "uintptr_t"
+occurrence = 1
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/671_ARWBombColl/ARWBombColl.c"
+line = 162
+from = "u32"
+to = "uintptr_t"
+occurrence = 1
