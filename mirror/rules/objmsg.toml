@@ -1,0 +1,522 @@
+# ObjMsg: the per-object message queue (objlib.c), widened for a 64-bit host.
+#
+# Entries are {u32 message; u32 sender; u32 param}. sender is always a GameObject*
+# (ObjMsg_Send* store `(u32)sender`) and param often carries a pointer too (the
+# send API already takes it as uintptr_t). As u32 the queue truncated both.
+#
+# Layout: the queue is {u32 count; u32 capacity; ObjMsgEntry entries[]}, and every
+# function addresses entry i by hand as `(u8*)queue + ((i + i + i) << 2)`, through
+# ObjMsgQueueCursor (whose entry / nextEntry alias entries[i] / entries[i + 1]).
+# With pointer-width sender/param an entry is sizeof(ObjMsgEntry) == 24, so those
+# strides and the allocation size `(capacity * 3 + 2) * 4` are rewritten in terms
+# of sizeof/offsetof. The cursor trick itself still holds: entry sits at offset 8,
+# nextEntry at 8 + sizeof(ObjMsgEntry), exactly entries[i] / entries[i + 1].
+#
+# ObjMsg_Pop / ObjMsg_Peek return sender and param through out-parameters, which
+# become uintptr_t*; every caller's receiving storage is made pointer-width below
+# (the message out-parameter stays u32*).
+
+# --- queue entry -------------------------------------------------------------------
+
+[[pointer.retype]]
+file = "decomp/src/main/objlib.c"
+line = 141
+symbol = "sender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objlib.c"
+line = 142
+symbol = "param"
+from = "u32"
+to = "uintptr_t"
+
+# --- hand-computed entry strides and the allocation size ---
+
+[[text.replace]]
+file = "decomp/src/main/objlib.c"
+line = 467  # ObjMsg_Pop shift-down
+from = "((i + i + i) << 2)"
+to = "(i) * sizeof(ObjMsgEntry)"
+
+[[text.replace]]
+file = "decomp/src/main/objlib.c"
+line = 504  # append at entries[count]
+from = "((count + count + count) << 2)"
+to = "(count) * sizeof(ObjMsgEntry)"
+
+[[text.replace]]
+file = "decomp/src/main/objlib.c"
+line = 539  # append at entries[count]
+from = "((count + count + count) << 2)"
+to = "(count) * sizeof(ObjMsgEntry)"
+
+[[text.replace]]
+file = "decomp/src/main/objlib.c"
+line = 559  # append at entries[count]
+from = "((count + count + count) << 2)"
+to = "(count) * sizeof(ObjMsgEntry)"
+
+[[text.replace]]
+file = "decomp/src/main/objlib.c"
+line = 588  # append at entries[count]
+from = "((count + count + count) << 2)"
+to = "(count) * sizeof(ObjMsgEntry)"
+
+[[text.replace]]
+file = "decomp/src/main/objlib.c"
+line = 606  # ObjMsg_AllocQueue
+from = "(capacity * 3 + 2) * 4"
+to = "capacity * sizeof(ObjMsgEntry) + offsetof(ObjMsgQueue, entries)"
+
+# --- Pop / Peek out-parameters: sender and param ---
+
+[[pointer.retype]]
+file = "decomp/include/main/obj_message.h"
+line = 8
+symbol = "outSender"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/include/main/obj_message.h"
+line = 8
+symbol = "outParam"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/include/main/obj_message.h"
+line = 9
+symbol = "outSender"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/include/main/obj_message.h"
+line = 9
+symbol = "outParam"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/objlib.c"
+line = 424
+symbol = "outSender"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/objlib.c"
+line = 424
+symbol = "outParam"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/objlib.c"
+line = 446
+symbol = "outSender"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/objlib.c"
+line = 446
+symbol = "outParam"
+from = "u32*"
+to = "uintptr_t*"
+
+# --- callers: receiving storage for sender / param (generated from the libclang
+#     AST of every ObjMsg_Pop / ObjMsg_Peek call; tools hand-reviewed) ---
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/426_BombPlantSp/BombPlantSp.c"
+line = 172  # receives the sender
+symbol = "poppedSender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/239/239.c"
+line = 641  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 1
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/239/239.c"
+line = 635  # receives the param
+symbol = "messageParam"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
+line = 154  # param out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 3
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
+line = 118  # receives the param
+symbol = "messageParam"
+from = "int"
+to = "intptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/323_FEseqobject/FEseqobject.c"
+line = 51  # receives the sender
+symbol = "sender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/323_FEseqobject/FEseqobject.c"
+line = 53  # receives the param
+symbol = "param"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/334_CFPrisonGua/CFPrisonGua.c"
+line = 72  # receives the sender
+symbol = "messageSender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/334_CFPrisonGua/CFPrisonGua.c"
+line = 74  # receives the param
+symbol = "messageArgument"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/409/409.c"
+line = 193  # receives the sender
+symbol = "param"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/409/409.c"
+line = 191  # receives the param
+symbol = "flags"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/291_fuelCell/fuelCell.c"
+line = 182  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/291_fuelCell/fuelCell.c"
+line = 178  # receives the sender
+symbol = "msgParam"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/237/237.c"
+line = 549  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/237/237.c"
+line = 506  # receives the sender
+symbol = "messageParam"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/325_CloudPrison/CloudPrison.c"
+line = 97  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/325_CloudPrison/CloudPrison.c"
+line = 97  # param out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 3
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/325_CloudPrison/CloudPrison.c"
+line = 79  # receives the param
+symbol = "data"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/331_CFMainCryst/CFMainCryst.c"
+line = 86  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 1
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/331_CFMainCryst/CFMainCryst.c"
+line = 83  # receives the param
+symbol = "unusedMessageArgument"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/331_CFMainCryst/CFMainCryst.c"
+line = 318  # receives the sender
+symbol = "messageSender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/331_CFMainCryst/CFMainCryst.c"
+line = 316  # receives the param
+symbol = "unusedMessageArgument"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/335_CFPrisonUnc/CFPrisonUnc.c"
+line = 97  # receives the sender
+symbol = "messageSender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/335_CFPrisonUnc/CFPrisonUnc.c"
+line = 101  # receives the param
+symbol = "messageArgument"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/330_CFPowerBase/CFPowerBase.c"
+line = 32  # receives the sender
+symbol = "messageSender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/330_CFPowerBase/CFPowerBase.c"
+line = 34  # receives the param
+symbol = "unusedMessageArgument"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/195_Player/player.c"
+line = 15677  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/195_Player/player.c"
+line = 15677  # param out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 3
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/195_Player/player.c"
+line = 15674  # receives the param
+symbol = "param"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/399_ECSH_Shrine/ECSH_Shrine.c"
+line = 491  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/399_ECSH_Shrine/ECSH_Shrine.c"
+line = 453  # receives the sender
+symbol = "messageArgB"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/399_ECSH_Shrine/ECSH_Shrine.c"
+line = 491  # param out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 3
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/399_ECSH_Shrine/ECSH_Shrine.c"
+line = 451  # receives the param
+symbol = "messageArgC"
+from = "int"
+to = "intptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/340/340.c"
+line = 35  # receives the sender
+symbol = "unusedMessageSender"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/340/340.c"
+line = 36  # receives the param
+symbol = "unusedMessageArgument"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
+line = 227  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
+line = 215  # receives the sender
+symbol = "msgB"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
+line = 227  # param out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 3
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
+line = 217  # receives the param
+symbol = "msgC"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/344/344.c"
+line = 685  # receives the param
+symbol = "messageArgument"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/411/411.c"
+line = 226  # sender out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/411/411.c"
+line = 219  # receives the sender
+symbol = "messageParam"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/411/411.c"
+line = 226  # param out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 3
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/411/411.c"
+line = 217  # receives the param
+symbol = "messageFlags"
+from = "int"
+to = "intptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/575_DB_egg/DB_egg.c"
+line = 134  # receives the sender
+symbol = "msgArg"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/575_DB_egg/DB_egg.c"
+line = 133  # receives the param
+symbol = "msgFlag"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/25/25.c"
+line = 352  # receives the sender
+symbol = "msgData"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/25/25.c"
+line = 357  # param out-arg
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/25/25.c"
+line = 354  # receives the param
+symbol = "extra"
+from = "int"
+to = "intptr_t"
+
+
+# --- callers needing a hand decision ---
+# SB_ShipHead: the sender lands in `int messageSender[2]` (passed as the array).
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
+line = 125  # int messageSender[2];
+symbol = "messageSender"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/490_SB_ShipHead/SB_ShipHead.c"
+line = 154  # ObjMsg_Pop(obj, (u32*)&message, (u32*)messageSender, (u32*)&messageParam)
+from = "u32*"
+to = "uintptr_t*"
+occurrence = 2
+
+# DBstealerwo: struct { u32 msg; int argA; int argB; } stk;
+#   ObjMsg_Pop(obj, &stk.msg, (u32*)&stk.argB, &stk.msg + 1)
+# `&stk.msg + 1` means "the slot after msg" == argA in the 32-bit layout. With
+# pointer-width argA/argB that slot is padding, so name it: (uintptr_t*)&stk.argA.
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
+line = 1942  # int argA;
+symbol = "argA"
+from = "int"
+to = "intptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
+line = 1943  # int argB;
+symbol = "argB"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
+line = 1995
+from = "u32*"
+to = "uintptr_t*"
+
+[[text.replace]]
+file = "decomp/src/dlls/objects/578_DBstealerwo/DBstealerwo.c"
+line = 1995
+from = "&stk.msg + 1"
+to = "(uintptr_t*)&stk.argA"

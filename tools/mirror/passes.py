@@ -437,7 +437,7 @@ _NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
 
 def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
     """Merge the [pointer.*] tables from every *.toml under rules_dir."""
-    promote, widen, audit, ret, osglob, retarget = [], [], [], [], [], []
+    promote, widen, audit, ret, osglob, retarget, replace = [], [], [], [], [], [], []
     retype, widen_cast, stride, retype_param = [], [], [], []
     # hand-written rules first, then mirror/rules/generated/ (infer_ptr_ints.py)
     gen = sorted((rules_dir / "generated").glob("*.toml")) if generated else []
@@ -457,6 +457,7 @@ def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
         retype_param += p.get("retype_param", [])
         osglob += data.get("osglobals", {}).get("read", [])
         retarget += data.get("call", {}).get("retarget", [])
+        replace += data.get("text", {}).get("replace", [])
     for kind, rs in (("promote", promote), ("ret", ret)):
         for r in rs:
             if not r.get("file"):
@@ -466,7 +467,7 @@ def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
     return {"promote": promote, "widen": widen, "audit": audit,
             "ret": ret, "retype": retype, "widen_cast": widen_cast,
             "stride": stride, "retype_param": retype_param, "osglobals": osglob,
-            "retarget": retarget}
+            "retarget": retarget, "replace": replace}
 
 
 def _type_pat(t: str) -> str:
@@ -738,6 +739,24 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         else:
             why = "not found" if cnt == 0 else f"{cnt} matches; set occurrence="
             unmatched.append(f"stride {rel}:{n} '{sym} += {frm}': {why}")
+
+    # text replace: one exact, literal expression rewrite at a line, for layout
+    # arithmetic no structural rule can express (a hand-computed stride such as
+    # `((i + i + i) << 2)` for 12-byte entries -> `(i) * sizeof(Entry)`). The
+    # `from` text must occur exactly once on the line; anything else is an error.
+    for r in rules.get("replace", []):
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n, frm, to = r.get("line"), r.get("from"), r.get("to")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)) or not frm or to is None:
+            unmatched.append(f"replace {rel}:{n}: bad line/from/to")
+            continue
+        cnt = lines[n - 1].count(frm)
+        if cnt == 1:
+            lines[n - 1] = lines[n - 1].replace(frm, to)
+            applied.append(f"replace text at line {n}")
+        else:
+            unmatched.append(f"replace {rel}:{n}: {cnt} occurrences of {frm!r} (need exactly 1)")
 
     # call retarget: point one call at a port runtime replacement whose contract
     # differs only where the 32-bit original can't be right on a 64-bit host

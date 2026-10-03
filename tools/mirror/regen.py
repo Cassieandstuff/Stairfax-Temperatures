@@ -65,6 +65,7 @@ def main(argv):
 
     rc = run(HERE / "build_mirror.py", check=False)
     rc |= run(HERE / "check_signedness.py", check=False)
+    rc |= run(HERE / "check_outparams.py", check=False)
     rc |= run(HERE / "difftest" / "run.py", check=False)
     return rc
 
