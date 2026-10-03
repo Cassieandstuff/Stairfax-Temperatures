@@ -20,5 +20,6 @@ decomp/src/main/mm.c:handle@191
 decomp/src/main/objlib.c:pointIndex@989
 decomp/src/main/objprint.c:v@1200
 decomp/src/main/pi_pathsearch.c:63
-decomp/src/main/texture.c:i@90
+decomp/src/main/tex_dolphin.c:ref@1470
+decomp/src/main/texture.c:idx@88
 decomp/src/main/texture.c:n@877
