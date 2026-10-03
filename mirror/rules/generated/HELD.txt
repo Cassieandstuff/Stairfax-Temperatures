@@ -11,7 +11,6 @@ decomp/src/dlls/objects/238_EffectBox/EffectBox.c:gateGameBit@79
 decomp/src/dlls/objects/378_SpiritPrize/SpiritPrize.c:loadedAnimDataIndexPlusOne@154
 decomp/src/dlls/objects/388/388.c:cachedAnimDataIndexPlusOne@138
 decomp/src/dlls/objects/397_MMSH_Scales/MMSH_Scales.c:cachedAnimDataIndexPlusOne@107
-decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c:value@282
 decomp/src/dlls/objects/441_SC_Cloudrun/SC_Cloudrun.c:cachedAnimDataIndexPlusOne@190
 decomp/src/dlls/objects/501/501.c:chainIndex@130
 decomp/src/dlls/objects/506_WM_seqobjec/WM_seqobjec.c:transitionCountdown@57
