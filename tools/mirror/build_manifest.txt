@@ -750,6 +750,7 @@ src/main/shader.c
 src/main/shader_dolphin.c
 src/main/sincosf.c
 src/main/subtitle.c
+src/main/tex_dolphin.c
 src/main/textrender.c
 src/main/textrender_boxtex.c
 src/main/textrender_gettext.c

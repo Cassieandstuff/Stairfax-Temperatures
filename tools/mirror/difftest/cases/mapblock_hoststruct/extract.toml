@@ -1,0 +1,21 @@
+# Real-TU diff case: loading a map block into the HOST layout.
+#
+# A synthetic block in the real GameCube format (big-endian, 4-byte offsets): the
+# header points at polygons, groups, vertices, colours, tex coords, three render
+# bitstreams, a texture-id table, two shaders and two display-list records, each
+# backed by marker bytes.
+#   oracle: reads the blob at GameCube offsets (from the decomp's STATIC_ASSERTs
+#           and offset comments), resolving offsets against the base as the 32-bit
+#           game does after MapBlock_init.
+#   mirror: mirror/runtime/stairfax_mapblock.c + the extracted MapBlock_init, then
+#           reads the same values through the host structs.
+
+rules = "mirror/rules"
+mirror_include = ["mirror/include", "decomp", "decomp/src"]
+mirror_link = ["mirror/runtime/stairfax_mapblock.c"]
+
+[[part]]
+source = "decomp/src/main/tex_dolphin.c"
+ranges = [[1505, 1537]]        # mapBlockRelocatePointer + MapBlock_init
+mirror_only = true
+may_be_unchanged = true
