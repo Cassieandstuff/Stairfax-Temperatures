@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/244/244.c"
-line = 92
-symbol = "openGameBitValue"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/244/244.c"
 line = 428
 symbol = "fwdArg2"
 from = "int"

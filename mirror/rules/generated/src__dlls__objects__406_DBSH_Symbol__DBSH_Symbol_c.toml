@@ -6,10 +6,3 @@ line = 209
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/406_DBSH_Symbol/DBSH_Symbol.c"
-line = 216
-symbol = "symbolsRaised"
-from = "u32"
-to = "uintptr_t"

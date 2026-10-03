@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/276_IMMultiSeq/IMMultiSeq.c"
-line = 42
-symbol = "bitValue"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/276_IMMultiSeq/IMMultiSeq.c"
 line = 67
 symbol = "renderArg2"
 from = "int"

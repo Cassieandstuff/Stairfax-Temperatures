@@ -7,11 +7,6 @@ symbol = "state"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.ret]]
-file = "decomp/src/dlls/engine/21/21.c"
-func = "playerHasKrazoaSpirit"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/engine/21/21.c"
 line = 1017

@@ -17,6 +17,13 @@ to = "uintptr_t"
 [[pointer.retype]]
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 1957
+symbol = "poolIndex"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
+line = 1957
 symbol = "slotPoolBase"
 from = "u32"
 to = "uintptr_t"
@@ -26,6 +33,27 @@ file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 2111
 symbol = "sourceId"
 from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
+line = 2381
+symbol = "nextActivePool"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
+line = 2382
+symbol = "scanIdx"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
+line = 2402
+symbol = "curPool"
+from = "int"
 to = "uintptr_t"
 
 [[pointer.retype]]
@@ -109,6 +137,12 @@ to = "uintptr_t"
 file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
 line = 1931
 from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
+line = 2491
+from = "s32"
 to = "uintptr_t"
 
 [[pointer.widen_cast]]

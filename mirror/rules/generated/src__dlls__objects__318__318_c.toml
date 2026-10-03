@@ -7,13 +7,6 @@ symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/318/318.c"
-line = 112
-symbol = "triggerBit"
-from = "u32"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/318/318.c"
 line = 93

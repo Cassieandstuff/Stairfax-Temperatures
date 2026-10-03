@@ -16,12 +16,6 @@ to = "uintptr_t"
 
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
-line = 533
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
 line = 954
 from = "int"
 to = "uintptr_t"

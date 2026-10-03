@@ -6,10 +6,3 @@ line = 61
 symbol = "p2"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/606/606.c"
-line = 80
-symbol = "eventActive"
-from = "u32"
-to = "uintptr_t"

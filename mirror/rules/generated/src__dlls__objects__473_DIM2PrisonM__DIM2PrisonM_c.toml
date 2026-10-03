@@ -6,15 +6,3 @@ line = 186
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/473_DIM2PrisonM/DIM2PrisonM.c"
-line = 136
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/473_DIM2PrisonM/DIM2PrisonM.c"
-line = 141
-from = "u32"
-to = "uintptr_t"

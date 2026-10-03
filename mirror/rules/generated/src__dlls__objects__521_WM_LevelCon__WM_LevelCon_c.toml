@@ -6,16 +6,3 @@ line = 190
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/521_WM_LevelCon/WM_LevelCon.c"
-line = 201
-symbol = "condition"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/521_WM_LevelCon/WM_LevelCon.c"
-line = 222
-from = "int"
-to = "uintptr_t"

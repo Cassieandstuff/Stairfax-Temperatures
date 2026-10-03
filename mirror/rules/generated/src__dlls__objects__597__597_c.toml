@@ -16,13 +16,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/597/597.c"
-line = 942
-symbol = "gameBitSet"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/597/597.c"
 line = 1147
 symbol = "state"
 from = "int"
@@ -112,12 +105,6 @@ occurrence = 2
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/597/597.c"
 line = 895
-from = "int"
-to = "uintptr_t"
-
-[[pointer.widen_cast]]
-file = "decomp/src/dlls/objects/597/597.c"
-line = 990
 from = "int"
 to = "uintptr_t"
 

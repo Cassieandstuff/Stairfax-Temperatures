@@ -6,17 +6,3 @@ line = 106
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/395_CClevcontro/CClevcontro.c"
-line = 114
-symbol = "usedGoldBarCount"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/395_CClevcontro/CClevcontro.c"
-line = 115
-symbol = "heldGoldBarCount"
-from = "u32"
-to = "uintptr_t"

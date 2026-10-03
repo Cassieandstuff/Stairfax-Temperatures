@@ -7,13 +7,6 @@ symbol = "p2"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
-line = 1277
-symbol = "savedSlot"
-from = "int"
-to = "uintptr_t"
-
 [[pointer.widen_cast]]
 file = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
 line = 266

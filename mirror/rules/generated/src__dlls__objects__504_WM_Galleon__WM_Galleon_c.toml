@@ -6,10 +6,3 @@ line = 134
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/504_WM_Galleon/WM_Galleon.c"
-line = 158
-symbol = "gameBitA4"
-from = "int"
-to = "uintptr_t"

@@ -9,13 +9,6 @@ to = "uintptr_t"
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/603_MSPlantingS/MSPlantingS.c"
-line = 220
-symbol = "cnt"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/603_MSPlantingS/MSPlantingS.c"
 line = 233
 symbol = "tricky"
 from = "int"

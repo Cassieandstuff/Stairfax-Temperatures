@@ -7,13 +7,6 @@ symbol = "p1"
 from = "int"
 to = "uintptr_t"
 
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/627_FirePipe/FirePipe.c"
-line = 462
-symbol = "bitVal"
-from = "u32"
-to = "uintptr_t"
-
 [[pointer.ret]]
 file = "decomp/src/dlls/objects/627_FirePipe/FirePipe.c"
 func = "firepipe_spawnEffectObject"

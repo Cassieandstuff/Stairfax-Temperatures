@@ -6,10 +6,3 @@ line = 171
 symbol = "p2"
 from = "u32"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/605_CRCloudRace/CRCloudRace.c"
-line = 190
-symbol = "eventActive"
-from = "u32"
-to = "uintptr_t"

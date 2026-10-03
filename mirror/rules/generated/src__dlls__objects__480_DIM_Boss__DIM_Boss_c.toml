@@ -2,22 +2,8 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
-line = 1310
-symbol = "statusFlags"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
 line = 1563
 symbol = "renderArg2"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/480_DIM_Boss/DIM_Boss.c"
-line = 1588
-symbol = "gameBitCount"
 from = "u32"
 to = "uintptr_t"
 

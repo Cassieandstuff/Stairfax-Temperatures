@@ -6,17 +6,3 @@ line = 82
 symbol = "renderArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/461_DIM_LevelCo/DIM_LevelCo.c"
-line = 96
-symbol = "triggerLostInBlizzard"
-from = "u32"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/461_DIM_LevelCo/DIM_LevelCo.c"
-line = 97
-symbol = "lostInBlizzardState"
-from = "u32"
-to = "uintptr_t"

@@ -6,10 +6,3 @@ line = 31
 symbol = "fwdArg2"
 from = "int"
 to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/252/252.c"
-line = 53
-symbol = "rememberedGameBitValue"
-from = "u32"
-to = "uintptr_t"

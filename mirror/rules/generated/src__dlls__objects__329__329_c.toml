@@ -2,13 +2,6 @@
 
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/329/329.c"
-line = 72
-symbol = "riderGameBit"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/329/329.c"
 line = 73
 symbol = "duration"
 from = "u32"
@@ -18,12 +11,5 @@ to = "uintptr_t"
 file = "decomp/src/dlls/objects/329/329.c"
 line = 243
 symbol = "renderArg2"
-from = "int"
-to = "uintptr_t"
-
-[[pointer.retype]]
-file = "decomp/src/dlls/objects/329/329.c"
-line = 265
-symbol = "riderGameBit"
 from = "int"
 to = "uintptr_t"
