@@ -177,6 +177,18 @@ class Analyzer:
                 s = slot_of_decl(d)
                 return {s} if s else set()
             return set()
+        if k == K.ARRAY_SUBSCRIPT_EXPR:
+            # an element of an int array (`msg[2] = (int)obj`, `x = ids[i]`) is the
+            # array's slot: element stores/reads are flow into/out of the array
+            kids = list(e.get_children())
+            b = kids[0] if kids else None
+            while b is not None and b.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR):
+                bk = list(b.get_children())
+                b = bk[-1] if bk else None
+            if b is not None and canon(b.type).kind in (T.CONSTANTARRAY, T.INCOMPLETEARRAY) \
+                    and is_narrow_int(b.type):
+                return self.sources(b)
+            return set()
         if k == K.MEMBER_REF_EXPR:
             d = e.referenced
             if d is not None and d.kind == K.FIELD_DECL and is_narrow_int(d.type):
