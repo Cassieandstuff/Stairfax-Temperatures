@@ -850,8 +850,11 @@ def write_rules(retypes, rets, widen, pretypes=()) -> int:
     import re
     import shutil
     hand = passes.load_pointer_rules(REPO / "mirror" / "rules", generated=False)
-    covered = {(passes._norm(r.get("file", "")), r.get("line")) for k in
-               ("retype", "promote", "widen", "widen_cast") for r in hand[k]}
+    # a range rule (`line`..`line_end`, all=true) covers every line it spans
+    covered = {(passes._norm(r.get("file", "")), ln) for k in
+               ("retype", "promote", "widen", "widen_cast") for r in hand[k]
+               if isinstance(r.get("line"), int)
+               for ln in range(r["line"], (r.get("line_end") or r["line"]) + 1)}
     covered_ret = {(passes._norm(r.get("file", "")), r.get("func")) for r in hand["ret"]}
     out, dropped = defaultdict(list), []
     src = {}
