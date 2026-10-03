@@ -343,9 +343,11 @@ def scan_text_pointer_width(text: str, rel: str) -> list[Finding]:
 
 
 def _looks_ptr_use(name: str, lines: list[str]) -> bool:
-    # name is later dereferenced as an address: (T*)name, (u8*)name, name + n*0x..
+    # name is later dereferenced as an address: (T*)name, (u8*)name, or an address
+    # computed from it and cast back, (T*)(name + n*0x..). A bare `name + n * k` is
+    # ordinary arithmetic (phase counters stepping by framesThisStep * k).
     pat = re.compile(rf"\(\s*[A-Za-z_]\w*\s*\*\s*\)\s*(?:\(\s*u8\s*\*\s*\)\s*)?{name}\b"
-                     rf"|\bname\b\s*\+\s*\w+\s*\*".replace("name", name))
+                     rf"|\(\s*[A-Za-z_]\w*\s*\*\s*\)\s*\(\s*name\b\s*\+".replace("name", name))
     return any(pat.search(l) for l in lines)
 
 

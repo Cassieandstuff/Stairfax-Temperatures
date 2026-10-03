@@ -1,0 +1,299 @@
+# Narrow-int puns on runtime POINTER storage: `*(u32*)&p->field`, `(u32*)&ptrLocal`
+# passed as an out-parameter. On a 64-bit host they read or write only the low 4
+# bytes of an 8-byte pointer: reads truncate, writes leave the high half stale.
+# Found by a libclang sweep of the mirror for (narrow-int*)&<pointer lvalue>.
+# Each becomes the pointer-width integer type. (On-disc relocation in model.c and
+# the ObjMsg queue are layout problems, not puns; they're tracked separately.)
+
+# --- newshadows_get*Texture(u32* out): texture pointers returned through u32* ---
+
+[[pointer.retype]]
+file = "decomp/include/main/newshadows.h"
+line = 21
+symbol = "out"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/include/main/newshadows.h"
+line = 22
+symbol = "out"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/include/main/newshadows.h"
+line = 23
+symbol = "out"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/include/main/newshadows.h"
+line = 33
+symbol = "out"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/newshadows.c"
+line = 973  # newshadows_getRampTexture
+symbol = "out"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/newshadows.c"
+line = 980  # newshadows_getDiskTexture
+symbol = "out"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/newshadows.c"
+line = 983  # newshadows_getReflectionDepthTexture
+symbol = "p"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/main/newshadows.c"
+line = 986  # newshadows_getCausticTexture
+symbol = "p"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/0/0.c"
+line = 996
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 439
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 894
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 1327
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 1357
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 1466
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 1836
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 1896
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 2899
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 3070
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 3664
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 3836
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 3843
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 4066
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/track/intersect_render.c"
+line = 4694
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 513
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 542
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 737
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 881
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 1106
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 1239
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/shader_dolphin.c"
+line = 1741
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objprint_dolphin.c"
+line = 376
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objprint_dolphin.c"
+line = 655
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/0/0.c"
+line = 927  # receives a Texture* via newshadows_getDiskTexture
+symbol = "tex2"
+from = "int"
+to = "uintptr_t"
+
+# --- direct puns on runtime pointer fields ---
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
+line = 154  # RomCurve_swapEndpointNodes XOR-swaps two node pointers
+symbol = "a"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
+line = 154
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
+line = 155  # RomCurve_swapEndpointNodes XOR-swaps two node pointers
+symbol = "b"
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
+line = 155
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/25/25.c"
+line = 193  # if (*(u32*)&state->path != 0)
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/25/25.c"
+line = 195  # mm_free((void*)*(u32*)&state->path)
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/engine/46/46.c"
+line = 696  # *(u32*)&s->lastTarget = target
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/195_Player/player.c"
+line = 16572  # *(u32*)&prt->anim.hitReactState != 0
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/255/255.c"
+line = 362  # *(u32*)&obj->anim.hitReactState != 0
+from = "u32*"
+to = "uintptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
+line = 729  # state = (ShopkeeperState*)*(int*)&(obj)->extra
+from = "int*"
+to = "intptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
+line = 731  # state2 = (ShopkeeperState*)(long)*(int*)&(obj)->extra
+from = "int*"
+to = "intptr_t*"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/646_SPShopKeepe/SPShopKeepe.c"
+line = 731
+from = "long"
+to = "intptr_t"
+
+# --- (long)ptr: pointer-width on LP64 but 32-bit on Windows (LLP64) ---
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
+line = 142  # *(s16*)(long)obj
+from = "long"
+to = "intptr_t"

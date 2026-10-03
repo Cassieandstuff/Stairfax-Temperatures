@@ -29,6 +29,17 @@ mirror/
 | P5 | rewrite `0xCC008000` FIFO stores → submit call | TODO |
 | P6 | emit formatted C + provenance header | identity write-through |
 
+Findings reviewed and judged benign are recorded as `[[pointer.audit]]` with
+`ok = true` (`mirror/rules/audits.toml`): nothing is rewritten, and the finding
+no longer counts as critical. The text scanner can't see types, so its
+`int_global_holds_ptr` can fire on `name = (int)<float>`; audit those after
+checking, rather than widening.
+
+Pointer *puns*, meaning narrow-int access to pointer storage (`*(u32*)&p->field`,
+`(u32*)&ptrLocal` as an out-parameter), are mostly invisible to both the
+scanner and the int-slot analyzer. They were swept with libclang and fixed in
+`mirror/rules/ptrpuns.toml`.
+
 A `[[call.retarget]]` rule (`file`, `line`, `from`, `to`) points one call at a
 port runtime replacement, for the rare function whose 32-bit contract can't hold
 on a 64-bit host: `seqPairTableLookup` walks `{key, value}` tables as `int[2]`,

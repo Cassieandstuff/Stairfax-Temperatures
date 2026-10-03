@@ -72,15 +72,18 @@ def gen_one(rel: str, rules: dict) -> tuple[Path, int, int]:
     src = DECOMP / rel
     text = src.read_text(errors="replace")
     tu_rel = f"decomp/{rel}"
-    before = sum(1 for f in passes.scan_text_pointer_width(text, tu_rel)
-                 if f.severity == "critical")
+    # findings reviewed and recorded as benign ([[pointer.audit]] ok=true) don't count
+    audited = {(passes._norm(a.get("file", "")), a.get("line")) for a in rules.get("audit", [])
+               if a.get("ok")}
+    crit = lambda t: sum(1 for f in passes.scan_text_pointer_width(t, tu_rel)
+                         if f.severity == "critical" and (passes._norm(tu_rel), f.line) not in audited)
+    before = crit(text)
     new_text, applied, unmatched = passes.apply_pointer_rules(text, rules, tu_rel)
     if unmatched:
         # a rule that names this TU but matches nothing leaves its site narrow
         raise SystemExit(f"error: rules for {tu_rel} did not match: {unmatched}")
 
-    after = sum(1 for f in passes.scan_text_pointer_width(new_text, tu_rel)
-                if f.severity == "critical")
+    after = crit(new_text)
     dst = MIRROR / "src" / rel
     dst.parent.mkdir(parents=True, exist_ok=True)
     # line-preserving (see gen_headers)
