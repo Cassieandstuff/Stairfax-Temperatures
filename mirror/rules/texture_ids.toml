@@ -28,3 +28,14 @@ file = "decomp/src/main/texture.c"
 line = 793  # cache-resident load: keep returning an ID
 from = "flagIn = 0;"
 to = ";"
+
+# textureIdxToPtr's bit-31 passthrough (`if ((u32)idx & 0x80000000) return (void*)idx;`)
+# returned GameCube pointers (0x80xxxxxx) stored in handle slots. With IDs only,
+# no slot holds a pointer, and no 32-bit value with bit 31 set is a host pointer,
+# so the branch can only ever return garbage: it returns NULL instead. (Left as
+# is, the `(void*)idx` cast also made the analyzer widen the ID parameter.)
+[[text.replace]]
+file = "decomp/src/main/texture.c"
+line = 92
+from = "return (void*)idx;"
+to = "return NULL;"
