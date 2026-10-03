@@ -1,7 +1,8 @@
 # Slots the analyzer would widen but the signedness check held back: widening
 # them changes a comparison's meaning (x < 0, signed vs unsigned). Either the
 # analyzer is wrong (not a pointer) or it's a sign/tag test needing a hand
-# decision. Produced by tools/mirror/check_signedness.py --emit-holds.
+# decision. Produced by tools/mirror/check_signedness.py --emit-holds;
+# holds whose slot no longer carries are released by infer_ptr_ints.py.
 decomp/src/dlls/engine/10_expgfx/expgfx.c:poolOrResource@2388
 decomp/src/dlls/engine/10_expgfx/expgfx.c:screenPos@786
 decomp/src/dlls/engine/2/2.c:gObjSeqScriptedButtonMasks@1973

@@ -123,7 +123,10 @@ python3 tools/mirror/regen.py      # analyze -> generate -> signedness fixpoint 
   widened automatically. `regen.py` holds those slots back (they don't widen and
   don't propagate) and iterates to a fixpoint. `HELD.txt` lists them: each is
   either an analyzer false positive or a pointer compared by sign (a tag test),
-  needing a hand decision.
+  needing a hand decision. Holds are per declaration (`file:symbol@line`) or per
+  cast line (`file:LINE`). The fixpoint only adds holds, so each analysis also
+  releases holds whose slot would no longer carry if released (a later hold cut
+  the path into it); that can't change the generated rules.
 
 ## Behavioral diff harness
 
