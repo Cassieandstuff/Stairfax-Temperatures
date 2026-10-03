@@ -10,4 +10,5 @@
 #define STAIRFAX_MIRROR_PRELUDE_H
 #include <stdint.h>
 #include "stairfax_os.h"     /* os_globals_read_u32: [[osglobals.read]] rewrites */
+#include "stairfax_seqpair.h" /* seqPairTableLookupPtr: [[call.retarget]] rewrites */
 #endif

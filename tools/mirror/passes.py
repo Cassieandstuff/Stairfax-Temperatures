@@ -435,7 +435,7 @@ _NARROW_TYPE_RE = r"(?:unsigned int|signed int|int|u32|s32|long)"
 
 def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
     """Merge the [pointer.*] tables from every *.toml under rules_dir."""
-    promote, widen, audit, ret, osglob = [], [], [], [], []
+    promote, widen, audit, ret, osglob, retarget = [], [], [], [], [], []
     retype, widen_cast, stride, retype_param = [], [], [], []
     # hand-written rules first, then mirror/rules/generated/ (infer_ptr_ints.py)
     gen = sorted((rules_dir / "generated").glob("*.toml")) if generated else []
@@ -454,6 +454,7 @@ def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
         stride += p.get("stride", [])
         retype_param += p.get("retype_param", [])
         osglob += data.get("osglobals", {}).get("read", [])
+        retarget += data.get("call", {}).get("retarget", [])
     for kind, rs in (("promote", promote), ("ret", ret)):
         for r in rs:
             if not r.get("file"):
@@ -462,7 +463,8 @@ def load_pointer_rules(rules_dir: Path, generated: bool = True) -> dict:
                     f"{rules_dir} has no file=; symbol rules must be scoped to one TU")
     return {"promote": promote, "widen": widen, "audit": audit,
             "ret": ret, "retype": retype, "widen_cast": widen_cast,
-            "stride": stride, "retype_param": retype_param, "osglobals": osglob}
+            "stride": stride, "retype_param": retype_param, "osglobals": osglob,
+            "retarget": retarget}
 
 
 def _type_pat(t: str) -> str:
@@ -734,6 +736,24 @@ def apply_pointer_rules(text: str, rules: dict, rel: str) -> tuple[str, list[str
         else:
             why = "not found" if cnt == 0 else f"{cnt} matches; set occurrence="
             unmatched.append(f"stride {rel}:{n} '{sym} += {frm}': {why}")
+
+    # call retarget: point one call at a port runtime replacement whose contract
+    # differs only where the 32-bit original can't be right on a 64-bit host
+    # (e.g. a pair-table lookup that must read pointer-sized values).
+    for r in rules.get("retarget", []):
+        if _norm(r.get("file", "")) != _norm(rel):
+            continue
+        n, frm, to = r.get("line"), r.get("from"), r.get("to")
+        if not isinstance(n, int) or not (1 <= n <= len(lines)) or not frm or not to:
+            unmatched.append(f"retarget {rel}:{n}: bad line/from/to")
+            continue
+        pat = re.compile(rf"\b{re.escape(frm)}(\s*\()")
+        nl, cnt = pat.subn(lambda m: f"{to}{m.group(1)}", lines[n - 1], count=1)
+        if cnt:
+            lines[n - 1] = nl
+            applied.append(f"retarget call {frm}->{to} at line {n}")
+        else:
+            unmatched.append(f"retarget {rel}:{n}: no call to {frm}")
 
     # OS-globals reads: (file,line)-targeted; rewrite to the runtime accessor and
     # ensure the runtime header is included.

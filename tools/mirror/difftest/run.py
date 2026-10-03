@@ -92,11 +92,17 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
         original = source.read_text(errors="replace")
         mirror_full, app, _ = passes.apply_pointer_rules(original, rules, part["source"])
         o, m = _extract_ranges(original, part["ranges"]), _extract_ranges(mirror_full, part["ranges"])
-        if o == m:
+        # may_be_unchanged: supporting definitions the rules don't touch.
+        # mirror_only: code the oracle can't compile on a 64-bit host (e.g. a
+        # static initializer truncating an address); the oracle's shim/driver
+        # supplies the equivalent 32-bit data instead.
+        if o == m and not part.get("may_be_unchanged"):
             print(f"[{name}] FAIL — extracted mirror == oracle for {part['source']}; rules "
                   "did not touch the extracted ranges (nothing to validate)")
             return False
-        oracle_snips.append(o); mirror_snips.append(m); applied += app
+        if not part.get("mirror_only"):
+            oracle_snips.append(o)
+        mirror_snips.append(m); applied += app
     oracle_snip, mirror_snip = "\n".join(oracle_snips), "\n".join(mirror_snips)
     src_label = " + ".join(p["source"] for p in parts)
 

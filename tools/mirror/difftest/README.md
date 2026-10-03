@@ -65,6 +65,15 @@ line were applied lowest-first, so the second never matched and a `(int)heldObj`
 cast stayed narrow (fixed in `passes._by_occurrence`; unmatched TU rules are now a
 build error).
 
+Part options: `may_be_unchanged = true` for supporting definitions the rules
+don't touch; `mirror_only = true` for code the oracle can't compile on a 64-bit
+host (a static initializer that truncates an address), whose 32-bit equivalent
+the oracle's shim/driver builds at run time instead. `seqpair_ptr` uses both: it
+checks CFGuardian's pointer-valued pair table, widened and looked up through the
+retargeted `seqPairTableLookupPtr`, against the decomp's own `int[2]` lookup over
+the 32-bit layout. (The widened table with the original lookup misses every
+key, which is why the retarget exists.)
+
 Mirror builds define `DIFFTEST_MIRROR`, for shims that must mirror a rule applied
 outside the extracted ranges (e.g. a widened global's declaration).
 Line numbers into a frozen vendored decomp are stable; if a re-vendor moves them,

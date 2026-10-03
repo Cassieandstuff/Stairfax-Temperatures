@@ -29,6 +29,12 @@ mirror/
 | P5 | rewrite `0xCC008000` FIFO stores → submit call | TODO |
 | P6 | emit formatted C + provenance header | identity write-through |
 
+A `[[call.retarget]]` rule (`file`, `line`, `from`, `to`) points one call at a
+port runtime replacement, for the rare function whose 32-bit contract can't hold
+on a 64-bit host: `seqPairTableLookup` walks `{key, value}` tables as `int[2]`,
+so its pointer-valued callers use `seqPairTableLookupPtr`
+(`mirror/runtime/stairfax_seqpair.h`, rules in `mirror/rules/seqpair.toml`).
+
 Absolute OS-globals reads (`*(u32*)0x800000F8`, the bus clock, etc.) are handled
 by an `[[osglobals.read]]` rule that rewrites the read into a call to the portable
 runtime accessor `os_globals_read_u32` (`mirror/runtime/stairfax_os.*`) and injects
