@@ -511,6 +511,37 @@ class Analyzer:
             disabled |= newly
 
 
+def live_holds(an, carrying: set[str], held_keys: set[str]) -> tuple[set[str], set[str]]:
+    """Split holds into (live, stale). The regen fixpoint only ever ADDS holds, so a
+    hold added early (when the hold set was smaller and more paths were open) can
+    outlive its reason once a later hold cuts the path into it. A held slot is
+    live iff it would carry if released: it's a seed / MUST slot itself, or a
+    carrying slot flows straight into it. A cast-line hold ("file:LINE") is live
+    iff a cast on that line still has a pointer or carrying operand. Releasing
+    stale holds can't change the carrying set (nothing flows through them, even
+    when released together), so the generated rules are unchanged."""
+    must = getattr(an, "must", set())
+    fed = {d for src in carrying for d in an.g.edges.get(src, ())}
+    def slot_live(sl):
+        return sl in an.g.seeds or sl in must or sl in fed
+    by_key = defaultdict(set)
+    for sl, ds in an.g.decls.items():
+        for (f, ln, n, _, _) in ds:
+            by_key[f"{f}:{n}@{ln}"].add(sl)
+            by_key[f"{f}:{n}"].add(sl)
+    cast_live = {(f, line) for (f, line, col, frm, ptr_inner, srcs) in an.g.casts
+                 if ptr_inner or any(x in carrying for x in srcs)}
+    live, stale = set(), set()
+    for k in held_keys:
+        f, tail = k.rsplit(":", 1)
+        if tail.isdigit():
+            ok = (f, int(tail)) in cast_live
+        else:
+            ok = any(slot_live(sl) for sl in by_key.get(k, ()))
+        (live if ok else stale).add(k)
+    return live, stale
+
+
 def explain(an, carrying, name, limit=4):
     """Print, for carrying slots declared as `name`, the shortest chain from a
     seed ((int)ptr cast) or reconstruction ((T*)x) to it."""
@@ -632,6 +663,12 @@ def main(argv):
                if any(f"{f}:{n}@{ln}" in held_keys or f"{f}:{n}" in held_keys
                       for (f, ln, n, _, _) in ds)}
     carrying = an.solve()
+    held_keys, released = live_holds(an, carrying, held_keys)
+    if released:
+        print(f"released {len(released)} stale hold(s): their slots no longer carry",
+              file=sys.stderr)
+        for k in sorted(released):
+            print(f"  - {k}", file=sys.stderr)
     for nm in args.explain:
         explain(an, carrying, nm)
     if args.explain:
@@ -692,12 +729,13 @@ def main(argv):
                   if k.rsplit(":", 1)[1].isdigit()}
     widen = [w for w in widen if (w[0], w[1]) not in cast_holds]
     rc = write_rules(retypes, rets, widen, pretypes)
-    if held_keys:
+    if args.hold:                     # always rewrite: released holds must disappear
         (REPO / "mirror" / "rules" / "generated" / "HELD.txt").write_text(
             "# Slots the analyzer would widen but the signedness check held back: widening\n"
             "# them changes a comparison's meaning (x < 0, signed vs unsigned). Either the\n"
             "# analyzer is wrong (not a pointer) or it's a sign/tag test needing a hand\n"
-            "# decision. Produced by tools/mirror/check_signedness.py --emit-holds.\n"
+            "# decision. Produced by tools/mirror/check_signedness.py --emit-holds;\n"
+            "# holds whose slot no longer carries are released by infer_ptr_ints.py.\n"
             + "\n".join(sorted(held_keys)) + "\n")
     return rc
 

@@ -4,7 +4,8 @@
   analyze (infer_ptr_ints.py --hold HELD) -> generate mirror/src (--gen-only)
   -> check_signedness.py: comparisons whose meaning the widening changed
   -> hold those slots back (not widened, don't propagate) -> repeat
-until no new holds appear. Then the full 64-bit build + difftest.
+until no new holds appear. Each analysis also RELEASES holds whose slot no
+longer carries (a later hold cut the path into it), so the set doesn't only grow. Then the full 64-bit build + difftest.
 
 Held slots accumulate in mirror/rules/generated/HELD.txt: each is either an
 analyzer false positive (not a pointer) or a pointer compared by sign (a tag
@@ -50,6 +51,7 @@ def main(argv):
     for it in range(1, args.max + 1):
         tmp_holds.write_text("\n".join(sorted(holds)) + "\n")
         run(HERE / "infer_ptr_ints.py", "--tus", "build", "--hold", tmp_holds)
+        holds = read_holds(HELD)        # the analyzer released any stale holds
         run(HERE / "build_mirror.py", "--gen-only")
         new_file = REPO / "mirror" / "holds.new"
         run(HERE / "check_signedness.py", f"--emit-holds={new_file}", check=False)
