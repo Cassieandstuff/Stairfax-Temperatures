@@ -151,6 +151,7 @@ def in_macro(c) -> bool:
 class Analyzer:
     def __init__(self):
         self.g = Graph()
+        self.zero_tests = set()           # extents of `(T*)x` operands of `== NULL` tests
         self.index = ci.Index.create()
         self.subs = {}                    # id -> (left cursor, right cursor) of `a - b`
         self.tu_tag = "0"                 # makes SUB node names unique across worker TUs
@@ -317,9 +318,44 @@ class Analyzer:
         return next(iter(srcs)) if len(srcs) == 1 and not next(iter(srcs)).startswith(
             ("SEED", "SUB:", "~")) else None
 
+    @staticmethod
+    def _ext(e):
+        x = e.extent
+        return (x.start.file.name if x.start.file else None, x.start.offset, x.end.offset)
+
+    @staticmethod
+    def _is_null(e):
+        """A null-pointer / zero operand: 0, NULL, (void*)0, __null."""
+        while e is not None and e.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR, K.CSTYLE_CAST_EXPR,
+                                           K.GNU_NULL_EXPR):
+            if e.kind == K.GNU_NULL_EXPR:
+                return True
+            kids = list(e.get_children())
+            e = kids[-1] if kids else None
+        if e is None:
+            return False
+        if e.kind == K.INTEGER_LITERAL:
+            toks = [t.spelling for t in e.get_tokens()]
+            return bool(toks) and toks[0].rstrip("uUlL") in ("0", "0x0")
+        return False
+
     def visit(self, c, fn=None):
         f = rel(c.location.file.name if c.location.file else None)
         k = c.kind
+        if k == K.BINARY_OPERATOR and self.binop(c) in ("==", "!=", "BinaryOperator.EQ",
+                                                          "BinaryOperator.NE"):
+            # `(void*)x == NULL` is a zero test spelled as a pointer compare (the
+            # decomp does this for game bits); the cast is not pointer evidence
+            ops = list(c.get_children())
+            if len(ops) == 2:
+                for a, b in ((ops[0], ops[1]), (ops[1], ops[0])):
+                    if self._is_null(b):
+                        e = a
+                        while e is not None and e.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR,
+                                                           K.CSTYLE_CAST_EXPR):
+                            self.zero_tests.add(self._ext(e))
+                            kids = list(e.get_children())
+                            e = kids[-1] if kids else None
         if k == K.FUNCTION_DECL:
             fn = c
             if f and is_narrow_int(c.result_type):
@@ -408,7 +444,11 @@ class Analyzer:
         if k in (K.CSTYLE_CAST_EXPR, K.UNEXPOSED_EXPR) and is_ptrish(c.type) and \
                 c.type.get_canonical().kind == T.POINTER:
             kids = list(c.get_children())
-            if kids and is_narrow_int(kids[-1].type):
+            # not an array decaying to its element pointer (`int ids[4]` passed or
+            # cast as int*): that names the array's storage, it doesn't rebuild a
+            # pointer that was stored in an int
+            if kids and is_narrow_int(kids[-1].type) and self._ext(c) not in self.zero_tests and \
+                    canon(kids[-1].type).kind not in (T.CONSTANTARRAY, T.INCOMPLETEARRAY):
                 d = self.direct_slot(kids[-1])
                 if d:
                     self.g.recon.add(d)       # an int rebuilt as a pointer held one
