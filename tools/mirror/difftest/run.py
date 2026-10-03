@@ -120,8 +120,14 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
     if not ok:
         print(f"[{name}] FAIL — oracle did not compile:\n{err}")
         return False
+    # optional: the mirror side compiled against the real mirror header tree and
+    # linked with runtime sources (cases that exercise mirror/runtime code)
+    # -idirafter: the decomp's own libc headers (stdio.h, ...) live in the mirror
+    # tree; searched after the system dirs, the driver still gets the real libc
+    m_inc = [a for i in spec.get("mirror_include", []) for a in ("-idirafter", str(REPO / i))]
+    m_link = [REPO / l for l in spec.get("mirror_link", [])]
     ok, err = _compile(wd / "mirror" / "driver.c", wd / "mirror_bin",
-                       [*MIRROR_PRELUDE, f"-I{wd/'mirror'}"])
+                       [*MIRROR_PRELUDE, f"-I{wd/'mirror'}", *m_inc], m_link)
     if not ok:
         print(f"[{name}] FAIL — mirror did not compile:\n{err}")
         return False

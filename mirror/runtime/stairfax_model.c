@@ -12,7 +12,8 @@
  *        [host ModelFileHeader | pad]  [file body, shifted by `delta`]
  *        [anim area + slack, as the decomp sized it]  [host-layout nested tables]
  *      and every on-disc struct is transcoded field by field, big-endian ->
- *      host, by the generated gen_model_layout.h;
+ *      host, by the generated gen_model_layout.h (the texture table is s32
+ *      ids and stays 4-byte: texture handles are IDs, mirror/rules/texture_ids.toml);
  *   3. offsets are re-based: body offsets move by `delta`; the nested tables'
  *      header fields point at their host copies. ObjModel_RelocateModelData
  *      then runs unchanged in spirit (its puns widened) and adds the base.
@@ -28,6 +29,16 @@
 #include "main/mldf_fileid.h"
 #include "main/mm.h"
 #include <string.h>
+
+/* the two kernel job views (SFX_VTXJOB / SFX_BLENDJOB) must share one layout */
+#define SFX_VTX_BASE (offsetof(ModelFileHeader, unk86) + 2)
+#define SFX_BLEND_BASE offsetof(ModelFileHeader, unkAC)
+_Static_assert(offsetof(ModelFileHeader, vertexAnimCount) - SFX_VTX_BASE == 2, "vtx job count");
+_Static_assert(offsetof(ModelFileHeader, blendAnimCount) - SFX_BLEND_BASE == 2, "blend job count");
+_Static_assert(offsetof(ModelFileHeader, unk8C) + 2 - SFX_VTX_BASE == 6, "vtx job byte 6");
+_Static_assert(offsetof(ModelFileHeader, unkB0) + 2 - SFX_BLEND_BASE == 6, "blend job byte 6");
+_Static_assert(offsetof(ModelFileHeader, blendAnimEntriesRaw) - SFX_BLEND_BASE == SFX_JOB_ENTRIES,
+               "blend job entries pointer");
 
 #define SFX_ALIGN(x, a) (((x) + ((a) - 1)) & ~(uintptr_t)((a) - 1))
 
@@ -71,7 +82,7 @@ void* stairfax_model_load_unpacked(void* gcBuf, int gcBufSize, int fileOffset, i
     oVtx = gcVtx ? off : 0;             off += SFX_ALIGN((uintptr_t)nVtx * sizeof(ModelVtxAnimChunk), 32);
     oBlend = gcBlend ? off : 0;         off += SFX_ALIGN((uintptr_t)nBlend * sizeof(ModelVtxAnimChunk), 32);
     oMorph = gcMorph ? off : 0;         off += SFX_ALIGN((uintptr_t)hdr.morphTargetCount * sizeof(uintptr_t), 32);
-    oTex = gcTex ? off : 0;             off += SFX_ALIGN((uintptr_t)hdr.textureCount * sizeof(intptr_t), 32);
+    oTex = gcTex ? off : 0;             off += SFX_ALIGN((uintptr_t)hdr.textureCount * sizeof(int32_t), 32);
     total = off;
 
     raw = (uint8_t*)mmAlloc((int)(total + 16), 9, 0);
@@ -117,8 +128,8 @@ void* stairfax_model_load_unpacked(void* gcBuf, int gcBufSize, int fileOffset, i
         uintptr_t v = sfx_be32(gc + gcMorph + (uintptr_t)i * 4);
         ((uintptr_t*)(m + oMorph))[i] = v ? v + delta : 0;
     }
-    for (i = 0; i < hdr.textureCount && gcTex; i++)       /* s32 ids, later Texture* */
-        ((intptr_t*)(m + oTex))[i] = (int32_t)sfx_be32(gc + gcTex + (uintptr_t)i * 4);
+    for (i = 0; i < hdr.textureCount && gcTex; i++)       /* s32 file ids, later texture IDs */
+        ((int32_t*)(m + oTex))[i] = (int32_t)sfx_be32(gc + gcTex + (uintptr_t)i * 4);
 
     hdr.renderOps = (Shader*)oRenderOps;
     hdr.displayLists = (u8*)oDl;

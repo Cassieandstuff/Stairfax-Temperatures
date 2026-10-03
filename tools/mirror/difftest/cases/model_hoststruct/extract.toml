@@ -1,0 +1,22 @@
+# Real-TU diff case: loading a model file into the HOST layout.
+#
+# A synthetic model in the real GameCube format (big-endian, 4-byte offsets): the
+# header points at vertices/normals, two display-list entries, a render op
+# (Shader), two morph targets, a vertex-anim chunk and a texture-id table, each
+# backed by marker bytes in the body.
+#   oracle: reads the blob at GameCube offsets, resolving offsets against the base
+#           the way the 32-bit game sees it after ObjModel_RelocateModelData.
+#           Offsets come from the decomp's own STATIC_ASSERTs / offset comments /
+#           raw-offset code, not from the generated layout.
+#   mirror: mirror/runtime/stairfax_model.c (load + generated transcoders) and the
+#           extracted, rule-rewritten ObjModel_RelocateModelData, then reads the
+#           same values through the host structs.
+
+rules = "mirror/rules"
+mirror_include = ["mirror/include", "decomp", "decomp/src"]
+mirror_link = ["mirror/runtime/stairfax_model.c"]
+
+[[part]]
+source = "decomp/src/main/model.c"
+ranges = [[2567, 2660]]        # void ObjModel_RelocateModelData(u8* m)
+mirror_only = true
