@@ -297,3 +297,23 @@ file = "decomp/src/dlls/objects/483_DIM_BossGut/DIM_BossGut.c"
 line = 142  # *(s16*)(long)obj
 from = "long"
 to = "intptr_t"
+
+# --- ObjHitsPriorityState.hitObjects: a pointer-carrying int array field ---
+# objhits.c stores `hitObjects[n] = (int)hitObj` and reads entries back as
+# GameObject*; as int[] the mirror truncated every priority-hit object. Runtime
+# struct (sized with sizeof, accessed by name / offsetof), so widening is safe.
+[[pointer.retype]]
+file = "decomp/include/main/objhits_types.h"
+line = 103  # int hitObjects[OBJHITS_PRIORITY_HIT_COUNT];
+symbol = "hitObjects"
+from = "int"
+to = "intptr_t"
+
+# InvHit_update (SELF_FREE) walks hitObjects[] by hand with `ownerHitSlot += 4`
+# (4-byte slots); the slots are now pointer-sized.
+[[pointer.stride]]
+file = "decomp/src/dlls/objects/241_InvHit/InvHit.c"
+line = 159  # ownerHitSlot += 4;
+symbol = "ownerHitSlot"
+from = "4"
+to = "sizeof(intptr_t)"
