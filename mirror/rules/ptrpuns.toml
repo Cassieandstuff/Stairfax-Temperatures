@@ -317,3 +317,14 @@ line = 159  # ownerHitSlot += 4;
 symbol = "ownerHitSlot"
 from = "4"
 to = "sizeof(intptr_t)"
+
+# BlastedTargetState.destroyedHitObjects (345.c): records hitObjects[] entries
+# (GameObject pointers) and compares later hits against them. Must be as wide as
+# hitObjects, or a full-width hit never equals its truncated record. Runtime
+# state sized with sizeof (blasted_getExtraSize).
+[[pointer.retype]]
+file = "decomp/include/dlls/objects/345.h"
+line = 20  # u32 destroyedHitObjects[3];
+symbol = "destroyedHitObjects"
+from = "u32"
+to = "uintptr_t"

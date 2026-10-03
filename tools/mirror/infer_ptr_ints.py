@@ -211,9 +211,14 @@ class Analyzer:
             while b is not None and b.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR):
                 bk = list(b.get_children())
                 b = bk[-1] if bk else None
-            if b is not None and canon(b.type).kind in (T.CONSTANTARRAY, T.INCOMPLETEARRAY) \
-                    and is_narrow_int(b.type):
-                return self.sources(b)
+            if b is not None and canon(b.type).kind in (T.CONSTANTARRAY, T.INCOMPLETEARRAY):
+                if is_narrow_int(b.type):
+                    return self.sources(b)
+                el = canon(b.type).element_type
+                if b.kind == K.MEMBER_REF_EXPR and is_ptr_width_int(el):
+                    # element of a field array a hand rule widened to intptr_t because
+                    # it carries pointers (ObjHitsPriorityState.hitObjects): seeds
+                    return {"SEED"}
             return set()
         if k == K.MEMBER_REF_EXPR:
             d = e.referenced
