@@ -1,0 +1,15 @@
+# Real-TU diff case: GameObject.userData1 used as an object handle.
+#
+# spitembeam_update (SPitembeam.c) latches the nearest shop object into
+# userData1 as `(int)(int*)objGetNearestTypeTo(...)`. On later frames it reads
+# the handle back as `(int*)obj->userData1` and calls through the shop's
+# interface table (SHOP_INTERFACE). The mirror retypes userData1 to intptr_t
+# (gameobject.toml) and widens the store's cast. The read changes only through
+# the field's type.
+
+[[part]]
+source = "decomp/src/dlls/objects/649_SPitembeam/SPitembeam.c"
+ranges = [
+    [18, 22],                 # SPITEMBEAM_* constants
+    [45, 80],                 # spitembeam_update
+]
