@@ -1,0 +1,38 @@
+# Real-TU diff case: the two views of anim.hitReactState.
+#
+# The state is allocated as ObjHitsPriorityState and also read and written
+# through ObjHitReactState. On the GameCube the views share their head
+# (activeHit, the entry counts, the `entries` pointer) and the
+# resetFrameCount/capsuleScale, flags, shapeFlags and hitbox-mode bytes.
+# ObjHitReact_InitState writes through the react view, and
+# ObjHits_RecordObjectHit writes lastHitObject and hitObjects[] through the
+# priority view. The driver reads each result back through the other view.
+#
+# The mirror (hitstate.toml, ptrpuns.toml) names the head in priority and sizes
+# ObjHitReactState's pads from priority's offsets. The oracle's
+# ObjHitReactState is the decomp struct with a 4-byte `entries` pointer
+# (`__ptr32 __uptr`, -fms-extensions), which keeps its GameCube layout on this
+# 64-bit host. See shim.h.
+
+oracle_cflags = ["-fms-extensions"]
+
+[[part]]
+source = "decomp/include/main/objhits_types.h"
+ranges = [[48, 121]]          # priority-state flag bits + ObjHitsPriorityState
+
+[[part]]
+source = "decomp/include/main/objHitReact_types.h"
+ranges = [[42, 45]]           # OBJHITREACT_ENTRY_ARENA_BYTES .. RESET_HITBOX_MODE
+may_be_unchanged = true
+
+[[part]]
+source = "decomp/include/main/objHitReact_types.h"
+ranges = [[50, 63]]           # ObjHitReactState (oracle: shim.h's 32-bit copy)
+mirror_only = true
+
+[[part]]
+source = "decomp/src/main/objhits.c"
+ranges = [
+    [2366, 2383],             # ObjHitReact_InitState
+    [2778, 2824],             # ObjHits_RecordObjectHit
+]

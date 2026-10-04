@@ -59,6 +59,16 @@ code that needs the pointer resolves it with `textureIdxToPtr`.
 The `model_hoststruct` and `mapblock_hoststruct` difftests check synthetic
 big-endian files against a byte-level oracle.
 
+`anim.hitReactState` is allocated as `ObjHitsPriorityState` and also accessed
+as `ObjHitReactState`. `hitstate.toml` names priority's head, which includes the
+`entries` pointer. It also sizes `ObjHitReactState`'s pads from priority's
+offsets, so the two views coincide on the host, as they do on the GameCube.
+`mirror/runtime/stairfax_hitstate.c` pins each shared field with
+`_Static_assert`s. The `hitstate_views` difftest writes through each view and
+reads the result back through the other. Its oracle keeps the GameCube layout
+by declaring `entries` as a 4-byte `__ptr32 __uptr` pointer, enabled through
+the case's `oracle_cflags`.
+
 A `[[call.retarget]]` rule (`file`, `line`, `from`, `to`) points one call at a
 port runtime replacement, for the rare function whose 32-bit contract can't hold
 on a 64-bit host: `seqPairTableLookup` walks `{key, value}` tables as `int[2]`,

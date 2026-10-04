@@ -115,8 +115,12 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
         (bd / "shim.h").write_text(shim.read_text())
         (bd / "driver.c").write_text(driver.read_text())
 
+    # oracle_cflags: extra flags for the oracle builds only (e.g. -fms-extensions
+    # for `T* __ptr32 __uptr`, a 4-byte pointer that gives a struct holding one its
+    # 32-bit layout on this 64-bit host)
+    o_flags = list(spec.get("oracle_cflags", []))
     ok, err = _compile(wd / "oracle" / "driver.c", wd / "oracle_bin",
-                       ["-DDIFFTEST_ORACLE_LOWMEM", f"-I{wd/'oracle'}"])
+                       ["-DDIFFTEST_ORACLE_LOWMEM", f"-I{wd/'oracle'}", *o_flags])
     if not ok:
         print(f"[{name}] FAIL — oracle did not compile:\n{err}")
         return False
@@ -138,7 +142,7 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
 
     # negative control: oracle snippet built without the low-mem crutch
     ctrl_note = ""
-    ok, _ = _compile(wd / "oracle" / "driver.c", wd / "oracle_hi_bin", [f"-I{wd/'oracle'}"])
+    ok, _ = _compile(wd / "oracle" / "driver.c", wd / "oracle_hi_bin", [f"-I{wd/'oracle'}", *o_flags])
     if ok:
         crc, cout = _exec(wd / "oracle_hi_bin")
         ctrl_note = ("  (hazard confirmed: untransformed code breaks on a high heap)"
