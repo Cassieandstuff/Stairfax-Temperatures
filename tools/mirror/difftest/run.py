@@ -33,6 +33,7 @@ MIRROR_TOOLS = HERE.parent
 REPO = MIRROR_TOOLS.parent.parent
 sys.path.insert(0, str(MIRROR_TOOLS))
 import passes  # noqa: E402
+import build_mirror  # noqa: E402
 
 CC = "clang"
 # -fno-strict-aliasing: the decomp type-puns (MWCC semantics); keep UB-driven
@@ -43,6 +44,29 @@ LDFLAGS = ["-lm"]
 # (stdint + runtime accessor decls); the oracle is untransformed decomp code.
 MIRROR_PRELUDE = ["-DDIFFTEST_MIRROR", "-include", "mirror_prelude.h", f"-I{REPO / 'mirror' / 'runtime'}"]
 CASES = HERE / "cases"
+
+# Cases that compile against the generated mirror/include tree get a fresh copy
+# built from the current rules into the difftest workdir (main()), so a standalone
+# run never tests a stale tree and never rewrites the shared mirror/include under
+# a concurrent build_mirror/regen. A case path "mirror/include[/...]" maps there.
+_MIRROR_INCLUDE = "mirror/include"
+_fresh_include: Path | None = None
+
+
+def _repo_path(rel: str) -> Path:
+    if _fresh_include is not None and (rel == _MIRROR_INCLUDE or rel.startswith(_MIRROR_INCLUDE + "/")):
+        return _fresh_include / rel[len(_MIRROR_INCLUDE):].lstrip("/")
+    return REPO / rel
+
+
+def _uses_mirror_include(case: Path) -> bool:
+    spec_file = case / "extract.toml"
+    if not spec_file.exists():
+        return False
+    spec = tomllib.loads(spec_file.read_text())
+    paths = [*spec.get("mirror_include", []), *spec.get("oracle_include", []),
+             *spec.get("oracle_preinclude", [])]
+    return any(x == _MIRROR_INCLUDE or x.startswith(_MIRROR_INCLUDE + "/") for x in paths)
 
 
 def _run(cmd: list[str], **kw):
@@ -123,8 +147,8 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
     # tree too (e.g. the decomp's own object.h). Pre-including mirror/include's
     # dolphin/types.h gives that tree the 4-byte s32/u32 of the 32-bit build;
     # the raw decomp typedefs make them `long`, 8 bytes on this host.
-    o_flags += [a for i in spec.get("oracle_preinclude", []) for a in ("-include", str(REPO / i))]
-    o_flags += [a for i in spec.get("oracle_include", []) for a in ("-idirafter", str(REPO / i))]
+    o_flags += [a for i in spec.get("oracle_preinclude", []) for a in ("-include", str(_repo_path(i)))]
+    o_flags += [a for i in spec.get("oracle_include", []) for a in ("-idirafter", str(_repo_path(i)))]
     ok, err = _compile(wd / "oracle" / "driver.c", wd / "oracle_bin",
                        ["-DDIFFTEST_ORACLE_LOWMEM", f"-I{wd/'oracle'}", *o_flags])
     if not ok:
@@ -134,7 +158,7 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
     # linked with runtime sources (cases that exercise mirror/runtime code)
     # -idirafter: the decomp's own libc headers (stdio.h, ...) live in the mirror
     # tree; searched after the system dirs, the driver still gets the real libc
-    m_inc = [a for i in spec.get("mirror_include", []) for a in ("-idirafter", str(REPO / i))]
+    m_inc = [a for i in spec.get("mirror_include", []) for a in ("-idirafter", str(_repo_path(i)))]
     m_link = [REPO / l for l in spec.get("mirror_link", [])]
     ok, err = _compile(wd / "mirror" / "driver.c", wd / "mirror_bin",
                        [*MIRROR_PRELUDE, f"-I{wd/'mirror'}", *m_inc], m_link)
@@ -246,6 +270,13 @@ def main(argv: list[str]) -> int:
         print("no cases found")
         return 1
     workdir = REPO / "mirror" / "difftest-build"
+    if any(_uses_mirror_include(c) for c in cases):
+        global _fresh_include
+        _fresh_include = workdir / "mirror-include"
+        rules = passes.load_pointer_rules(REPO / "mirror" / "rules")
+        hdrs = build_mirror.gen_headers(rules, _fresh_include)
+        print(f"[difftest] built {_fresh_include.relative_to(REPO)} "
+              f"({len(hdrs)} transformed header(s)) from current rules")
     results = [run_case(c, workdir) for c in cases]
     n_ok = sum(results)
     print(f"\n{n_ok}/{len(results)} case(s) passed")

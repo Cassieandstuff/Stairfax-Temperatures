@@ -75,8 +75,11 @@ a real header instead, a case can build both sides against real header trees.
 `oracle_include` points the oracle at `decomp/include`, and
 `oracle_preinclude = ["mirror/include/dolphin/types.h"]` gives that tree the
 32-bit `s32`/`u32` widths. `userdata1_header` uses this to check
-`GameObject.userData1` in the real `object.h`. Because `mirror/include` is
-generated, run these cases after `build_mirror.py`, as `regen.py` does.
+`GameObject.userData1` in the real `object.h`. When a selected case names
+`mirror/include`, `run.py` first builds a fresh header tree from the current
+rules into `mirror/difftest-build/mirror-include` and resolves those paths
+there. A standalone run never tests a stale tree, and never rewrites the shared
+`mirror/include` while a `build_mirror.py` or `regen.py` run is using it.
 
 A `[[call.retarget]]` rule (`file`, `line`, `from`, `to`) points one call at a
 port runtime replacement, for the rare function whose 32-bit contract can't hold
