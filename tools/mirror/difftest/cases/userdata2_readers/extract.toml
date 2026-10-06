@@ -1,0 +1,31 @@
+# Real-TU diff case: GameObject.userData2 used as an object handle.
+#
+# DR_CloudRunner_fireProjectile (DR_CloudRun.c) spawns a projectile and stores
+# its own object in the projectile's userData2 as `(int)obj`.
+# SB_FireBall_update (SB_FireBall.c) adopts its userData2 as its target,
+# `(GameObject*)obj->userData2`, and moves only once it has one. The real
+# writer feeds the real reader. Both are built with their real #includes
+# against real header trees, as in userdata1_header. The mirror's
+# GameObject.userData2 is intptr_t (gameobject.toml), and its store's cast is
+# widened (generated widen_cast).
+
+oracle_cflags = ["-include", "stdint.h"]
+oracle_preinclude = ["mirror/include/dolphin/types.h"]
+oracle_include = ["decomp/include", "decomp", "decomp/src"]
+mirror_include = ["mirror/include", "decomp", "decomp/src"]
+
+[[part]]
+source = "decomp/src/dlls/objects/600_DR_CloudRun/DR_CloudRun.c"
+ranges = [
+    [21, 55],                 # the TU's #includes
+    [75, 76],                 # DRCLOUDRUNNER_PARTFX, _CHILD_OBJ_PROJECTILE
+    [195, 271],               # DR_CloudRunner_fireProjectile (the writer)
+]
+
+[[part]]
+source = "decomp/src/dlls/objects/493_SB_FireBall/SB_FireBall.c"
+ranges = [
+    [9, 28],                  # the TU's #includes + SB_FIREBALL_* constants
+    [81, 127],                # SB_FireBall_update (the reader)
+]
+may_be_unchanged = true
