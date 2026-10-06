@@ -119,6 +119,12 @@ def run_extract_case(case: Path, workdir: Path) -> bool:
     # for `T* __ptr32 __uptr`, a 4-byte pointer that gives a struct holding one its
     # 32-bit layout on this 64-bit host)
     o_flags = list(spec.get("oracle_cflags", []))
+    # oracle_include / oracle_preinclude: compile the oracle against a real header
+    # tree too (e.g. the decomp's own object.h). Pre-including mirror/include's
+    # dolphin/types.h gives that tree the 4-byte s32/u32 of the 32-bit build;
+    # the raw decomp typedefs make them `long`, 8 bytes on this host.
+    o_flags += [a for i in spec.get("oracle_preinclude", []) for a in ("-include", str(REPO / i))]
+    o_flags += [a for i in spec.get("oracle_include", []) for a in ("-idirafter", str(REPO / i))]
     ok, err = _compile(wd / "oracle" / "driver.c", wd / "oracle_bin",
                        ["-DDIFFTEST_ORACLE_LOWMEM", f"-I{wd/'oracle'}", *o_flags])
     if not ok:

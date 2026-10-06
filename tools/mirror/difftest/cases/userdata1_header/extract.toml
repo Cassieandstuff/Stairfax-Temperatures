@@ -1,0 +1,24 @@
+# Real-TU diff case: the userData1 retype in the real object.h.
+#
+# userdata1_readers runs spitembeam_update against a shim GameObject that
+# declares userData1 per build, so it doesn't cover the header rule itself.
+# This case compiles the same function, with its real #includes, against real
+# header trees. The mirror uses the generated mirror/include, where
+# gameobject.toml made GameObject.userData1 intptr_t. The oracle uses the
+# untransformed decomp/include, with mirror/include's dolphin/types.h
+# pre-included. That header only gives s32/u32 their 32-bit width, which the
+# raw decomp typedefs (`long`) don't have on this host. Without the header
+# retype, the mirror stores a full-width shop pointer into a 4-byte s32 and
+# crashes when it reads the handle back.
+
+oracle_cflags = ["-include", "stdint.h"]
+oracle_preinclude = ["mirror/include/dolphin/types.h"]
+oracle_include = ["decomp/include", "decomp", "decomp/src"]
+mirror_include = ["mirror/include", "decomp", "decomp/src"]
+
+[[part]]
+source = "decomp/src/dlls/objects/649_SPitembeam/SPitembeam.c"
+ranges = [
+    [12, 22],                 # the TU's #includes + SPITEMBEAM_* constants
+    [45, 80],                 # spitembeam_update
+]

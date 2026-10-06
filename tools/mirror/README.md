@@ -69,6 +69,15 @@ reads the result back through the other. Its oracle keeps the GameCube layout
 by declaring `entries` as a 4-byte `__ptr32 __uptr` pointer, enabled through
 the case's `oracle_cflags`.
 
+Most extract cases declare the structs they touch in a shim. To test a rule on
+a real header instead, a case can build both sides against real header trees.
+`mirror_include` points the mirror at the generated `mirror/include`.
+`oracle_include` points the oracle at `decomp/include`, and
+`oracle_preinclude = ["mirror/include/dolphin/types.h"]` gives that tree the
+32-bit `s32`/`u32` widths. `userdata1_header` uses this to check
+`GameObject.userData1` in the real `object.h`. Because `mirror/include` is
+generated, run these cases after `build_mirror.py`, as `regen.py` does.
+
 A `[[call.retarget]]` rule (`file`, `line`, `from`, `to`) points one call at a
 port runtime replacement, for the rare function whose 32-bit contract can't hold
 on a 64-bit host: `seqPairTableLookup` walks `{key, value}` tables as `int[2]`,
