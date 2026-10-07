@@ -38,7 +38,9 @@ import build_mirror  # noqa: E402
 CC = "clang"
 # -fno-strict-aliasing: the decomp type-puns (MWCC semantics); keep UB-driven
 # optimizer differences between oracle and mirror from posing as a behavior diff.
-CFLAGS = ["-m64", "-O1", "-w", "-fno-strict-aliasing", "-DDIFFTEST_MAIN", f"-I{HERE}"]
+# -fdeclspec: accept MWCC __declspec(weak) in real decomp headers (dolphin/os.h), as
+# build_mirror.py's CFLAGS do.
+CFLAGS = ["-m64", "-O1", "-w", "-fno-strict-aliasing", "-fdeclspec", "-DDIFFTEST_MAIN", f"-I{HERE}"]
 LDFLAGS = ["-lm"]
 # Mirror builds get the same force-included prelude as the real mirror build
 # (stdint + runtime accessor decls); the oracle is untransformed decomp code.

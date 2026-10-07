@@ -1,0 +1,41 @@
+# Real-TU diff case: readers of ObjHitsPriorityState.hitObjects[].
+#
+# ObjHits_RecordObjectHit stores each striking object in the struck object's
+# hitObjects[] as `(int)hitObj`. Three readers get GameObjects back from it:
+#   - ObjHits_GetPriorityHit (objhits.c) returns the best-priority slot as a
+#     GameObject*.
+#   - blasted_update (345.c) copies a slot into a local and dedupes it against
+#     BlastedTargetState.destroyedHitObjects[].
+#   - InvHit_update's SELF_FREE mode (InvHit.c) walks its owner's slots by
+#     hand, `ownerHitSlot += 4`, looking for itself.
+# The mirror widens hitObjects to intptr_t and destroyedHitObjects and the
+# 345.c local to uintptr_t (ptrpuns.toml + generated), and rewrites InvHit's
+# stride to sizeof(intptr_t). All three TUs build with their real #includes
+# against real header trees, as in userdata1_header.
+
+oracle_cflags = ["-include", "stdint.h"]
+oracle_preinclude = ["mirror/include/dolphin/types.h"]
+oracle_include = ["decomp/include", "decomp", "decomp/src"]
+mirror_include = ["mirror/include", "decomp", "decomp/src"]
+
+[[part]]
+source = "decomp/src/main/objhits.c"
+ranges = [
+    [1, 63],                  # the TU's defines + #includes
+    [2778, 2824],             # ObjHits_RecordObjectHit (the writer)
+    [2953, 2990],             # ObjHits_GetPriorityHit
+]
+
+[[part]]
+source = "decomp/src/dlls/objects/345/345.c"
+ranges = [
+    [3, 20],                  # #includes, BLASTED_* constants, gBlastedDamageTimer
+    [73, 136],                # blasted_update
+]
+
+[[part]]
+source = "decomp/src/dlls/objects/241_InvHit/InvHit.c"
+ranges = [
+    [19, 52],                 # #includes, INVHIT_* constants, gInvHitPublishedPos
+    [96, 229],                # InvHit_update
+]
