@@ -1,0 +1,31 @@
+# Real-TU diff case: BlastedTargetState.destroyedHitObjects[] (345.c).
+#
+# blasted_update copies each priority-5 hitObjects[] slot into a local
+# (`u32 hitObject`). It dedupes the local against every recorded entry of
+# destroyedHitObjects[3] and records new ones there, one per damage stage.
+# blasted_init can resume a rock from its saved progress gamebit, which leaves
+# the earlier slots unrecorded. The mirror widens both the array (ptrpuns.toml)
+# and the local (generated retype) to uintptr_t, so a full-width object
+# matches its record. hitobjects_readers runs this code too; this case fills all
+# three slots, dedupes against each, and covers the resumed rock. The writer is
+# the real ObjHits_RecordObjectHit. Everything builds with its real #includes
+# against real header trees, as in userdata1_header.
+
+oracle_cflags = ["-include", "stdint.h"]
+oracle_preinclude = ["mirror/include/dolphin/types.h"]
+oracle_include = ["decomp/include", "decomp", "decomp/src"]
+mirror_include = ["mirror/include", "decomp", "decomp/src"]
+
+[[part]]
+source = "decomp/src/main/objhits.c"
+ranges = [
+    [1, 63],                  # the TU's defines + #includes
+    [2778, 2824],             # ObjHits_RecordObjectHit (the writer)
+]
+
+[[part]]
+source = "decomp/src/dlls/objects/345/345.c"
+ranges = [
+    [3, 20],                  # #includes, BLASTED_* constants, gBlastedDamageTimer
+    [73, 162],                # blasted_update, blasted_init
+]
