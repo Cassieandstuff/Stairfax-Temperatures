@@ -60,4 +60,37 @@ static void difftest_map_mem1(void) {
 }
 #endif
 
+/* Aliased addresses. A pointer that is narrowed to 32 bits on BOTH sides of a
+ * comparison (`(u32)a == (u32)b`, or a u32 record checked against a u32 copy)
+ * still compares correctly for distinct objects, unless their addresses share
+ * the low 32 bits. difftest_alias_alloc(pair, member, size) returns zeroed
+ * storage for member 0, 1, ... of alias pair `pair`. On the high-heap builds
+ * (the mirror and the untransformed control) the members of one pair sit
+ * exactly 4 GiB apart, so their low 32 bits are equal. The low-memory oracle
+ * can't alias, so it falls back to mmAlloc and gives the intended result. */
+#if !defined(DIFFTEST_ORACLE_LOWMEM)
+#  include <string.h>
+#  include <sys/mman.h>
+#  define DIFFTEST_ALIAS_BASE ((uintptr_t)0x7e0000001000ull)
+static void *difftest_alias_alloc(int pair, int member, unsigned size) {
+    uintptr_t addr = DIFFTEST_ALIAS_BASE + (uintptr_t)pair * 0x100000u + ((uintptr_t)member << 32);
+    unsigned len = (size + 0xFFFu) & ~0xFFFu;
+    void *p = mmap((void *)addr, len ? len : 0x1000, PROT_READ | PROT_WRITE,
+                   MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
+    if (p == MAP_FAILED || (uintptr_t)p != addr) {
+        perror("mmap alias");
+        exit(2);
+    }
+    return p;                                   /* anonymous pages: already zero */
+}
+#else
+static void *difftest_alias_alloc(int pair, int member, unsigned size) {
+    (void)pair; (void)member;
+    void *p = mmAlloc(size, 0, 0);
+    unsigned i;
+    for (i = 0; i < size; i++) ((unsigned char *)p)[i] = 0;
+    return p;
+}
+#endif
+
 #endif /* DIFFTEST_H */

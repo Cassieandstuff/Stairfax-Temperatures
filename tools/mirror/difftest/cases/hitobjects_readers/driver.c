@@ -5,7 +5,10 @@
  *   blasted_update  rock R (2 pieces) over four frames: X; X again + Y + a
  *                   priority-3 W; Z; then nothing. X is deduped against
  *                   destroyedHitObjects[], W is ignored, Z breaks the rock,
- *                   and the last frame returns early.
+ *                   and the last frame returns early. X and Y are alias pair
+ *                   0 (difftest_alias_alloc), 4 GiB apart on the high-heap
+ *                   builds, so Y is taken for X if the dedupe compares
+ *                   through 32 bits on both sides.
  *   InvHit_update   owner O is struck by I1 then I2. SELF_FREE I2 finds itself
  *                   in O's second slot and frees itself; I3 isn't there.
  * Output is romDefNo tags, counters and flags, never addresses. */
@@ -57,6 +60,17 @@ static GameObject* mk(int tag, int extraSize)
 }
 #define HS(o) ((ObjHitsPriorityState*)(o)->anim.hitReactState)
 
+static GameObject* mkAlias(int tag, int member)
+{
+    GameObject* o = (GameObject*)difftest_alias_alloc(0, member, sizeof(GameObject));
+    ObjHitsPriorityState* hs = (ObjHitsPriorityState*)difftest_mmAlloc(sizeof(ObjHitsPriorityState), 0, 0);
+    memset(hs, 0, sizeof *hs);
+    hs->flags = OBJHITS_PRIORITY_STATE_ENABLED;
+    o->anim.hitReactState = hs;
+    o->anim.romDefNo = (s16)tag;
+    return o;
+}
+
 static void getPriorityHit(void)
 {
     GameObject* t = mk(1, 0);
@@ -75,7 +89,7 @@ static void getPriorityHit(void)
 static void blasted(void)
 {
     GameObject* r = mk(10, sizeof(BlastedTargetState));
-    GameObject* x = mk(11, 0); GameObject* y = mk(12, 0);
+    GameObject* x = mkAlias(11, 0); GameObject* y = mkAlias(12, 1);
     GameObject* w = mk(13, 0); GameObject* z = mk(14, 0);
     BlastedTargetPlacement* pl = (BlastedTargetPlacement*)difftest_mmAlloc(sizeof *pl, 0, 0);
     BlastedTargetState* st = (BlastedTargetState*)r->extra;

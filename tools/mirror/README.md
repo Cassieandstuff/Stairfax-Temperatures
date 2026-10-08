@@ -81,6 +81,14 @@ rules into `mirror/difftest-build/mirror-include` and resolves those paths
 there. A standalone run never tests a stale tree, and never rewrites the shared
 `mirror/include` while a `build_mirror.py` or `regen.py` run is using it.
 
+A pointer narrowed to 32 bits on both sides of a comparison still compares
+correctly for distinct objects, so a high heap alone doesn't expose it. Cases
+that test such comparisons allocate the objects with
+`difftest_alias_alloc(pair, member, size)` (`difftest/difftest.h`). On the
+high-heap builds, the members of a pair sit exactly 4 GiB apart and share their
+low 32 bits; the low-memory oracle can't alias them. `arwbombcoll_lasthit`,
+`lasthit_readers`, `hitobjects_readers` and `destroyed_hitobjects` use it.
+
 A `[[call.retarget]]` rule (`file`, `line`, `from`, `to`) points one call at a
 port runtime replacement, for the rare function whose 32-bit contract can't hold
 on a 64-bit host: `seqPairTableLookup` walks `{key, value}` tables as `int[2]`,

@@ -47,27 +47,17 @@ static GameObject* mk(int tag, int extraSize)
 }
 #define HS(o) ((ObjHitsPriorityState*)(o)->anim.hitReactState)
 
-#if !defined(DIFFTEST_ORACLE_LOWMEM)
-#  include <sys/mman.h>
-/* a GameObject at a fixed address; A and B land 4 GiB apart */
-static GameObject* mkAt(int tag, uintptr_t addr)
+/* A and B: alias pair 0 (see difftest_alias_alloc), 4 GiB apart on the
+ * high-heap builds */
+static GameObject* mkAlias(int tag, int member)
 {
-    GameObject* o = (GameObject*)mmap((void*)addr, 0x1000, PROT_READ | PROT_WRITE,
-                                      MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
+    GameObject* o = (GameObject*)difftest_alias_alloc(0, member, sizeof(GameObject));
     ObjHitsPriorityState* hs = (ObjHitsPriorityState*)difftest_mmAlloc(sizeof(ObjHitsPriorityState), 0, 0);
-    if ((void*)o == MAP_FAILED || (uintptr_t)o != addr) { perror("mmap alias"); exit(2); }
     memset(hs, 0, sizeof *hs);
     o->anim.hitReactState = hs;
     o->anim.romDefNo = (s16)tag;
     return o;
 }
-#  define ALIAS_BASE ((uintptr_t)0x7e0000001000ull)
-#  define MK_A() mkAt(11, ALIAS_BASE)
-#  define MK_B() mkAt(12, ALIAS_BASE + ((uintptr_t)1 << 32))
-#else
-#  define MK_A() mk(11, 0)
-#  define MK_B() mk(12, 0)
-#endif
 
 static GameObject* mkRock(int tag, s16 progressBit, s16 completedBit)
 {
@@ -101,7 +91,7 @@ static void show(GameObject* r)
 
 int main(void)
 {
-    GameObject* a = MK_A(); GameObject* b = MK_B(); GameObject* w = mk(13, 0);
+    GameObject* a = mkAlias(11, 0); GameObject* b = mkAlias(12, 1); GameObject* w = mk(13, 0);
     GameObject* c = mk(14, 0); GameObject* d = mk(15, 0); GameObject* e = mk(16, 0);
     GameObject* fresh; GameObject* resumed;
 
