@@ -3,6 +3,13 @@
 [[pointer.retype]]
 file = "decomp/src/dlls/objects/547_VFP_corepla/VFP_corepla.c"
 line = 46
+symbol = "p1"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/547_VFP_corepla/VFP_corepla.c"
+line = 46
 symbol = "p2"
 from = "int"
 to = "uintptr_t"

@@ -3,6 +3,13 @@
 [[pointer.retype]]
 file = "decomp/include/main/dll/DF/dll_022D_dfpseqpoint.h"
 line = 34
+symbol = "p1"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/dll/DF/dll_022D_dfpseqpoint.h"
+line = 34
 symbol = "p2"
 from = "int"
 to = "uintptr_t"
