@@ -1,0 +1,42 @@
+# objhits.c: objB parked in u32 ob (two blocks of ObjHits_CheckSkeletonPair) and the
+# previous hit-sphere buffer parked in int prevSpheres (ObjHits_CheckTrackContact).
+
+[[pointer.retype]]
+file = "decomp/src/main/objhits.c"
+line = 1816
+symbol = "ob"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objhits.c"
+line = 1816   # u32 ob = (u32)objB;  (3D)
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objhits.c"
+line = 1850
+symbol = "ob"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objhits.c"
+line = 1850   # u32 ob = (u32)objB;  (XZ)
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objhits.c"
+line = 1884
+symbol = "prevSpheres"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objhits.c"
+line = 1903   # prevSpheres = (int)modelBank->hitVolumeSphereBuffers[bits ^ 1];
+from = "int"
+to = "uintptr_t"
+

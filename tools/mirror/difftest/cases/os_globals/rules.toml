@@ -1,0 +1,4 @@
+# Rewrite the absolute OS-globals bus-clock read into the portable accessor.
+[[osglobals.read]]
+file = "tools/mirror/difftest/cases/os_globals/case.c"
+line = 14

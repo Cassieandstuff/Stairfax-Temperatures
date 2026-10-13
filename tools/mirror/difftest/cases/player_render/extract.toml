@@ -1,0 +1,25 @@
+# Real-TU diff case: the player render path, across two TUs.
+#
+#   objRender(..., obj, flag)            objprint.c — no DLL, romDefNo 0  ->
+#   playerRender((int)obj, a, b, c, d, flag)   player.c (the player DLL)
+#
+# The player object crosses the call as `int`, and playerRender carries pointers
+# in ints throughout: gPlayerHeldObject (an int global holding a Shader*), the
+# `(char*)(int)in2->heldObj` raw-offset pokes into the carried object, and the
+# carried object's own VEHICLE_INTERFACE render. Both the hand rules (objprint)
+# and the generated whole-program rules (player.c) are exercised.
+# A second object with a DLL checks objRender's interface-render dispatch.
+
+rules = "mirror/rules"
+
+[[part]]
+source = "decomp/src/dlls/objects/195_Player/player.c"
+ranges = [
+    [17058, 17260],   # void playerRender(int obj, int a, int b, int c, int d, int flag)
+]
+
+[[part]]
+source = "decomp/src/main/objprint.c"
+ranges = [
+    [1382, 1438],     # void objRender(int a, int b, int c, int d, GameObject* obj, int flag)
+]

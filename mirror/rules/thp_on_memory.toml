@@ -1,0 +1,41 @@
+# Attract-movie "on memory" playback: the preloaded-movie cursor is passed as an
+# integer to the video decode thread.
+#
+#   dll_3e.c prepareAttractMode:
+#     s32 startOffset;
+#     startOffset = ((s32)ctrl->loopFrame + ctrl->frameOffset) - ctrl->dataOffset;
+#     CreateVideoDecodeThread(0xf, startOffset);  CreateAudioDecodeThread(0xc, (void*)startOffset);
+#   THPVideoDecode.c CreateVideoDecodeThread(OSPriority, u32 onMemoryArg)
+#     -> OSCreateThread(..., (void*)onMemoryArg, ...)  -> receiver: void* cur = param;
+# ctrl->loopFrame is a real void* into the preloaded movie (frameOffset and
+# dataOffset are u32 file offsets, frameOffset >= dataOffset), so startOffset is
+# a pointer. Widen the (s32) cast, the local, and the param on its definition and
+# its picmenu.h prototype. (dolphin/thp/THPVideoDecode.h declares the param as
+# void* task; that SDK header already disagrees and isn't the one these TUs use.)
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/thp/dll_3e.c"
+line = 299   # ((s32)ctrl->loopFrame + ...)
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/thp/dll_3e.c"
+line = 261   # s32 startOffset;
+symbol = "startOffset"
+from = "s32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/thp/THPVideoDecode.c"
+line = 212   # BOOL CreateVideoDecodeThread(OSPriority priority, u32 onMemoryArg)
+symbol = "onMemoryArg"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/include/main/dll/FRONT/picmenu.h"
+line = 21    # BOOL CreateVideoDecodeThread(OSPriority priority, u32 onMemoryArg);
+symbol = "onMemoryArg"
+from = "u32"
+to = "uintptr_t"

@@ -1,0 +1,29 @@
+# Real-TU diff case: ARWBombColl_update's lastHitObject comparisons.
+#
+# The pickup's two collision tests are
+# `(u32)hs->lastHitObject == (u32)getArwing()`. The mirror widens the field to
+# uintptr_t (hitstate.toml), and the analyzer widens both casts (generated
+# widen_casts, occurrences 1 and 2 on lines 142 and 162). If it widened only
+# the getArwing() side, which is the case infer_ptr_ints.py once missed, the
+# truncated field would never equal the full-width Arwing. The pickup would
+# then silently never collect on a high heap.
+
+[[part]]
+source = "decomp/include/main/objhits_types.h"
+ranges = [[48, 121]]          # priority-state flag bits + ObjHitsPriorityState
+
+[[part]]
+source = "decomp/src/main/objhits.c"
+ranges = [[2778, 2824]]       # ObjHits_RecordObjectHit (the writer)
+
+[[part]]
+source = "decomp/include/main/dll/ARW/dll_029F_arwbombcoll.h"
+ranges = [[14, 25]]           # ArwBombFlags, ARWBombCollState
+may_be_unchanged = true
+
+[[part]]
+source = "decomp/src/dlls/objects/671_ARWBombColl/ARWBombColl.c"
+ranges = [
+    [24, 33],                 # constants
+    [81, 203],                # ARWBombColl_update
+]

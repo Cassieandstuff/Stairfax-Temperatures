@@ -1,0 +1,173 @@
+#!/usr/bin/env python3
+"""Stairfax mirror build — transform-pipeline orchestrator (skeleton).
+
+Turns the frozen, byte-matching decomp (`decomp/`) into a portable, 64-bit-clean
+mirror (`mirror/`) by running an ordered sequence of deterministic passes. See
+docs/adr/0001-native-64bit-portable-mirror.md for the architecture.
+
+Pass status in this skeleton:
+    P0 vendor+patch     : identity copy into mirror/src (patch step is a TODO hook)
+    P1 parse            : libclang if available, else heuristic (no output)
+    P2 pointer-width    : IMPLEMENTED — emits a per-TU worklist (no rewrite)
+    P3 endian           : TODO (annotate on-disc structs for beFix*)
+    P4 arch-intrinsics  : TODO (paired-single / MSR-HID0 -> portable/HAL)
+    P5 hardware-store   : TODO (0xCC008000 stores -> gx_fifo_submit call)
+    P6 emit             : identity write-through
+
+Nothing here rewrites game logic yet: the skeleton exists to make every pass a
+real place, and to produce the P2 worklist that drives the manual rule authoring.
+
+Usage:
+    python3 tools/mirror/mirror_build.py --worklist decomp/src/main/track_dolphin.c
+    python3 tools/mirror/mirror_build.py --worklist decomp/src/main/track_dolphin.c \\
+            --out docs/mirror/worklist-track_dolphin.md
+    python3 tools/mirror/mirror_build.py --emit decomp/src/main/track_dolphin.c   # P0..P6 identity
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parent.parent
+sys.path.insert(0, str(HERE))
+
+import passes  # noqa: E402  (local module)
+
+MIRROR = REPO / "mirror"
+
+
+def decomp_rev() -> str:
+    """Best-effort provenance stamp for the frozen decomp."""
+    for args in (["git", "-C", str(REPO / "decomp"), "rev-parse", "--short", "HEAD"],
+                 ["git", "-C", str(REPO), "rev-parse", "--short", "HEAD"]):
+        try:
+            out = subprocess.run(args, capture_output=True, text=True, timeout=5)
+            if out.returncode == 0 and out.stdout.strip():
+                return out.stdout.strip()
+        except Exception:
+            pass
+    return "unknown"
+
+
+def cmd_worklist(tu: Path, out: Path | None) -> int:
+    if not tu.exists():
+        print(f"error: no such TU: {tu}", file=sys.stderr)
+        return 2
+    rev = decomp_rev()
+    findings = passes.scan_pointer_width(tu)
+    md = passes.render_worklist_md(tu.as_posix(), findings, rev)
+
+    # machine-readable sidecar under the (gitignored) mirror tree
+    jdir = MIRROR / "worklists"
+    jdir.mkdir(parents=True, exist_ok=True)
+    jpath = jdir / (tu.stem + ".pointers.json")
+    jpath.write_text(json.dumps(
+        {"tu": tu.as_posix(), "decomp_rev": rev,
+         "findings": passes.findings_as_dicts(findings)}, indent=2))
+
+    if out:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(md)
+        print(f"wrote {out}  ({len(findings)} findings)  + {jpath}")
+    else:
+        print(md)
+        print(f"\n[json sidecar: {jpath}]", file=sys.stderr)
+    return 0
+
+
+def cmd_scan_tree(root: Path, out: Path | None) -> int:
+    if not root.exists():
+        print(f"error: no such dir: {root}", file=sys.stderr)
+        return 2
+    rev = decomp_rev()
+    tus = sorted(root.rglob("*.c"))
+    per_file: list[tuple[str, list]] = []
+    agg = {"decomp_rev": rev, "root": root.as_posix(), "tus": {}}
+    jdir = MIRROR / "worklists"
+    jdir.mkdir(parents=True, exist_ok=True)
+    for tu in tus:
+        findings = passes.scan_pointer_width(tu)
+        rel = tu.relative_to(root).as_posix()
+        per_file.append((rel, findings))
+        agg["tus"][rel] = passes.findings_as_dicts(findings)
+    (jdir / "tree.pointers.json").write_text(json.dumps(agg, indent=2))
+
+    md = passes.render_tree_report_md(root.as_posix(), per_file, rev)
+    if out:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(md)
+        tot = sum(len(fs) for _, fs in per_file)
+        print(f"wrote {out}  ({len(tus)} TUs, {tot} findings)  + {jdir/'tree.pointers.json'}")
+    else:
+        print(md)
+    return 0
+
+
+def cmd_emit(tu: Path) -> int:
+    """Run P0,P1,P2(rewrite),P6 for one TU into mirror/src, then report residual
+    pointer-width findings after the rewrite."""
+    if not tu.exists():
+        print(f"error: no such TU: {tu}", file=sys.stderr)
+        return 2
+    parser = "libclang" if passes.have_libclang() else "heuristic"
+    print(f"P1 parser: {parser}")
+
+    rules = passes.load_pointer_rules(MIRROR / "rules")
+    src = tu.read_text(errors="replace")
+    before = passes.scan_pointer_width(tu)
+    n_before = sum(1 for f in before if f.severity == "critical")
+
+    # P2 rewrite
+    rel = tu.as_posix()
+    new_text, applied, unmatched = passes.apply_pointer_rules(src, rules, rel)
+    if applied and "uintptr_t" in new_text and "stdint.h" not in new_text:
+        new_text = "#include <stdint.h>\n" + new_text
+
+    # residual scan (on the rewritten text)
+    residual = passes.scan_text_pointer_width(new_text, rel)
+    n_after = sum(1 for f in residual if f.severity == "critical")
+
+    try:
+        relpath = tu.relative_to(REPO / "decomp")
+    except ValueError:
+        relpath = Path(tu.name)
+    dst = MIRROR / "src" / relpath
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    header = (f"/* GENERATED by tools/mirror/mirror_build.py from {tu.as_posix()}\n"
+              f" * decomp_rev={decomp_rev()}  passes=[P0,P1,P2,P6]\n"
+              f" * DO NOT EDIT — change a rule in mirror/rules/ and regenerate. */\n")
+    dst.write_text(header + new_text)
+
+    print(f"emitted {dst}")
+    print(f"P2 rules applied: {len(applied)}"
+          + (f"  ({'; '.join(applied)})" if applied else ""))
+    if unmatched:
+        print("P2 rules UNMATCHED:")
+        for u in unmatched:
+            print(f"  - {u}")
+    print(f"critical pointer-width findings: {n_before} -> {n_after}")
+    return 0
+
+
+def main(argv: list[str]) -> int:
+    ap = argparse.ArgumentParser(description="Stairfax decomp->mirror pipeline (skeleton)")
+    g = ap.add_mutually_exclusive_group(required=True)
+    g.add_argument("--worklist", metavar="TU", help="emit P2 pointer-width worklist for TU")
+    g.add_argument("--scan-tree", metavar="DIR", help="aggregate P2 scan across all *.c under DIR")
+    g.add_argument("--emit", metavar="TU", help="run P0..P6 identity emit for TU")
+    ap.add_argument("--out", metavar="PATH", help="write markdown here instead of stdout")
+    args = ap.parse_args(argv)
+
+    if args.worklist:
+        return cmd_worklist(Path(args.worklist), Path(args.out) if args.out else None)
+    if args.scan_tree:
+        return cmd_scan_tree(Path(args.scan_tree), Path(args.out) if args.out else None)
+    return cmd_emit(Path(args.emit))
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

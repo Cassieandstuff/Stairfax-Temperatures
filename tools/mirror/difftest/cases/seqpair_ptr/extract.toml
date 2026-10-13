@@ -1,0 +1,29 @@
+# Real-TU diff case: seqPairTableLookup on a POINTER-valued pair table.
+#
+# CFGuardian looks up its per-quest-state sequence choices with
+#   int* choices = (int*)seqPairTableLookup(gCfGuardianSeqStreamTable, 15, questState);
+# where the table is int[33][2] = {{0, (int)&gCfGuardianState0Sequences}, ...}.
+# The original walks 8-byte int pairs. In the mirror the table is widened to
+# intptr_t pairs (16 bytes) and the call retargeted to seqPairTableLookupPtr
+# (mirror/rules/seqpair.toml, mirror/runtime/stairfax_seqpair.h).
+#
+# Oracle: the real decomp lookup over the real 32-bit table layout, built at run
+# time in low memory (the decomp's static initializer truncates an address, which
+# no 64-bit compiler accepts, so that part is mirror_only).
+
+rules = "mirror/rules"
+
+[[part]]
+source = "decomp/src/dlls/engine/2/maketex.c"
+ranges = [[709, 742]]          # int seqPairTableLookup(void* entries, int count, int key)
+may_be_unchanged = true
+
+[[part]]
+source = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+ranges = [[131, 145]]          # s32 gCfGuardianStateNSequences[3] = {...}
+may_be_unchanged = true
+
+[[part]]
+source = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+ranges = [[147, 181]]          # int gCfGuardianSeqStreamTable[33][2] = {...}
+mirror_only = true

@@ -1,0 +1,136 @@
+# seqPairTableLookup on pointer-valued pair tables (see mirror/runtime/stairfax_seqpair.h).
+#
+# maketex.c's seqPairTableLookup walks {key, value} tables as int[2]. That is right
+# for the int tables and wrong on a 64-bit host for the ones holding pointers,
+# whose pairs are 16 bytes. Retarget only the pointer-valued lookups to the
+# runtime twin seqPairTableLookupPtr, and give CFGuardian's table (declared
+# int[N][2] holding (int)&array values) pointer-width slots.
+#
+# seqPairTablePrepare is left alone: it only sorts tables of more than 16 entries,
+# and both pointer tables are smaller (5 and 15), so it never touches them.
+
+# --- 2.c: audio-stream / subtitle tables (ObjSeqStreamMapEntry {int; u32*}) ----
+[[call.retarget]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 2738  # streams = (int*)seqPairTableLookup(gObjSeqStreamTableA, ...)
+from = "seqPairTableLookup"
+to = "seqPairTableLookupPtr"
+
+[[call.retarget]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 2746  # streams = (int*)seqPairTableLookup(gObjSeqStreamTableB, ...)
+from = "seqPairTableLookup"
+to = "seqPairTableLookupPtr"
+
+# --- CFGuardian.c: sequence-choice table ---------------------------------------
+[[call.retarget]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 734   # int* sequenceChoices = (int*)seqPairTableLookup(gCfGuardianSeqStreamTable,
+from = "seqPairTableLookup"
+to = "seqPairTableLookupPtr"
+
+[[call.retarget]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 753
+from = "seqPairTableLookup"
+to = "seqPairTableLookupPtr"
+
+# int gCfGuardianSeqStreamTable[33][2] = {{0, (int)&gCfGuardianState0Sequences}, ...}
+# -> intptr_t: every pair becomes {key, pointer} at 16 bytes. Rows 15..32 hold
+# plain ints and stay correct at the wider width.
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 147
+symbol = "gCfGuardianSeqStreamTable"
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 148
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 149
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 150
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 151
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 152
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 153
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 154
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 155
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 156
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 157
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 158
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 159
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 160
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 161
+from = "int"
+to = "intptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/328_CFGuardian/CFGuardian.c"
+line = 162
+from = "int"
+to = "intptr_t"

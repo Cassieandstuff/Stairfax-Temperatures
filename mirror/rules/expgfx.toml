@@ -1,0 +1,16 @@
+# expgfx.c: hand decisions for slots the signedness check held back.
+
+# poolOrResource (expgfxRender): one local, two jobs. It's a pool index with a -1
+# sentinel (`(s32)poolOrResource != -1`, `while ((s32)poolOrResource > -1)`), and
+# inside the slot loop it's reused for an entry's resource POINTER
+# (`poolOrResource = (u32)entry->resource`), which is only ever zero-tested
+# (`== 0` / `!= 0`) before line 3393 resets it to the next pool index. So the
+# sign tests only ever see indices. intptr_t keeps them signed and holds the
+# pointer whole; uintptr_t would have made `> -1` meaningless, and the decomp's
+# u32 truncates the pointer (a resource at a 4 GiB boundary would test as 0).
+[[pointer.retype]]
+file = "decomp/src/dlls/engine/10_expgfx/expgfx.c"
+line = 2388  # u32 poolOrResource;
+symbol = "poolOrResource"
+from = "u32"
+to = "intptr_t"

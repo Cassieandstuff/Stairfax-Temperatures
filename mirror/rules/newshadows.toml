@@ -1,0 +1,16 @@
+# newshadows.c procedural noise texture init: texelAddress = (int)texFrame + offsets,
+# then deref'd as NewShadowVectorTexel*. Same shape as shader_dolphin.c's v1.
+
+[[pointer.retype]]
+file = "decomp/src/main/newshadows.c"
+line = 1345
+symbol = "texelAddress"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/newshadows.c"
+line = 1345   # int texelAddress = (int)gNewShadowNoiseTexFrames[frame] + ...
+from = "int"
+to = "uintptr_t"
+

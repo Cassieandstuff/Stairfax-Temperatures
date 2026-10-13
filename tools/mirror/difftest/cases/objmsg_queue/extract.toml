@@ -1,0 +1,15 @@
+# Real-TU diff case: the per-object message queue (objlib.c).
+#
+# Entries {u32 message; u32 sender; u32 param} are addressed by hand at
+# `(u8*)queue + ((i + i + i) << 2)` and allocated as `(capacity * 3 + 2) * 4`.
+# Senders are GameObject pointers and params often are too. The mirror
+# (objmsg.toml) widens sender/param, rewrites the strides and the allocation in
+# sizeof/offsetof, and makes Pop/Peek's sender/param out-parameters uintptr_t*.
+
+source = "decomp/src/main/objlib.c"
+rules = "mirror/rules"
+ranges = [
+    [139, 163],   # ObjMsgEntry / ObjMsgQueue / ObjMsgQueueCursor
+    [424, 477],   # ObjMsg_Peek, ObjMsg_Pop, overflow warning string
+    [574, 613],   # ObjMsg_SendToObject, ObjMsg_AllocQueue
+]

@@ -1,0 +1,25 @@
+# Fixed-width integer types for the 64-bit mirror.
+#
+# The decomp's non-TARGET_PC branch of dolphin/types.h defines s32/u32 as
+# `signed long` / `unsigned long`. That's 32 bits on the GameCube (and on Windows
+# LLP64), but 64 bits on LP64 hosts (Linux, macOS, Android). Left alone, every
+# u32/s32 in the mirror is 8 bytes: wrong struct layouts (on-disc headers, offsets,
+# byte swaps), changed wraparound/shift behavior, and pointer casts like
+# `(u32)ptr` that silently fail to truncate (hiding real pointer-width bugs).
+# The TARGET_PC branch already uses <stdint.h> but is MSVC-specific (it breaks
+# bool off Windows), so pin just these two typedefs. vs32/vu32 derive from them.
+# size_t/ptrdiff_t stay `long`: they SHOULD be 64-bit on a 64-bit host.
+
+[[pointer.retype]]
+file = "decomp/include/dolphin/types.h"
+line = 17    # typedef signed long s32;
+symbol = "s32"
+from = "signed long"
+to = "int32_t"
+
+[[pointer.retype]]
+file = "decomp/include/dolphin/types.h"
+line = 21    # typedef unsigned long u32;
+symbol = "u32"
+from = "unsigned long"
+to = "uint32_t"

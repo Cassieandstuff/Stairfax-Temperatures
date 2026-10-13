@@ -1,0 +1,21 @@
+# Real-TU diff case: trackInitCollisionBuffers from the vendored decomp.
+#
+# The harness extracts these exact line ranges from decomp/src/main/track_dolphin.c
+# (verbatim) for the oracle, and the SAME ranges from the P2 rewriter's transform
+# of that file for the mirror. Rules come from the real manifest (mirror/rules/),
+# so this validates the actual collision-pilot rules against real decomp bytes.
+#
+# Ranges: the global declarations the function touches, then the function body.
+# (line numbers are into decomp/src/main/track_dolphin.c)
+
+source = "decomp/src/main/track_dolphin.c"
+rules = "mirror/rules"
+
+ranges = [
+    [69, 69],    # u32 gTrackTriangleBufferEnd;          (promoted)
+    [75, 76],    # s16 gIntersectLineCount / PointCount
+    [80, 81],    # u8 gIntersectRebuildRequested / mapBlockFlag
+    [84, 84],    # MapDynamicSlot* gMapDynamicSlots;
+    [87, 90],    # gIntersectLineIndexTable(int), gIntersectPoints, gIntersectLinePool(int), gTrackTriangleBuffer
+    [3532, 3558],# void trackInitCollisionBuffers(void) { ... }
+]

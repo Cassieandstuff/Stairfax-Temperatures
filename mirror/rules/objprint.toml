@@ -1,0 +1,85 @@
+# objprint.c: staffUpdateSegmentTransforms and its one caller pass object
+# pointers through ints, and the caller walks obj->childObjs with a 4-byte
+# pointer stride.
+#
+# Caller (objPrint loop, ~1384-1436):
+#   walk = (int)obj;  int staff = (int)((GameObject*)walk)->childObjs[0];
+#   staffUpdateSegmentTransforms(staff, obj, (int)OBJPRINT_ACTIVE_BANK(staff), ...);
+#   walk += 4;   // steps childObjs[] assuming 4-byte pointers
+# All of it widens together. The `+= 4` matters most: widening the ints alone
+# would compile, read "0 critical", and then read garbage for every child after
+# the first, because 64-bit pointers are 8 bytes apart.
+#
+# The public prototype (objprint_api.h:21) already declares the params as
+# GameObject*/ObjModel*; the definition takes uintptr_t (same 64-bit integer-class
+# ABI) so the int-typed caller chain stays consistent.
+
+# --- definition ------------------------------------------------------------------
+[[pointer.retype]]
+file = "decomp/src/main/objprint.c"
+line = 1274  # void staffUpdateSegmentTransforms(int staffArg, GameObject* objArg, int modelArg, ...)
+symbol = "staffArg"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint.c"
+line = 1274
+symbol = "modelArg"
+from = "int"
+to = "uintptr_t"
+
+# --- caller --------------------------------------------------------------------
+[[pointer.retype]]
+file = "decomp/src/main/objprint.c"
+line = 1384  # int walk;
+symbol = "walk"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objprint.c"
+line = 1431  # walk = (int)obj
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/objprint.c"
+line = 1432  # int staff = (int)((GameObject*)walk)->childObjs[0];
+symbol = "staff"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objprint.c"
+line = 1432
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objprint.c"
+line = 1434  # (int)OBJPRINT_ACTIVE_BANK(staff)
+from = "int"
+to = "uintptr_t"
+
+[[pointer.stride]]
+file = "decomp/src/main/objprint.c"
+line = 1436  # walk += 4;  -> one childObjs[] slot = one host pointer
+symbol = "walk"
+from = "4"
+to = "sizeof(void*)"
+
+# --- inside staffUpdateSegmentTransforms: objArg parked in an int local --------
+#   int obj; obj = (int)objArg;  ...  updateSwipe(staff, (GameObject*)obj, &vb);
+[[pointer.retype]]
+file = "decomp/src/main/objprint.c"
+line = 1284  # int obj;
+symbol = "obj"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/objprint.c"
+line = 1288  # obj = (int)objArg;
+from = "int"
+to = "uintptr_t"

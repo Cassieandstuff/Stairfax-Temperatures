@@ -1,0 +1,17 @@
+# Real-TU diff case: modelRenderInterpolateRootTransform (the RenderPackedAddress
+# scheme) from the vendored decomp.
+#
+# Oracle = these ranges verbatim from decomp/src/main/render.c; mirror = the same
+# ranges from the P2 rewriter's transform of the whole file under mirror/rules/
+# (render.toml: widen_cast on the macro, widen on the derefs, retype on the u32
+# `packed` params, promote on addrB/curB).
+
+source = "decomp/src/main/render.c"
+rules = "mirror/rules"
+
+ranges = [
+    [19, 20],     # prototypes: render_copyPackedU64Tail/Head(u64*, u32 packed)
+    [360, 543],   # RenderPackedAddress typedef, macro, read/write helpers, refill
+                  # macros, gModelRenderSubframeScale, modelRenderInterpolateRootTransform
+    [545, 609],   # render_copyPackedU64Tail / Head definitions
+]

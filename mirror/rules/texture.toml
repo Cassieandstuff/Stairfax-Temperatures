@@ -1,0 +1,20 @@
+# texture.c: lbl_8030DC88 is a static table of 4-word records {char* name,
+# void* data, int, int} stored as `u32` with `(u32)ptr` initializers. On 64-bit the
+# pointers don't fit (with u32 pinned to 4 bytes it doesn't even compile: a
+# truncated address isn't a link-time constant). The table has no other referents
+# in the decomp; widen the element type and every initializer cast.
+
+[[pointer.retype]]
+file = "decomp/src/main/texture.c"
+line = 1076  # u32 lbl_8030DC88[208] = {...
+symbol = "lbl_8030DC88"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/texture.c"
+line = 1076
+line_end = 1127   # through the closing `};`
+from = "u32"
+to = "uintptr_t"
+all = true

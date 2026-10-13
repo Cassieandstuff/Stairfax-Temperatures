@@ -1,0 +1,10 @@
+# Real-TU diff case: RomCurve_swapEndpointNodes (Hcurves.c) XOR-swaps a walker's
+# previousNode / nextNode pointers through u32*:
+#   u32* a = (u32*)&p->previousNode;  u32* b = (u32*)&p->nextNode;
+#   *a ^= *b; *b ^= *a; *a ^= *b;
+# On a 64-bit host that swaps only the low halves, corrupting both pointers. The
+# mirror (ptrpuns.toml) swaps through uintptr_t*.
+
+source = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
+rules = "mirror/rules"
+ranges = [[152, 163]]

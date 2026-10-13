@@ -1,0 +1,13 @@
+# SHthorntail.c: hand decision for a slot the signedness check held back.
+
+# value (SHthorntail_chooseNextState): first the player object pointer
+# (`value = (int)Obj_GetPlayerObject()`, dereferenced at value + PLAYER_POS_OFFSET),
+# then reused for a signed angle (`value >= 0 ? value : -value`, `value > 0x20`).
+# intptr_t keeps the angle math signed and the pointer whole; as a held int the
+# player pointer was truncated before the dereference.
+[[pointer.retype]]
+file = "decomp/src/dlls/objects/429_SH_thorntai/SHthorntail.c"
+line = 282  # int value;
+symbol = "value"
+from = "int"
+to = "intptr_t"

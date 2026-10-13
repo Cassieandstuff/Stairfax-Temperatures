@@ -1,0 +1,14 @@
+# Real-TU diff case: gameTextDrawBox's id-or-pointer `boxId` parameter.
+#
+# Oracle = gameTextDrawBox verbatim from decomp/src/main/textrender_drawbox.c;
+# mirror = the same range from the rewriter's transform under mirror/rules/
+# (textrender_drawbox.toml: retype boxId int->uintptr_t, widen the (u32)boxId null
+# tests). The driver plays the caller (gametext.c gameTextRenderStrs), passing the
+# subtitle string through the boxId parameter.
+
+source = "decomp/src/main/textrender_drawbox.c"
+rules = "mirror/rules"
+
+ranges = [
+    [217, 362],   # void gameTextDrawBox(struct GameTextDef* strPtr, int boxId, GameTextBox* box)
+]

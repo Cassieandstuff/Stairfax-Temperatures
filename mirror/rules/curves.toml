@@ -1,0 +1,34 @@
+# 21.c (Hcurves collision): a "pointer tag test" that is really a flags read
+# through the wrong union member.
+#
+#   linkedAnim = curveObj->anim.linkedAnim;
+#   if (linkedAnim != NULL && (*(s16*)&linkedAnim->eventTable & 1) != 0) ...
+#       ... curveObj->anim.worldPosY - linkedAnim->worldPosZ ...
+#
+# anim.linkedAnim shares a union with anim.hitReactState, and this site is the
+# only one using the linkedAnim view. The memory is the object's hit state, which
+# objhits.c allocates and uses as ObjHitsPriorityState. Through the
+# ObjAnimComponent view, "eventTable" (0x60) and "worldPosZ" (0x20) land on
+# ObjHitsPriorityState.flags (s16 @0x60) and .worldPosY (f32 @0x20): the code tests
+# a hit-state flag and compares against the hit position's Y. It never touched a
+# pointer. On the GameCube the wrong view still hits the right bytes; on a 64-bit
+# host ObjAnimComponent's pointers move eventTable to 0x80, so read the real fields
+# (ObjHitsPriorityState keeps 0x20 / 0x60 on both targets).
+
+[[text.replace]]
+file = "decomp/src/dlls/engine/21/21.c"
+line = 1043
+from = "(*(s16*)&linkedAnim->eventTable & 1)"
+to = "(((ObjHitsPriorityState*)linkedAnim)->flags & 1)"
+
+[[text.replace]]
+file = "decomp/src/dlls/engine/21/21.c"
+line = 1044
+from = "linkedAnim->worldPosZ"
+to = "((ObjHitsPriorityState*)linkedAnim)->worldPosY"
+
+[[text.replace]]
+file = "decomp/src/dlls/engine/21/21.c"
+line = 1045
+from = "curveObj->anim.linkedAnim->worldPosZ"
+to = "((ObjHitsPriorityState*)curveObj->anim.linkedAnim)->worldPosY"

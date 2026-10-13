@@ -1,0 +1,77 @@
+# --- Pointer truncations hidden in macros ---
+# The analyzer finds these but can't place a rule for them: the narrowing cast is
+# a macro argument, or sits in a macro body, or a function-pointer cast in a
+# macro hides the pointer from it entirely (DROPPED.txt lists the first two
+# kinds). Each one compiles and truncates an object pointer at runtime.
+
+# WM_seqpoint's day/night switch passes the object to the envfx actions as
+# `(int)obj`. getEnvfxActImmediatelyVoid (render_envfx_api.h) casts its
+# arguments back with `(void*)`, so the (int) truncates the object pointer.
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/525_WM_seqpoint/WM_seqpoint.c"
+line = 90
+line_end = 92
+all = true
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/525_WM_seqpoint/WM_seqpoint.c"
+line = 100
+line_end = 102
+all = true
+from = "int"
+to = "uintptr_t"
+
+# object_render_legacy.h redefines objRenderModelAndHitVolumes as a call through
+# `void (*)(int, int, int, int, int, f32)`. Every argument converts to int, so the
+# object pointer (and the widened p2) truncate at all four call sites (544,
+# 547_VFP_corepla, 557_DFP_seqpoin, 601_SB_Cloudrun). The int-typed cast also
+# hid the pointer from the analyzer, so the render callbacks that forward the
+# object to it kept `int` object parameters. Call through the real signature
+# instead and reconstruct the object as `(GameObject*)(obj)`, as
+# objRenderModelAndHitVolumesFwdLegacy does. The analyzer then sees an int
+# rebuilt as a pointer and widens those parameters like any other.
+[[text.replace]]
+file = "decomp/include/main/object_render_legacy.h"
+line = 7
+from = "void (*)(int, int, int, int, int, f32)"
+to = "void (*)(GameObject*, uintptr_t, int, int, int, f32)"
+
+[[text.replace]]
+file = "decomp/include/main/object_render_legacy.h"
+line = 8
+from = "(obj), (p2)"
+to = "(GameObject*)(obj), (p2)"
+
+# SB_Cloudrun narrows the object itself before the macro sees it.
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/601_SB_Cloudrun/SB_Cloudrun.c"
+line = 725
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/dlls/objects/601_SB_Cloudrun/SB_Cloudrun.c"
+line = 737
+from = "int"
+to = "uintptr_t"
+
+# objRenderModelAndHitVolumesFwdLegacy calls through a pointer whose p2 is still
+# `int`, while the real function's p2 is uintptr_t (generated rule) and its
+# caller (WM_seqpoint render) passes a uintptr_t p2. Match the real signature.
+[[text.replace]]
+file = "decomp/include/main/object_render.h"
+line = 10
+from = "void (*)(GameObject*, int, int, int, int, f32)"
+to = "void (*)(GameObject*, uintptr_t, int, int, int, f32)"
+
+# Hcurves' OBJFSA_NEWPATCH_S16 addresses a field of the patch being built as
+# `(*(s16*)(offset + (int)patchBase[0]))`. patchBase[0] is an ObjfsaPatch*, so
+# the (int) truncates it at every use (lines 1425-1442). The same idiom on line
+# 1317 is already widened by a generated rule.
+[[text.replace]]
+file = "decomp/src/dlls/engine/20_Hcurves/Hcurves.c"
+line = 56
+from = "(int)patchBase[0]"
+to = "(uintptr_t)patchBase[0]"

@@ -1,0 +1,107 @@
+# track_dolphin.c triangle-buffer cursor chain (2nd pass, forced by the compiler once
+# track_dolphin.c joined the 64-bit build set). The cursor into gTrackTriangleBuffer
+# flows: caller `int cur` -> trackBuildBlockTriangles(int base) / trackBuildModelTriangles
+# (int cur) -> both return it as int; the end bound is stored via
+# `gTrackTriangleBufferEnd = (u32)(buf + 1200)` and compared via `(u32)cur >= end`.
+# The first pass (pointers.toml) only widened what the line scanner could see. The
+# truncating (u32) store at 3386 and the (u32) compares were review-level and missed.
+#
+# NOT here, on purpose: trackGetTriangleBuffer(int* outCount, int* outTable) and its
+# callers (shadow_dolphin.c:693+, engine/13/13.c:210). Retyping outTable alone would
+# make the callee write 8 bytes into callers' 4-byte ints, so that whole chain moves
+# together in the automated pass.
+
+[[pointer.retype]]
+file = "decomp/src/main/track_dolphin.c"
+line = 162   # proto: trackBuildBlockTriangles(int base, ...)
+symbol = "base"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.ret]]
+file = "decomp/src/main/track_dolphin.c"
+func = "trackBuildModelTriangles"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/track_dolphin.c"
+line = 163   # proto: trackBuildModelTriangles(int cur, ...)
+symbol = "cur"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/track_dolphin.c"
+line = 2698   # def:   trackBuildModelTriangles(int cur, ...)
+symbol = "cur"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 2942   # if ((u32)cur >= gTrackTriangleBufferEnd)
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/track_dolphin.c"
+line = 2988   # u32 triEnd;  (polygon-group walk bound)
+symbol = "triEnd"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3140   # triEnd = (u32)tri0 + ...
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3142   # for (; (u32)tri < triEnd; ...)
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3347   # if ((u32)cur >= gTrackTriangleBufferEnd)
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3377   # caller: int cur;
+symbol = "cur"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3386   # gTrackTriangleBufferEnd = (u32)(gTrackTriangleBuffer + 1200);
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3390   # cur = (int)gTrackTriangleBuffer;
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3394   # cur = trackBuildBlockTriangles((int)gTrackTriangleBuffer, ...)
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3455   # (cur - (int)gTrackTriangleBuffer) / 0x4c
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/track_dolphin.c"
+line = 3465   # (cur - (int)gTrackTriangleBuffer) / 0x4c
+from = "int"
+to = "uintptr_t"
+

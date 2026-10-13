@@ -1,0 +1,71 @@
+# render.c pointer-width resolutions — the RenderPackedAddress scheme.
+#
+# modelRenderInterpolateRootTransform carries pointers (the animation bitstream
+# cursors, the descriptor list, the output arrays) as integers end to end:
+#   pack:   RENDER_PACKED_ADDRESS(p) = (u32)(p)           -> truncates on 64-bit
+#   read:   *(u16*)(u32)address                           -> truncates
+#   cursor: u32 addrB / int curB (cursor B = posA + stride) -> truncates
+#   load:   render_copyPackedU64Head/Tail(u64*, u32 packed) deref *(u64*)(packed & ~7)
+# Every link must widen or the chain still truncates; widening only the macro (or
+# only the derefs) would read "0 critical" while the pointer is still cut.
+#
+# Note: this fixes pointer WIDTH only. The bitstream is decoded with native u64/u16
+# loads, so its byte order is a separate P3 (endian) question.
+
+# pack
+[[pointer.widen_cast]]
+file = "decomp/src/main/render.c"
+line = 362   # #define RENDER_PACKED_ADDRESS(pointer) ((u32)(pointer))
+from = "u32"
+to = "uintptr_t"
+
+# read/write through a packed address
+[[pointer.widen]]
+file = "decomp/src/main/render.c"
+line = 366   # return *(u16*)(u32)address;
+
+[[pointer.widen]]
+file = "decomp/src/main/render.c"
+line = 371   # *(u16*)(u32)address = value;
+
+# cursor B (the second bitstream window) and the stride slot that becomes it
+[[pointer.promote]]
+file = "decomp/src/main/render.c"
+symbol = "addrB"
+to = "uintptr_t"
+line = 422
+
+[[pointer.promote]]
+file = "decomp/src/main/render.c"
+symbol = "curB"
+to = "uintptr_t"
+line = 412   # holds frameStreamStride, then cursor B (posA + stride)
+
+# the 64-bit window loaders take the packed address as a u32 param
+[[pointer.retype]]
+file = "decomp/src/main/render.c"
+line = 19    # prototype: render_copyPackedU64Tail
+symbol = "packed"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/render.c"
+line = 20    # prototype: render_copyPackedU64Head
+symbol = "packed"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/render.c"
+line = 545   # definition: render_copyPackedU64Tail
+symbol = "packed"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.retype]]
+file = "decomp/src/main/render.c"
+line = 578   # definition: render_copyPackedU64Head
+symbol = "packed"
+from = "u32"
+to = "uintptr_t"

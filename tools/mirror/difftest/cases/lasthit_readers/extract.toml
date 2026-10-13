@@ -1,0 +1,32 @@
+# Real-TU diff case: readers of ObjHitsPriorityState.lastHitObject.
+#
+# ObjHits_RecordObjectHit stores the striking object in the struck object's
+# lastHitObject as `(u32)obj`. Its readers get a GameObject back from it.
+# dll413_hitDetect (413.c) casts it to GameObject* and dereferences it.
+# pinponspike_update (PinPonSpike.c) compares it with `(u32)Obj_GetPlayerObject()`
+# and `(u32)getTrickyObject()`. The mirror widens the field to uintptr_t
+# (hitstate.toml) and the writer's and comparisons' casts with it. 413.c reads
+# through the field's type, so that part has no textual change.
+
+[[part]]
+source = "decomp/include/main/objhits_types.h"
+ranges = [[48, 121]]          # priority-state flag bits + ObjHitsPriorityState
+
+[[part]]
+source = "decomp/src/main/objhits.c"
+ranges = [[2778, 2824]]       # ObjHits_RecordObjectHit (the writer)
+
+[[part]]
+source = "decomp/src/dlls/objects/413/413.c"
+ranges = [
+    [13, 31],                 # DLL19D_* constants
+    [55, 82],                 # dll413_hitDetect
+]
+may_be_unchanged = true
+
+[[part]]
+source = "decomp/src/dlls/objects/216_PinPonSpike/PinPonSpike.c"
+ranges = [
+    [20, 28],                 # PINPONSPIKE_* constants
+    [111, 160],               # pinponspike_update
+]

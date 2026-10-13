@@ -1,0 +1,16 @@
+# mm.c mmInitRegion: freePtr is the region's free-pointer cursor ((int)buf + slots),
+# 32-byte aligned with & ~0x1f (sign-extends correctly as uintptr_t), stored to slot->loc.
+
+[[pointer.retype]]
+file = "decomp/src/main/mm.c"
+line = 963
+symbol = "freePtr"
+from = "int"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/mm.c"
+line = 976   # freePtr = (int)buf + slotsBytes;
+from = "int"
+to = "uintptr_t"
+

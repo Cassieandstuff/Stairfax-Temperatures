@@ -1,0 +1,16 @@
+# model.c LOADCOLOR_BLOCK(SLOT) macro: v = (u32)(channel->moveCache[n]) is a cached anim
+# pointer, null-tested and passed as (u8*)v. Lines are inside the #define body.
+
+[[pointer.retype]]
+file = "decomp/src/main/model.c"
+line = 52
+symbol = "v"
+from = "u32"
+to = "uintptr_t"
+
+[[pointer.widen_cast]]
+file = "decomp/src/main/model.c"
+line = 58   # v = (u32)(SLOT);
+from = "u32"
+to = "uintptr_t"
+

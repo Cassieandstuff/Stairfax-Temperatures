@@ -1,0 +1,29 @@
+# Scanner findings reviewed and judged NOT pointer hazards. [[pointer.audit]] with
+# ok=true records the decision and drops the finding from the critical count; it
+# rewrites nothing. The text scanner can't see types: `name = (int)expr` reads
+# as a pointer store whatever expr is. The libclang analyzer (types known) does
+# not flag any of these.
+
+[[pointer.audit]]
+file = "decomp/src/main/audio.c"
+line = 60   # int gMusicTriggersCount;
+ok = true
+note = "gMusicTriggersCount = (u32)info >> 4: a count unpacked from an int"
+
+[[pointer.audit]]
+file = "decomp/src/dlls/engine/17/17.c"
+line = 14   # u32 gScreenDataId;
+ok = true
+note = "gScreenDataId = (u32)-1 sentinel / an id"
+
+[[pointer.audit]]
+file = "decomp/src/dlls/engine/2/2.c"
+line = 558  # int gObjSeqStreamResumeOffset = -1;
+ok = true
+note = "gObjSeqStreamResumeOffset = (int)<f32 stream time>"
+
+[[pointer.audit]]
+file = "decomp/src/dlls/objects/384_MMP_asteroi/MMP_asteroi.c"
+line = 60   # int gMMPAsteroidDustHeightParam;
+ok = true
+note = "gMMPAsteroidDustHeightParam = (int)(<f32 height difference>), passed as a particle param"

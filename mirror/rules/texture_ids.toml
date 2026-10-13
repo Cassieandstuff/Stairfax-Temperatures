@@ -1,0 +1,41 @@
+# Texture handles: IDs only (pointer-slot survey item 3).
+#
+# Texture slots in shaders and model texture tables are read back as 32-bit
+# values and resolved with textureIdxToPtr(int), which on the GameCube tells a
+# raw pointer (bit 31 set: 0x80xxxxxx) from a loaded-texture ID (slot + 1). A
+# 64-bit pointer survives neither the 32-bit slot nor the bit-31 test, so on the
+# host every caller that asks textureLoad for a handle (flagIn != 0) gets an ID.
+#
+# textureLoad already returns IDs to flagIn callers except on two paths, which
+# returned raw pointers:
+#   - cache hit on an entry whose flag is 0 (some other holder took a pointer,
+#     so defrag must not move it). Returning an ID here is safe: the entry keeps
+#     flag 0, so it still isn't moved, and the ID resolves through the table.
+#   - a texture loaded straight into the data-file cache (frameOut == -1), which
+#     cleared flagIn. Defrag skips cache-resident textures on its own
+#     (`((Texture*)tex)->cached == 0`), so the entry may keep flag = flagIn.
+# Callers passing flagIn = 0 (sprite/shadow/request buffers) still get pointers,
+# in pointer-typed storage that never reaches textureIdxToPtr.
+
+[[text.replace]]
+file = "decomp/src/main/texture.c"
+line = 620
+from = "if (flagIn != 0 && gLoadedTextures[n].flag != 0)"
+to = "if (flagIn != 0)"
+
+[[text.replace]]
+file = "decomp/src/main/texture.c"
+line = 793  # cache-resident load: keep returning an ID
+from = "flagIn = 0;"
+to = ";"
+
+# textureIdxToPtr's bit-31 passthrough (`if ((u32)idx & 0x80000000) return (void*)idx;`)
+# returned GameCube pointers (0x80xxxxxx) stored in handle slots. With IDs only,
+# no slot holds a pointer, and no 32-bit value with bit 31 set is a host pointer,
+# so the branch can only ever return garbage: it returns NULL instead. (Left as
+# is, the `(void*)idx` cast also made the analyzer widen the ID parameter.)
+[[text.replace]]
+file = "decomp/src/main/texture.c"
+line = 92
+from = "return (void*)idx;"
+to = "return NULL;"
